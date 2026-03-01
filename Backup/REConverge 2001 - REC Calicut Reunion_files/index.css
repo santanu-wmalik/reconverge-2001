@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REConverge 2001 - REC Calicut Reunion</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Great+Vibes&family=Montserrat:ital,wght@1,300;1,400;1,700;1,900&family=Lato:ital,wght@1,300;1,400;1,700&display=swap"
+    rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            silver: '#c0c0c0',
+            reblue: '#0000ff',
+            rered: '#ff0000',
+          },
+          animation: {
+            'film-scroll': 'filmScroll 120s linear infinite',
+          },
+          keyframes: {
+            filmScroll: {
+              '0%': { transform: 'translateY(0)' },
+              '100%': { transform: 'translateY(-50%)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Lato', sans-serif;
+      font-style: italic;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .dark body {
+      background-color: #000000;
+      color: #ffffff;
+    }
+
+    .light body {
+      background-color: #ffffff;
+      color: #0f172a;
+    }
+
+    .font-cursive {
+      font-family: 'Alex Brush', cursive;
+    }
+
+    .glass-silver {
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(192, 192, 192, 0.2);
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    .dark .glass-silver {
+      background: rgba(0, 0, 0, 0.4);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .light .glass-silver {
+      background: rgba(255, 255, 255, 0.8);
+      border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .red-gradient {
+      background: linear-gradient(135deg, #ff0000 0%, #8b0000 100%);
+    }
+
+    .blue-gradient {
+      background: linear-gradient(135deg, #0000ff 0%, #00008b 100%);
+    }
+
+    .silver-text {
+      background: linear-gradient(135deg, #ffffff 0%, #c0c0c0 50%, #808080 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .light .silver-text {
+      background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .film-strip {
+      position: relative;
+      background: #080808;
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Analog Film Square Dots (Sprockets) */
+    .film-strip::before,
+    .film-strip::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 10px;
+      /* Smaller dots */
+      background-image: repeating-linear-gradient(to bottom,
+          rgba(255, 255, 255, 0.18) 0px,
+          rgba(255, 255, 255, 0.18) 10px,
+          transparent 10px,
+          transparent 24px);
+      background-size: 10px 24px;
+      z-index: 20;
+    }
+
+    .film-strip::before {
+      left: 4px;
+    }
+
+    .film-strip::after {
+      right: 4px;
+    }
+  </style>
+
+  <link rel="stylesheet" href="/index.css">
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.41.0",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.13.0"
+  }
+}
+</script>
+  <script type="module" crossorigin src="/assets/index-BfjyE31r.js"></script>
+</head>
+
+<body class="dark">
+  <div id="root"></div>
+</body>
+
+</html>
