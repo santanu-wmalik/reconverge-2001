@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import SectionHeading from '../../../components/shared/SectionHeading';
+import ProtectedImage from '../../../components/shared/ProtectedImage';
 import Button from '../../../components/ui/Button';
 import { EVENT_CONFIG, CAMPUS_PHOTOS } from '../../../data/constants';
 import { staggerContainer, staggerItem } from '../../../utils/animationVariants';
@@ -27,10 +28,10 @@ export default function NostalgiaPreview() {
               variants={staggerItem}
               className="relative group rounded-xl overflow-hidden aspect-square"
             >
-              <img
+              <ProtectedImage
                 src={EVENT_CONFIG.storageBaseUrl + photo.src}
                 alt={photo.title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                imgClassName="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
                 <div>

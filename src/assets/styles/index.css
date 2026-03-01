@@ -29,6 +29,15 @@
     background-color: rgba(212, 168, 67, 0.3);
     color: #f8fafc;
   }
+
+  /* === Image download protection === */
+  img {
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+  }
 }
 
 @layer components {

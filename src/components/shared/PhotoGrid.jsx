@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { staggerContainer, staggerItem } from '../../utils/animationVariants';
+import ProtectedImage from './ProtectedImage';
 
 export default function PhotoGrid({ photos, columns = 3 }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
@@ -28,10 +29,10 @@ export default function PhotoGrid({ photos, columns = 3 }) {
             className="relative group cursor-pointer rounded-xl overflow-hidden aspect-square"
             onClick={() => setSelectedPhoto(photo)}
           >
-            <img
+            <ProtectedImage
               src={photo.url}
               alt={photo.caption}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              imgClassName="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <p className="absolute bottom-3 left-3 right-3 text-sm text-white font-medium">
@@ -59,10 +60,10 @@ export default function PhotoGrid({ photos, columns = 3 }) {
               className="relative max-w-4xl max-h-[80vh]"
               onClick={(e) => e.stopPropagation()}
             >
-              <img
+              <ProtectedImage
                 src={selectedPhoto.url}
                 alt={selectedPhoto.caption}
-                className="max-w-full max-h-[70vh] object-contain rounded-xl"
+                imgClassName="max-w-full max-h-[70vh] object-contain rounded-xl"
               />
               <p className="text-center text-white mt-3 text-sm">{selectedPhoto.caption}</p>
               <button
