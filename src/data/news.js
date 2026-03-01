@@ -1,0 +1,7 @@
+export const newsArticles = [
+  { id: 'news-001', title: 'Registration Crosses 300 Mark!', excerpt: 'The Silver Jubilee reunion has crossed 300 registrations with 3 months still to go.', date: '2026-09-15', image: 'https://placehold.co/600x300/1e3a5f/d4a843?text=300+Registrations', category: 'update', author: 'Organizing Committee' },
+  { id: 'news-002', title: 'Grand Gardenia - Official Hotel Partner', excerpt: 'Exclusive rates for our alumni at the Grand Gardenia hotel.', date: '2026-08-20', image: 'https://placehold.co/600x300/2d5a8e/f8fafc?text=Hotel+Partner', category: 'announcement', author: 'Logistics Team' },
+  { id: 'news-003', title: 'Cultural Night Lineup Revealed!', excerpt: 'Alumni band performances, Bharatanatyam, stand-up comedy, and DJ night!', date: '2026-10-01', image: 'https://placehold.co/600x300/e83e8c/ffffff?text=Cultural+Night', category: 'event', author: 'Cultural Committee' },
+  { id: 'news-004', title: 'Merchandise Store Now Open!', excerpt: 'T-shirts, hoodies, caps, mugs and more. Order now!', date: '2026-10-15', image: 'https://placehold.co/600x300/d4a843/1e3a5f?text=Merchandise', category: 'announcement', author: 'Marketing Team' },
+  { id: 'news-005', title: 'Director Invites Alumni for Campus Tour', excerpt: 'Tour the newly renovated Innovation Center and Smart Library.', date: '2026-11-01', image: 'https://placehold.co/600x300/6f42c1/ffffff?text=Campus+Tour', category: 'update', author: 'Director Office' },
+];
