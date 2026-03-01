@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
-import { alumniApi } from '../services/api';
+import { alumniApi, userApi } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -29,6 +29,37 @@ function authReducer(state, action) {
   }
 }
 
+// Cookie helpers
+function setCookie(name, value, days = 30) {
+  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Strict`;
+}
+
+function getCookie(name) {
+  const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
+function deleteCookie(name) {
+  document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Strict`;
+}
+
+export function getSavedCredentials() {
+  const email = getCookie('alumni_email');
+  const password = getCookie('alumni_password');
+  return (email && password) ? { email, password } : null;
+}
+
+export function saveCredentials(email, password) {
+  setCookie('alumni_email', email);
+  setCookie('alumni_password', password);
+}
+
+export function clearSavedCredentials() {
+  deleteCookie('alumni_email');
+  deleteCookie('alumni_password');
+}
+
 function loadState() {
   try {
     const saved = localStorage.getItem('alumni-auth');
@@ -49,25 +80,34 @@ export function AuthProvider({ children }) {
     localStorage.setItem('alumni-auth', JSON.stringify(state));
   }, [state]);
 
-  const login = async (email, role = 'alumni') => {
+  const login = async (email, password) => {
+    if (!email || !password) {
+      return { success: false, error: 'Email and password are required' };
+    }
+
     try {
-      const results = await alumniApi.getByEmail(email);
-      if (results.length > 0) {
-        const user = { ...results[0], role: results[0].role || role };
-        dispatch({ type: 'LOGIN', payload: user });
-        return { success: true, user };
+      // Step 1: Validate credentials against users table
+      const users = await userApi.getByEmail(email);
+      if (users.length === 0) {
+        return { success: false, error: 'No account found with this email' };
       }
-      return { success: false, error: 'No account found with this email' };
+
+      const userRecord = users[0];
+      if (userRecord.password !== password) {
+        return { success: false, error: 'Invalid password. Please try again.' };
+      }
+
+      // Step 2: Fetch the full alumni profile
+      const alumni = await alumniApi.getByEmail(email);
+      if (alumni.length === 0) {
+        return { success: false, error: 'Alumni profile not found' };
+      }
+
+      // Step 3: Use role from users table (authoritative source)
+      const user = { ...alumni[0], role: userRecord.role };
+      dispatch({ type: 'LOGIN', payload: user });
+      return { success: true, user };
     } catch {
-      // Fallback: try localStorage cache
-      const saved = localStorage.getItem('alumni-auth');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.user?.email === email) {
-          dispatch({ type: 'LOGIN', payload: { ...parsed.user, role } });
-          return { success: true, user: parsed.user };
-        }
-      }
       return { success: false, error: 'Server unavailable. Please try again.' };
     }
   };

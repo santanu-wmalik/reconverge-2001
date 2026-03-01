@@ -54,6 +54,16 @@ export const orderApi = {
     }),
 };
 
+// --- Users (auth) ---
+export const userApi = {
+  getByEmail: (email) => request(`/users?email=${encodeURIComponent(email)}`),
+  create: (data) =>
+    request('/users', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+};
+
 // --- Itineraries ---
 export const itineraryApi = {
   getAll: () => request('/itineraries'),

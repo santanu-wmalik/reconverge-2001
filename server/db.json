@@ -3,7 +3,7 @@
     {
       "id": "alum-001",
       "name": "Rajesh Kumar",
-      "email": "rajesh.kumar@email.com",
+      "email": "raj.kumar@email.com",
       "phone": "+91-9876543210",
       "batch": 2001,
       "branch": "Computer Science & Engineering",
@@ -335,8 +335,80 @@
         "evt-001",
         "evt-002"
       ],
-      "updatedAt": "2026-03-01T01:07:15.917Z",
+      "updatedAt": "2026-03-01T01:25:54.974Z",
       "id": 1
+    }
+  ],
+  "users": [
+    {
+      "id": "user-001",
+      "email": "raj.kumar@email.com",
+      "password": "REConverge@123",
+      "alumniId": "alum-001",
+      "role": "admin"
+    },
+    {
+      "id": "user-002",
+      "email": "priya.n@email.com",
+      "password": "REConverge@123",
+      "alumniId": "alum-002",
+      "role": "alumni"
+    },
+    {
+      "id": "user-003",
+      "email": "suresh.menon@email.com",
+      "password": "REConverge@123",
+      "alumniId": "alum-003",
+      "role": "alumni"
+    },
+    {
+      "id": "user-004",
+      "email": "anitha@email.com",
+      "password": "REConverge@123",
+      "alumniId": "alum-004",
+      "role": "alumni"
+    },
+    {
+      "id": "user-005",
+      "email": "vikram@email.com",
+      "password": "REConverge@123",
+      "alumniId": "alum-005",
+      "role": "alumni"
+    },
+    {
+      "id": "user-006",
+      "email": "deepa@email.com",
+      "password": "REConverge@123",
+      "alumniId": "alum-006",
+      "role": "alumni"
+    },
+    {
+      "id": "user-007",
+      "email": "karthik@email.com",
+      "password": "REConverge@123",
+      "alumniId": "alum-007",
+      "role": "alumni"
+    },
+    {
+      "id": "user-008",
+      "email": "meera@email.com",
+      "password": "REConverge@123",
+      "alumniId": "alum-008",
+      "role": "alumni"
+    },
+    {
+      "id": "user-009",
+      "email": "nandini@email.com",
+      "password": "REConverge@123",
+      "alumniId": "alum-009",
+      "role": "alumni"
+    },
+    {
+      "id": "user-010",
+      "email": "lakshmi@email.com",
+      "password": "REConverge@123",
+      "alumniId": "alum-010",
+      "role": "alumni"
     }
   ]
 }

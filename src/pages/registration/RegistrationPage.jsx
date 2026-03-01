@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { pageTransition } from '../../utils/animationVariants';
 import { BRANCHES, HOSTELS, TSHIRT_SIZES, DIETARY_OPTIONS, TRAVEL_MODES } from '../../data/constants';
-import { alumniApi } from '../../services/api';
+import { alumniApi, userApi } from '../../services/api';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
@@ -18,7 +18,7 @@ export default function RegistrationPage() {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
-    name: '', email: '', phone: '', currentCity: '', company: '', designation: '',
+    name: '', email: '', phone: '', password: '', currentCity: '', company: '', designation: '',
     branch: '', hostel: '', rollNumber: '',
     travelMode: '', arrivalDate: '', arrivalTime: '', needsAccommodation: false,
     tshirtSize: '', dietaryPref: '', familyMembers: 0,
@@ -30,11 +30,16 @@ export default function RegistrationPage() {
   const update = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
 
   const handleSubmit = async () => {
+    if (!form.password || form.password.length < 6) {
+      showToast('Please set a password (minimum 6 characters)', 'error');
+      return;
+    }
     setLoading(true);
     try {
       const allAlumni = await alumniApi.getAll();
+      const { password, ...alumniData } = form;
       const newAlumni = {
-        ...form,
+        ...alumniData,
         batch: 2001,
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(form.name)}`,
         registrationId: `SJ-2026-${String(allAlumni.length + 1).padStart(4, '0')}`,
@@ -44,7 +49,14 @@ export default function RegistrationPage() {
         createdAt: new Date().toISOString(),
       };
       const created = await alumniApi.create(newAlumni);
-      await login(created.email, 'alumni');
+      // Create user record for authentication
+      await userApi.create({
+        email: created.email,
+        password: password,
+        alumniId: created.id,
+        role: 'alumni',
+      });
+      await login(created.email, password);
       showToast('Registration successful! Welcome to the reunion!', 'success');
       navigate('/register/success');
     } catch (error) {
@@ -75,6 +87,7 @@ export default function RegistrationPage() {
               <Input label="Email" type="email" value={form.email} onChange={(e) => update('email', e.target.value)} placeholder="your@email.com" />
               <Input label="Phone" type="tel" value={form.phone} onChange={(e) => update('phone', e.target.value)} placeholder="+91-XXXXXXXXXX" />
             </div>
+            <Input label="Password" type="password" value={form.password} onChange={(e) => update('password', e.target.value)} placeholder="Create a password" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input label="Current City" value={form.currentCity} onChange={(e) => update('currentCity', e.target.value)} placeholder="e.g. Bangalore" />
               <Input label="Company" value={form.company} onChange={(e) => update('company', e.target.value)} placeholder="Where you work" />
