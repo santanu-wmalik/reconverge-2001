@@ -14,7 +14,6 @@ const RegistrationPage = lazy(() => import('./pages/registration/RegistrationPag
 const RegistrationSuccess = lazy(() => import('./pages/registration/RegistrationSuccess'));
 const ProfileDashboard = lazy(() => import('./pages/profile/ProfileDashboard'));
 const EditProfile = lazy(() => import('./pages/profile/EditProfile'));
-const DigitalPass = lazy(() => import('./pages/profile/DigitalPass'));
 const EventSchedulePage = lazy(() => import('./pages/itinerary/EventSchedulePage'));
 const MyItineraryPage = lazy(() => import('./pages/itinerary/MyItineraryPage'));
 const GroupsListPage = lazy(() => import('./pages/groups/GroupsListPage'));
@@ -28,6 +27,7 @@ const StorePage = lazy(() => import('./pages/merchandise/StorePage'));
 const ProductDetailPage = lazy(() => import('./pages/merchandise/ProductDetailPage'));
 const CartPage = lazy(() => import('./pages/merchandise/CartPage'));
 const NewsPage = lazy(() => import('./pages/news/NewsPage'));
+const TownhallsPage = lazy(() => import('./pages/townhalls/TownhallsPage'));
 
 // New pages from real event
 const WhenWherePage = lazy(() => import('./pages/whenwhere/WhenWherePage'));
@@ -35,6 +35,7 @@ const FAQPage = lazy(() => import('./pages/faq/FAQPage'));
 const CommitteesPage = lazy(() => import('./pages/committees/CommitteesPage'));
 const RSVPPage = lazy(() => import('./pages/rsvp/RSVPPage'));
 const OurJourneyPage = lazy(() => import('./pages/journey/OurJourneyPage'));
+const StayPage = lazy(() => import('./pages/stay/StayPage'));
 
 // Admin pages
 const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'));
@@ -43,6 +44,8 @@ const CommitteeManagementPage = lazy(() => import('./pages/admin/CommitteeManage
 const BudgetPage = lazy(() => import('./pages/admin/BudgetPage'));
 const OutreachPage = lazy(() => import('./pages/admin/OutreachPage'));
 const EventDashboardPage = lazy(() => import('./pages/admin/EventDashboardPage'));
+const RoomingPage = lazy(() => import('./pages/admin/RoomingPage'));
+const MeetingsPage = lazy(() => import('./pages/admin/MeetingsPage'));
 
 function PageLoader() {
   return (
@@ -83,13 +86,13 @@ export const router = createBrowserRouter([
         children: [
           { path: 'profile', element: <SuspenseWrapper><ProfileDashboard /></SuspenseWrapper> },
           { path: 'profile/edit', element: <SuspenseWrapper><EditProfile /></SuspenseWrapper> },
-          { path: 'profile/pass', element: <SuspenseWrapper><DigitalPass /></SuspenseWrapper> },
           { path: 'agenda', element: <SuspenseWrapper><EventSchedulePage /></SuspenseWrapper> },
           { path: 'events', element: <SuspenseWrapper><EventSchedulePage /></SuspenseWrapper> },
           { path: 'events/my-plan', element: <SuspenseWrapper><MyItineraryPage /></SuspenseWrapper> },
           { path: 'groups', element: <SuspenseWrapper><GroupsListPage /></SuspenseWrapper> },
           { path: 'groups/:groupId', element: <SuspenseWrapper><GroupDetailPage /></SuspenseWrapper> },
           { path: 'travel', element: <SuspenseWrapper><TravelPlannerPage /></SuspenseWrapper> },
+          { path: 'stay', element: <SuspenseWrapper><StayPage /></SuspenseWrapper> },
           { path: 'give-back', element: <SuspenseWrapper><GiveBackPage /></SuspenseWrapper> },
           { path: 'yearbook', element: <SuspenseWrapper><NostalgiaPage /></SuspenseWrapper> },
           { path: 'nostalgia', element: <SuspenseWrapper><NostalgiaPage /></SuspenseWrapper> },
@@ -99,6 +102,7 @@ export const router = createBrowserRouter([
           { path: 'store/:productId', element: <SuspenseWrapper><ProductDetailPage /></SuspenseWrapper> },
           { path: 'cart', element: <SuspenseWrapper><CartPage /></SuspenseWrapper> },
           { path: 'news', element: <SuspenseWrapper><NewsPage /></SuspenseWrapper> },
+          { path: 'townhalls', element: <SuspenseWrapper><TownhallsPage /></SuspenseWrapper> },
         ],
       },
     ],
@@ -117,6 +121,8 @@ export const router = createBrowserRouter([
           { path: 'admin/budget', element: <SuspenseWrapper><BudgetPage /></SuspenseWrapper> },
           { path: 'admin/outreach', element: <SuspenseWrapper><OutreachPage /></SuspenseWrapper> },
           { path: 'admin/event-dashboard', element: <SuspenseWrapper><EventDashboardPage /></SuspenseWrapper> },
+          { path: 'admin/rooming', element: <SuspenseWrapper><RoomingPage /></SuspenseWrapper> },
+          { path: 'admin/meetings', element: <SuspenseWrapper><MeetingsPage /></SuspenseWrapper> },
         ],
       },
     ],

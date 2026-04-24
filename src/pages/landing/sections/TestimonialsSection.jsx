@@ -9,11 +9,14 @@ export default function TestimonialsSection() {
   const visibleCount = 3;
 
   useEffect(() => {
+    if (testimonials.length === 0) return undefined;
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % testimonials.length);
     }, 5000);
     return () => clearInterval(timer);
   }, []);
+
+  if (testimonials.length === 0) return null;
 
   const getVisible = () => {
     const result = [];

@@ -23,7 +23,6 @@ export default function ProfileDashboard() {
           <Badge variant="gold" className="mt-3">Registered</Badge>
           <div className="mt-6 space-y-2">
             <Link to="/profile/edit"><Button variant="outline" size="sm" fullWidth>Edit Profile</Button></Link>
-            <Link to="/profile/pass"><Button variant="ghost" size="sm" fullWidth>View Digital Pass</Button></Link>
           </div>
         </GlassCard>
 
@@ -49,7 +48,7 @@ export default function ProfileDashboard() {
             <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
-                { label: 'My Itinerary', path: '/events/my-plan', icon: '📅' },
+                { label: 'My Events', path: '/events/my-plan', icon: '📅' },
                 { label: 'My Groups', path: '/groups', icon: '👥' },
                 { label: 'Store', path: '/store', icon: '🛍️' },
                 { label: 'Travel', path: '/travel', icon: '✈️' },

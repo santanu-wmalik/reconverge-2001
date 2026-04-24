@@ -1,4 +1,69 @@
 const BASE = 'https://storage.googleapis.com/reconverge-2001-uat-bucket/landing_page_pictures/';
+const SCANS = '/gallery-scans/';
+
+// Generated list of 50 scanned prints dropped into public/gallery-scans/.
+// File names come straight from the scan session (8 Feb 2026). To add more,
+// drop the file in public/gallery-scans/ and append an entry here (or replace
+// this block with an `import.meta.glob` driven helper if volume grows).
+const scannedNames = [
+  'Scanned_20260208-1135.jpg',
+  'Scanned_20260208-1136.jpg',
+  'Scanned_20260208-1137(1).jpg',
+  'Scanned_20260208-1137.jpg',
+  'Scanned_20260208-1139.jpg',
+  'Scanned_20260208-1140.jpg',
+  'Scanned_20260208-1141.jpg',
+  'Scanned_20260208-1144.jpg',
+  'Scanned_20260208-1146.jpg',
+  'Scanned_20260208-1148.jpg',
+  'Scanned_20260208-1149.jpg',
+  'Scanned_20260208-1150(1).jpg',
+  'Scanned_20260208-1150.jpg',
+  'Scanned_20260208-1151.jpg',
+  'Scanned_20260208-1152.jpg',
+  'Scanned_20260208-1153.jpg',
+  'Scanned_20260208-1154.jpg',
+  'Scanned_20260208-1155.jpg',
+  'Scanned_20260208-1157(1).jpg',
+  'Scanned_20260208-1157.jpg',
+  'Scanned_20260208-1158.jpg',
+  'Scanned_20260208-1200(1).jpg',
+  'Scanned_20260208-1200.jpg',
+  'Scanned_20260208-1201.jpg',
+  'Scanned_20260208-1203.jpg',
+  'Scanned_20260208-1204.jpg',
+  'Scanned_20260208-1205.jpg',
+  'Scanned_20260208-1206.jpg',
+  'Scanned_20260208-1207.jpg',
+  'Scanned_20260208-1208.jpg',
+  'Scanned_20260208-1209.jpg',
+  'Scanned_20260208-1210.jpg',
+  'Scanned_20260208-1211.jpg',
+  'Scanned_20260208-1212.jpg',
+  'Scanned_20260208-1213.jpg',
+  'Scanned_20260208-1214.jpg',
+  'Scanned_20260208-1216.jpg',
+  'Scanned_20260208-1217.jpg',
+  'Scanned_20260208-1219.jpg',
+  'Scanned_20260208-1220.jpg',
+  'Scanned_20260208-1221.jpg',
+  'Scanned_20260208-1222.jpg',
+  'Scanned_20260208-1223.jpg',
+  'Scanned_20260208-1225.jpg',
+  'Scanned_20260208-1229.jpg',
+  'Scanned_20260208-1230(1).jpg',
+  'Scanned_20260208-1230.jpg',
+  'Scanned_20260208-1231.jpg',
+  'Scanned_20260208-1232.jpg',
+  'Scanned_20260208-1233.jpg',
+];
+
+const scannedPhotos = scannedNames.map((fileName, i) => ({
+  id: `scan-${String(i + 1).padStart(3, '0')}`,
+  url: SCANS + encodeURIComponent(fileName),
+  caption: `Archive scan · ${String(i + 1).padStart(2, '0')} of ${scannedNames.length}`,
+  category: 'archive',
+}));
 
 export const galleryPhotos = [
   { id: 'g1', url: BASE + 'IMG-20260209-WA0016.jpg', caption: 'Batch of 2001 - Then', category: 'batch' },
@@ -15,13 +80,10 @@ export const galleryPhotos = [
   { id: 'p-002', url: BASE + 'calicut mini canteen.avif', caption: 'The legendary mini canteen', category: 'campus' },
   { id: 'p-003', url: BASE + 'calicut railway station.jpg', caption: 'Calicut Railway Station', category: 'campus' },
   { id: 'p-004', url: BASE + 'nitc-mainblock-1.jpeg', caption: 'NIT Calicut Main Block', category: 'campus' },
+  ...scannedPhotos,
 ];
 
-export const galleryVideos = [
-  { id: 'v-001', thumbnail: 'https://placehold.co/600x340/1e3a5f/d4a843?text=Batch+Video', title: 'Class of 2001 - The Journey', duration: '12:45', category: 'documentary' },
-  { id: 'v-002', thumbnail: 'https://placehold.co/600x340/e83e8c/ffffff?text=Cultural', title: 'Ragam & Tathva Highlights', duration: '8:30', category: 'events' },
-  { id: 'v-003', thumbnail: 'https://placehold.co/600x340/2d5a8e/f8fafc?text=Campus', title: 'Virtual Campus Tour 2026', duration: '15:20', category: 'campus' },
-];
+export const galleryVideos = [];
 
 export const galleryCategories = [
   { id: 'all', label: 'All' },
@@ -29,4 +91,5 @@ export const galleryCategories = [
   { id: 'hostel', label: 'Hostel Life' },
   { id: 'events', label: 'Events' },
   { id: 'campus', label: 'Campus' },
+  { id: 'archive', label: 'Archive Scans' },
 ];

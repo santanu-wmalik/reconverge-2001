@@ -10,10 +10,9 @@ const sections = [
   { title: 'Video Gallery', description: 'Watch batch videos, event highlights, and the campus tour.', icon: '🎬', path: '/nostalgia/videos' },
 ];
 
-const memories = [
-  { id: 'm1', author: 'Rahul Verma', year: '2001', text: 'Spending rainy evenings at the OAT was the highlight of my college life. Reconnecting with the crew after 25 years feels surreal!', date: '2024-12-20' },
-  { id: 'm2', author: 'Priya Nair', year: '2001', text: 'The mess food might have been questionable, but the friendships we made there are unbreakable. See you all at REConverge!', date: '2025-01-05' },
-];
+// Shared Echoes are batchmate-submitted memories — we'll populate this once
+// real submissions come in. Do not ship placeholder quotes.
+const memories = [];
 
 export default function NostalgiaPage() {
   return (
@@ -44,17 +43,29 @@ export default function NostalgiaPage() {
       {/* Shared Echoes */}
       <div className="max-w-3xl mx-auto">
         <h3 className="text-xl font-heading font-bold text-white mb-6">Shared Echoes</h3>
-        <div className="space-y-4">
-          {memories.map((m) => (
-            <GlassCard key={m.id}>
-              <p className="text-slate-300 text-sm italic leading-relaxed mb-3">"{m.text}"</p>
-              <div className="flex items-center justify-between text-xs text-slate-500">
-                <span className="text-gold-400 font-medium">{m.author} &middot; Class of {m.year}</span>
-                <span>{m.date}</span>
-              </div>
-            </GlassCard>
-          ))}
-        </div>
+        {memories.length > 0 ? (
+          <div className="space-y-4">
+            {memories.map((m) => (
+              <GlassCard key={m.id}>
+                <p className="text-slate-300 text-sm italic leading-relaxed mb-3">&ldquo;{m.text}&rdquo;</p>
+                <div className="flex items-center justify-between text-xs text-slate-500">
+                  <span className="text-gold-400 font-medium">{m.author} &middot; Class of {m.year}</span>
+                  <span>{m.date}</span>
+                </div>
+              </GlassCard>
+            ))}
+          </div>
+        ) : (
+          <GlassCard className="text-center border-gold-500/20">
+            <div className="text-3xl mb-3">💬</div>
+            <p className="text-slate-300 text-sm leading-relaxed mb-3">
+              This space is for your memories — a corridor anecdote, a hostel story, a professor you still quote. We&apos;re holding it empty until the first real submissions come in.
+            </p>
+            <p className="text-xs text-slate-500">
+              Want to share one? Email it to <a href="mailto:reconverge2001@gmail.com" className="text-gold-400 hover:text-gold-300">reconverge2001@gmail.com</a> and we&apos;ll feature it here.
+            </p>
+          </GlassCard>
+        )}
       </div>
     </motion.div>
   );

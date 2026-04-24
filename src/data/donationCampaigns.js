@@ -1,66 +1,110 @@
+// Give Back data sourced from the official NITCAA Health Centre appeal
+// (Backup/Give-Back/Health center project- Appeal (2).docx, HC Appeal with
+// QR code.png, NITCAA Payment Process.png, register wnitcaa.jpg).
+//
+// The batch's Give Back contribution flows through NITCAA to the New Health
+// Centre project (Susrutha Swastya Kendram) — the institute's flagship
+// fundraise for the expanding NITC campus.
+
+export const healthCentreProject = {
+  id: 'nitcaa-health-centre',
+  name: 'Susrutha Swastya Kendram',
+  subtitle: 'New Health Centre for NIT Calicut',
+  flagship: true,
+  totalCostCrore: 3.5,
+  constructionCostCrore: 2.7,
+  alreadyPledgedLakh: 47,
+  alreadyPledgedBy: 'Class of 1999',
+  timelineMonths: 10,
+  wallOfHonorThresholdLakh: 1,
+  taxSection: '80G',
+  appealPosterUrl: '/give-back/hc-appeal.png',
+  upiQrUrl: '/give-back/nitcaa-payment-qr.png',
+  contactEmail: 'nitcaa@nitc.ac.in',
+  upiId: 'nitcaaprojects.188@sbi',
+  rationale: [
+    'NIT Calicut, established in 1961, is home to ~10,000 people today — students, faculty, staff and families.',
+    'Under NEP, student intake is set to rise by 40% and foreign admissions by 20%, nearly doubling the campus community in a few years.',
+    'The on-campus health centre — built in the REC era — is outdated and inadequate for this scale.',
+    'The institute and NITCAA are building a modern health centre to serve students, faculty, staff and families, reducing dependence on external hospitals.',
+  ],
+};
+
+// Payment channels are taken verbatim from the NITCAA appeal document.
+export const paymentChannels = {
+  upi: {
+    label: 'UPI / QR (fastest)',
+    upiId: 'nitcaaprojects.188@sbi',
+    qrImage: '/give-back/nitcaa-payment-qr.png',
+    note: 'Scan with BHIM, UPI, YONO SBI, BHIM SBI Pay, G Pay, Paytm or WhatsApp Pay. After paying, email the transaction reference and your details to nitcaa@nitc.ac.in.',
+  },
+  domestic: {
+    label: 'Indian bank transfer (residents, NRIs with Indian passport, Indian entities)',
+    beneficiary: 'NIT Calicut Alumni Association (NITCAA)',
+    accountNumber: '00000039195795299',
+    bankBranch: 'SBI CREC Branch, NIT Calicut Campus, Chathamangalam, Kozhikode',
+    branchCode: '02207',
+    ifsc: 'SBIN0002207',
+    swift: 'SBININBB392',
+    accountType: 'SAVINGS (Domestic)',
+  },
+  fcra: {
+    label: 'FCRA account (foreign citizens / non-Indian passport / foreign entities)',
+    beneficiary: 'NIT Calicut Alumni Association',
+    accountNumber: '42394734508',
+    bankBranch: 'State Bank of India, New Delhi Main Branch, FCRA Cell, 4th Floor, 11 Sansadmarg, New Delhi 110011',
+    branchCode: '00691',
+    ifsc: 'SBIN0000691',
+    swift: 'SBININBB104',
+    accountType: 'FCRA Receipt cum Utilization',
+  },
+};
+
+export const paymentRequiredInfo = [
+  'NEFT / RTGS / IMPS / UPI / SWIFT transaction number',
+  'Name of the donor and full address',
+  'PAN (if you want the 80G tax-exemption certificate)',
+  'Passport copy (mandatory for NRI / foreign donors)',
+  'Purpose of contribution (quote: "REConverge 2001 — Health Centre")',
+  'Email the above to nitcaa@nitc.ac.in',
+];
+
+// The Class of 2001's batch-level initiative: rally contributions to the
+// NITCAA Health Centre, plus an optional support-staff welfare add-on.
 export const giveBackInitiatives = [
   {
-    id: 'init-001',
-    title: 'Dedicated Plaza / Common Space',
-    description: 'A tangible, lasting legacy on the NIT Calicut campus — a dedicated plaza or common space designed and funded exclusively by the Class of 2001. Unlike labs which tend to become "invisible" over time, this will be a visible, actively-used space that students and faculty will associate with our batch for generations.',
-    status: 'planning',
-    icon: '🏛️',
+    id: 'init-health-centre',
+    title: 'New Health Centre at NIT Calicut',
+    description: 'The Susrutha Swastya Kendram — a modern, fully-equipped health centre to replace the outdated REC-era clinic. Our batch is rallying behind NITCAA\u2019s flagship project so students, faculty, staff and families can get essential care on campus.',
+    status: 'active',
+    icon: '🏥',
+    flagship: true,
     details: [
-      'Stone laying ceremony planned during reunion weekend',
-      'Firoz (currently at NIT Calicut) is the key contact',
-      'Precedent: 97th Avenue at NIT Calicut (built by previous batches)',
-      'Design to include seating areas and interaction spaces',
+      'Total project: ₹3.5 crore flagship · ₹2.7 crore construction',
+      'Class of 1999 has already pledged ₹47 lakhs — momentum is real',
+      'Built in 10 months once funded; managed jointly by the institute & NITCAA',
+      'Individual contributions of ₹1 lakh+ are recognised on the Wall of Honor',
+      'Tax-deductible under Section 80G (India); FCRA route available for international donors',
     ],
+    link: '/give-back',
   },
   {
-    id: 'init-002',
-    title: 'Memorial for Departed Batchmates',
-    description: 'A dedicated memorial honoring batchmates who are no longer with us. This will be thoughtfully integrated into the plaza/common space project, ensuring their names and legacy live on permanently at our alma mater.',
-    status: 'planning',
-    icon: '🕯️',
-    details: [
-      'Integrated into the campus plaza design',
-      'Named in memory of our departed batchmates',
-      'A permanent tribute on campus grounds',
-    ],
-  },
-  {
-    id: 'init-003',
-    title: 'Supporting Staff Assistance',
-    description: 'A heartfelt program to support the non-teaching and supporting staff at NIT Calicut — the people who were part of our everyday campus life during 1997-2001. This idea was inspired by advice from our senior batch.',
+    id: 'init-support-staff',
+    title: 'Supporting Staff Welfare (optional add-on)',
+    description: 'A batch-level gesture for the non-teaching staff who were part of our daily campus life during 1997–2001 — an idea carried forward from our senior batch. Details will be finalised by the Giving Back Committee alongside the Health Centre drive.',
     status: 'discussion',
     icon: '🤲',
     details: [
-      'Recommended by the senior batch (Class of 2000)',
-      'Focus on support staff who served during our batch years',
-      'Details to be finalized by the Giving Back Committee',
+      'Suggested by our senior batch (Class of 2000)',
+      'Scoped separately from the Health Centre contribution',
+      'Exact form and channel to be decided by GBC + NITCAA',
     ],
-  },
-  {
-    id: 'init-004',
-    title: 'Silver Jubilee Endowment Fund',
-    description: 'Contributions to the existing Silver Jubilee Endowment Fund at NITC. This is an established fund that saves the overhead of creating new financial instruments — our contributions go directly to campus development.',
-    status: 'active',
-    icon: '🏅',
-    details: [
-      'Existing fund — no additional paperwork needed',
-      'Administered through NITC alumni relations',
-      'Separate from the reunion registration fee',
-    ],
-    link: 'https://nitc.ac.in/alumni-relations',
   },
 ];
 
-export const impactStories = [
-  { id: 'story-001', title: '97th Avenue — A Precedent', excerpt: 'Previous batches at NIT Calicut have already built lasting campus spaces. The 97th Avenue stands as a testament to what alumni giving can achieve — a vibrant space actively used by students daily.', image: 'https://placehold.co/400x300/1e3a5f/d4a843?text=97th+Ave', date: '2026-02-16' },
-  { id: 'story-002', title: 'Senior Batch Wisdom', excerpt: 'The Class of 2000 generously shared their reunion and giving-back experience, emphasizing tangible, visible contributions over infrastructure that fades from view.', image: 'https://placehold.co/400x300/28a745/ffffff?text=Seniors', date: '2026-01-19' },
-];
-
-export const volunteerOpportunities = [
-  { id: 'vol-001', title: 'Giving Back Committee Member', description: 'Join the GBC to help plan and execute our campus legacy projects.', date: '2026-12-27', spotsTotal: 5, spotsFilled: 0, skills: ['Coordination'] },
-  { id: 'vol-002', title: 'Campus Liaison', description: 'Help coordinate with NIT Calicut administration for the plaza project.', date: '2026-12-27', spotsTotal: 3, spotsFilled: 1, skills: ['Local Presence'] },
-  { id: 'vol-003', title: 'Design & Planning', description: 'Help with the design and layout of the batch plaza/common space.', date: '2026-12-27', spotsTotal: 4, spotsFilled: 0, skills: ['Design', 'Architecture'] },
-];
+// Impact stories / volunteer slots — will be populated from real commitments.
+export const impactStories = [];
+export const volunteerOpportunities = [];
 
 // Keep for backward compatibility
 export const campaigns = giveBackInitiatives;

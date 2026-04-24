@@ -5,7 +5,7 @@ export const EVENT_CONFIG = {
   eventName: 'REConverge 2001',
   tagline: 'The Last RECians',
   heroQuote: 'Welcome home, Class of 2001! Let\u2019s celebrate 25 years of brilliance, camaraderie, and beautiful memories of Calicut REC.',
-  eventDate: new Date('2026-12-26T09:00:00'),
+  eventDate: new Date('2026-12-27T14:00:00'),
   eventStartDate: new Date('2026-12-27T09:00:00'),
   eventEndDate: new Date('2026-12-29T12:00:00'),
   displayDates: 'December 27th - 28th, 2026',
@@ -21,8 +21,12 @@ export const EVENT_CONFIG = {
     mapEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3913.0!2d75.9238385!3d11.3214532!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDE5JzE3LjIiTiA3NcKwNTUnMjYuMCJF!5e0!3m2!1sen!2sin!4v1',
   },
   stay: {
-    description: 'Partnered Hotels in Calicut city',
-    bookingCode: 'TBD',
+    description: 'Gokulam Grand Calicut (block of 52 rooms held for the batch)',
+    bookingCode: 'REConverge 2001 - Silver Jubilee Block',
+    primaryHotel: 'Gokulam Grand Calicut',
+    nights: 2,
+    checkinDate: '2026-12-27',
+    checkoutDate: '2026-12-29',
   },
   registrationFee: 12500,
   familyMemberFee: 2500,
@@ -61,29 +65,33 @@ export const FAMILY_OPTIONS = [
   { label: 'Self, Partner, Kid(s) & Parent(s)', value: 3 },
 ];
 
+// Public (always visible) — main header nav. Anyone can open these without
+// signing in.
 export const NAV_LINKS = [
   { label: 'Home', path: '/' },
   { label: 'When & Where', path: '/when-where' },
-  { label: 'Agenda', path: '/agenda' },
-  { label: 'Yearbook', path: '/yearbook' },
-  { label: 'Groups', path: '/groups' },
-  { label: 'Store', path: '/store' },
-  { label: 'FAQ', path: '/faq' },
-  { label: 'Committees', path: '/committees' },
-  { label: 'RSVP', path: '/rsvp' },
   { label: 'Our Journey', path: '/our-journey' },
+  { label: 'Committees', path: '/committees' },
+  { label: 'FAQ', path: '/faq' },
 ];
 
-export const NAV_LINKS_PORTAL = [
-  { label: 'Agenda', path: '/agenda' },
-  { label: 'My Itinerary', path: '/events/my-plan' },
-  { label: 'Groups', path: '/groups' },
-  { label: 'Travel', path: '/travel' },
-  { label: 'Yearbook', path: '/yearbook' },
-  { label: 'Store', path: '/store' },
-  { label: 'Give Back', path: '/give-back' },
-  { label: 'News', path: '/news' },
+// Login-required — rendered as the "My Portal" sub-bar inside PortalLayout
+// (mirrors the Admin sub-bar). Completely hidden for unauthenticated users
+// because PortalLayout is gated by ProtectedRoute. Store and News are kept
+// out of this list until SC/MCC have real content — one-line change to add.
+export const NAV_LINKS_PROTECTED = [
+  { label: 'Agenda', path: '/agenda', icon: '📅' },
+  { label: 'My Events', path: '/events/my-plan', icon: '📋' },
+  { label: 'Stay', path: '/stay', icon: '🏨' },
+  { label: 'Travel', path: '/travel', icon: '🚐' },
+  { label: 'Townhalls', path: '/townhalls', icon: '🎙️' },
+  { label: 'Yearbook', path: '/yearbook', icon: '📖' },
+  { label: 'Groups', path: '/groups', icon: '👥' },
+  { label: 'Give Back', path: '/give-back', icon: '💛' },
 ];
+
+// Legacy alias kept for any external imports; equivalent to the merged list.
+export const NAV_LINKS_PORTAL = [...NAV_LINKS, ...NAV_LINKS_PROTECTED];
 
 export const STATS = [
   { label: 'Batch Strength', value: 350, suffix: '+' },
@@ -93,19 +101,48 @@ export const STATS = [
 ];
 
 export const FAQ_DATA = [
-  { id: 'f1', question: 'Is accommodation available on campus?', answer: 'No. We will be tying up with a few hotels in the City. The discount coupon will be shared for those hotels. You can book your accommodation in any of those hotels or any other hotel of your choice in Calicut city.' },
-  { id: 'f2', question: 'Is there a dress code for the event?', answer: 'Yes, there will be event-specific dress codes! The themes for the Gala Dinner, REConverge main event at NITC and the branch-wise dinners will be shared soon!' },
-  { id: 'f3', question: 'Can I bring my children?', answer: 'Absolutely! We will have a dedicated kids\u2019 zone with activities planned during the main events.' },
-  { id: 'f4', question: 'How do I reach REC Calicut for the event?', answer: 'Buses will be arranged from the hotel(s) to NITC Campus on Day 2 morning and back to the hotel in the evening.' },
-  { id: 'f5', question: 'What is the cost for the event?', answer: 'The cost for the event is Rs. 12,500 per person. Any additional family member will be charged Rs. 2,500. This excludes accommodation and travel to and from Calicut.' },
-  { id: 'f6', question: 'Does the above cost include the \u2018Giving Back\u2019 initiative?', answer: 'No, the \u2018Giving Back\u2019 initiative is a separate fund and will be collected separately. More details will be shared soon.' },
-  { id: 'f7', question: 'What if we plan to go for a short Kerala tour post the event?', answer: 'Few travel agent numbers will be shared shortly on the website. You can book group tours at economic prices based on your tour itinerary.' },
+  // === Registration ===
+  { id: 'f-reg-1', question: 'When does registration open and close?', category: 'Registration', answer: 'Formal registration opens in June 2026 with an early-bird window running till end-July 2026. The hard cut-off will be announced closer to the event (targeting mid-November 2026) so the Accommodation and Food committees can lock final counts. Create your profile on the website anytime — updates to your details are allowed until the cut-off.' },
+  { id: 'f-reg-2', question: 'How do I register on the website?', category: 'Registration', answer: 'Hit Register in the header and work through the six-step form: Personal → Academic → Travel & Stay → Family & Preferences → Payment → Review. Only your Email and Password are required; everything else is optional and can be added later from your profile. Accommodation, dietary and rooming specifics can also be edited any time from My Profile.' },
+  { id: 'f-reg-3', question: 'What happens right after I register?', category: 'Registration', answer: 'Your profile goes live and the Registration Committee sees your entry. You don\u2019t need to do anything immediately — the payment flow runs separately (see the payment FAQ). Bank details for the reunion fee will be shared with you once the batch account is fully operational.' },
+  { id: 'f-reg-4', question: 'Can I attend only one of the days?', category: 'Registration', answer: 'Yes. If you can only make Day 1 (27 Dec — Check-in & Ice-Breaker), Day 2 (28 Dec — Campus & Gala) or only part of Day 3, please still register and note the specifics in the "Special Requests" field. The single registration fee stays the same regardless of day count — the batch common costs are the same either way.' },
+
+  // === Stay & Accommodation ===
+  { id: 'f-stay-1', question: 'How do I book my hotel room?', category: 'Stay', answer: 'All bookings for the REConverge block go through the Stay & Food Committee (AFC). Email reconverge2001@gmail.com (subject: "REConverge 2001 — Silver Jubilee Block") with your preferred room type, sharing pattern, arrival/departure dates, and family count. The AFC will hold the room with Gokulam Grand; payment goes directly to the hotel (SWIFT / bank transfer / card at check-out). Always quote "REConverge 2001" — the group rates are not accessible on public booking sites.' },
+  { id: 'f-stay-2', question: 'What are the room rates and what\u2019s included?', category: 'Stay', answer: 'At Gokulam Grand Calicut: Deluxe ₹6,000 single / ₹7,000 double · Superior ₹9,000 / ₹10,000 · Suite ₹12,000 · Grand Suite ₹13,000 — all + GST, per night. Every rate includes welcome drink, buffet breakfast, Wi-Fi, pool, gym, doctor on call and 24-hour room service. The full rate card and inventory (39 Deluxe + 4 Superior + 4 Suite + 5 Grand Suite = 52 rooms held for the batch) sits on the Stay page.' },
+  { id: 'f-stay-3', question: 'What is the cancellation policy?', category: 'Stay', answer: 'Gokulam Grand allows free cancellation up to 2 days before arrival. Cancel later — or no-show — and 100% of the reservation amount is retained. For the Gala banquet itself: 30% deposit is non-refundable; 50% fee if cancelled within 30 days of the event; 100% fee within 7 days.' },
+  { id: 'f-stay-4', question: 'Is accommodation included in the registration fee?', category: 'Stay', answer: 'No. Accommodation is paid directly to the hotel, separate from the reunion fund. This was a deliberate decision so alumni can pick the room type that matches their budget (₹6k/night Deluxe to ₹13k/night Grand Suite). The reunion registration fee covers the campus day, Sadhya lunch, Gala dinner, souvenir kit and shared event costs.' },
+  { id: 'f-stay-5', question: 'How are children counted for room billing?', category: 'Stay', answer: 'Per Gokulam Grand\u2019s policy: children under 10 share the room at no extra cost; from age 10 upward each child counts as an extra person (₹1,500 + GST per night). Please capture adult / child-below-10 / child-10+ counts accurately on the registration form — this drives the final rooming list.' },
+  { id: 'f-stay-6', question: 'What ID do I need to carry at check-in?', category: 'Stay', answer: 'A government notification makes photo ID mandatory for every guest — including Indian nationals. Bring Driving Licence, Passport, or Voter ID. Foreign nationals must carry a valid Visa and Passport. You can optionally capture the ID type (and last 4 digits) during registration so we can cross-reference the rooming list.' },
+  { id: 'f-stay-7', question: 'I\u2019m arriving before Dec 27 or leaving after Dec 29 — how do I book extra nights?', category: 'Stay', answer: 'The batch block covers 27 and 28 Dec (check-out 29 Dec at 12:00). For nights outside that window, book directly on the hotel website or any OTA — those reservations are independent of the batch block. If you want Gokulam Grand continuity, mention it to AFC when you reserve so they can flag it with the hotel.' },
+
+  // === Event & Program ===
+  { id: 'f-evt-1', question: 'Is there a dress code?', category: 'Event', answer: 'Yes — each segment has its own theme. The Gala Dinner theme is being polled across five options: Black & Gold · Wine & Black · Bollywood · Retro (70s / 90s) · Indian Formal. The campus day (Day 2) is smart-casual. Day 3 brunch is comfort-first. Theme will be announced ahead of the event.' },
+  { id: 'f-evt-2', question: 'Can I bring my children?', category: 'Event', answer: 'Yes — please indicate the number and ages of children during registration. A kids\u2019 zone during the Day-2 auditorium function is being planned so parents can sit through the main programme; exact activity details will be confirmed closer to the event.' },
+  { id: 'f-evt-3', question: 'How do I reach NIT Calicut campus from the hotel?', category: 'Event', answer: 'On Day 2 (28 Dec), five 44-seater buses run between Gokulam Grand and NITC campus, departing the hotel in staggered waves 09:00–09:45 and returning 16:30–17:00. No separate cost — included in the reunion programme. Each bus has an assigned marshal + water/snacks onboard.' },
+  { id: 'f-evt-4', question: 'Is the venue wheelchair-accessible?', category: 'Event', answer: 'Yes — we\u2019re committed to keeping accessibility in mind across venue, stage, and transport. If you or a family member need specific accommodations (wheelchair access, ramps, dedicated transport), mention it in Special Requests during registration and we\u2019ll coordinate with the venue and transport teams ahead of time.' },
+  { id: 'f-evt-5', question: 'Is alcohol served at the Gala?', category: 'Event', answer: 'Drinks are built into the Gala Dinner cost (senior-batch advice, to avoid a separate bar tab or coupon system). Music cuts off at 22:00 per local regulation; the programme continues indoors. A fully alcohol-free alternative dining area will not be set up — but many non-alcoholic options are always available.' },
+  { id: 'f-evt-6', question: 'When will the event logo be revealed?', category: 'Event', answer: 'The logo is being designed by Vipin Chandran (from the batch). We decided not to rush it for the townhall — reveal will happen a week or so after, once the design is finalised. Title (REConverge 2001) stays constant.' },
+
+  // === Fees & Payment ===
+  { id: 'f-fee-1', question: 'What does registration cost?', category: 'Fees', answer: 'Registration is ₹12,500 per alumnus and ₹2,500 per additional family member (partner, child, parent). Fee is locked. This excludes accommodation (paid to the hotel), travel to Calicut, and the Giving Back contribution (separate channel).' },
+  { id: 'f-fee-2', question: 'How do I pay the registration fee?', category: 'Fees', answer: 'Payment is made via direct bank transfer / SWIFT to the batch bank account — the website itself does not collect payments (batch decision, MoM 1 March 2026). Bank details will be published to registered alumni once the SBI CREC account setup completes. After you pay, paste the transaction reference as your Payment UID on your profile — the Finance Committee reconciles and flips the status to "Payment Confirmed".' },
+  { id: 'f-fee-3', question: 'What is the "Giving Back" program — and is it tax-deductible?', category: 'Fees', answer: 'Our batch\u2019s Give Back rallies behind NITCAA\u2019s flagship project — the Susrutha Swastya Kendram, a new on-campus Health Centre (₹3.5 crore total; Class of 1999 has already pledged ₹47 lakhs). Contributions flow directly through the NITCAA account, separate from the reunion registration fee. Indian donors get 80G tax exemption; international donors use the FCRA route at SBI New Delhi. Individual contributions of ₹1 lakh+ are recognised on the campus Wall of Honor. Full banking details and the UPI QR sit on the Give Back page.' },
+  { id: 'f-fee-4', question: 'Can I contribute to Give Back even if I can\u2019t attend the reunion?', category: 'Fees', answer: 'Absolutely. The Give Back contribution is independent of registration — you can transfer directly to the NITCAA account (or the FCRA account for non-Indian-passport donors) and email the transaction reference to nitcaa@nitc.ac.in with the purpose line "REConverge 2001 — Health Centre". You\u2019ll still receive the 80G certificate and Wall of Honor recognition at the ₹1 lakh+ threshold.' },
+
+  // === Communications & Engagement ===
+  { id: 'f-comms-1', question: 'What are the townhalls — and do I have to attend?', category: 'Comms', answer: 'Townhalls are batch-wide calls where the volunteer team shares progress and takes questions live. The first pair is scheduled for 25 Apr (Sat 8–9 PM IST) and 26 Apr (Sun 10–11 AM IST) — split across time zones so everyone has a friendly slot. Attendance is not required; every session is auto-recorded and the recording + transcript get posted to the Townhalls page (visible once you log in).' },
+  { id: 'f-comms-2', question: 'How do I volunteer for a committee?', category: 'Comms', answer: 'Head to the Committees page and email reconverge2001@gmail.com with your branch, the committee(s) you\u2019d like to help with, and a line on how much time you can give. Open slots: Stay & Food (AFC), Entertainment (EC) and Sponsorship (SC) all need leads; Architecture and ECE still need branch reps.' },
+
+  // === Post-event ===
+  { id: 'f-post-1', question: 'Can I book a post-event Kerala tour?', category: 'Travel', answer: 'Yes. Vetted travel-agent contacts will be listed on the Travel page closer to the event once the volunteer team finalises them. Popular extensions include Wayanad, Munnar, and the Alleppey backwaters.' },
+  { id: 'f-post-2', question: 'Will photos and videos from the event be shared?', category: 'Travel', answer: 'Yes. Full 2.5-day photo + video coverage (including drone + candid shots + edited highlights) is scoped in the budget. A shared album link will be posted on the Yearbook / News page and emailed to every registered alumnus within days of the event.' },
 ];
 
 export const RSVP_INCLUSIONS = [
-  { title: 'Full Regalia Dinner', description: 'Multi-cuisine Gala Dinner with Cocktails' },
-  { title: 'Commemorative Pack', description: 'Hoodies, Medallions, Memorabilia' },
-  { title: 'The Grand Kerala Feast', description: 'Traditional Sadhya Lunch' },
+  { title: 'Gala Dinner (both nights)', description: 'Manachira rooftop, Gokulam Grand — welcome drink + buffet' },
+  { title: 'Souvenir Kit', description: 'Branded T-shirt, tote bag, ID card/badge and a few Kerala goodies' },
+  { title: 'Kerala Sadhya on Campus', description: 'Traditional banana-leaf lunch at NIT Calicut on Day 2' },
 ];
 
 export const CAMPUS_PHOTOS = [

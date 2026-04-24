@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import CountdownTimer from '../../../components/shared/CountdownTimer';
 import AnimatedCounter from '../../../components/shared/AnimatedCounter';
-import FloatingPhotos from '../../../components/shared/FloatingPhotos';
 import Button from '../../../components/ui/Button';
 import { EVENT_CONFIG, STATS } from '../../../data/constants';
 import { staggerContainer, staggerItem } from '../../../utils/animationVariants';
@@ -53,8 +52,6 @@ export default function HeroSection() {
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-3xl" />
       </div>
-
-      <FloatingPhotos />
 
       <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 text-center py-20">
         <motion.div variants={staggerContainer} initial="hidden" animate="visible">

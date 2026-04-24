@@ -4,8 +4,10 @@ import GlassCard from '../../components/ui/GlassCard';
 import Badge from '../../components/ui/Badge';
 import { committees, branchRepresentatives } from '../../data/committees';
 
+const isTbdLead = (lead) => !lead || String(lead).toUpperCase().includes('TBD');
+
 export default function CommitteeManagementPage() {
-  const totalMembers = committees.reduce((sum, c) => sum + c.members.length + (c.lead && c.lead !== 'TBD' ? 1 : 0), 0);
+  const totalMembers = committees.reduce((sum, c) => sum + c.members.length + (c.lead && !isTbdLead(c.lead) ? 1 : 0), 0);
   const filledReps = branchRepresentatives.filter((b) => b.reps.length > 0).length;
 
   return (
@@ -48,15 +50,20 @@ export default function CommitteeManagementPage() {
                 <div className="flex items-center gap-3 flex-shrink-0">
                   <div className="text-right">
                     <p className="text-xs text-slate-400">
-                      Lead: <span className={committee.lead === 'TBD' ? 'text-amber-400' : 'text-emerald-400'}>{committee.lead || 'N/A'}</span>
+                      Lead: <span className={isTbdLead(committee.lead) ? 'text-amber-400' : 'text-emerald-400'}>{committee.lead || 'N/A'}</span>
                     </p>
+                    {committee.coLead && (
+                      <p className="text-xs text-slate-400">
+                        Co-lead: <span className="text-emerald-400">{committee.coLead}</span>
+                      </p>
+                    )}
                     <p className="text-xs text-slate-500">{committee.members.length}/5 members</p>
                   </div>
                   <Badge
-                    variant={committee.lead === 'TBD' ? 'warning' : 'success'}
+                    variant={isTbdLead(committee.lead) ? 'warning' : 'success'}
                     size="sm"
                   >
-                    {committee.lead === 'TBD' ? 'Needs Lead' : 'Active'}
+                    {isTbdLead(committee.lead) ? 'Needs Lead' : 'Active'}
                   </Badge>
                 </div>
               </div>

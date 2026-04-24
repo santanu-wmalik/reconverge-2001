@@ -19,11 +19,16 @@ const statusConfig = {
 };
 
 export default function AdminDashboardPage() {
+  // `inGroup` is a free-form string ("~23 members", "17+ members", "~40% of
+  // branch"). Pull out the leading integer where one is present to get a
+  // conservative lower-bound of alumni already in branch groups.
   const totalInGroups = outreachStats.reduce((sum, b) => {
-    const n = parseInt(b.inGroup) || 0;
-    return sum + n;
+    if (!b.inGroup) return sum;
+    const match = String(b.inGroup).match(/(\d+)/);
+    return sum + (match ? parseInt(match[1], 10) : 0);
   }, 0);
 
+  const branchesWithReps = outreachStats.filter((b) => b.reps.length > 0).length;
   const openActions = actionItems.filter((a) => a.status !== 'completed').length;
   const criticalActions = actionItems.filter((a) => a.priority === 'critical').length;
 
@@ -37,9 +42,9 @@ export default function AdminDashboardPage() {
       {/* Quick Stats */}
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Batch Strength', value: '350+', icon: '👥' },
-          { label: 'In WhatsApp Groups', value: `${totalInGroups}+`, icon: '📱' },
-          { label: 'Branches Active', value: '7/7', icon: '🏛️' },
+          { label: 'Target Batch Strength', value: '~350', icon: '👥' },
+          { label: 'Reported in branch groups', value: `${totalInGroups}+`, icon: '📱' },
+          { label: 'Branches with reps', value: `${branchesWithReps}/7`, icon: '🏛️' },
           { label: 'Bank Account', value: bankingStatus.status === 'in_progress' ? 'Setting Up' : 'Ready', icon: '🏦' },
         ].map((stat, i) => (
           <motion.div key={stat.label} variants={staggerItem}>
@@ -123,15 +128,15 @@ export default function AdminDashboardPage() {
                   <div>
                     <p className="text-sm text-white font-medium">{branch.branch}</p>
                     <p className="text-xs text-slate-500 mt-0.5">
-                      {branch.inGroup || '?'} in group of {branch.totalEstimate}
+                      {branch.inGroup || 'Group size not reported'}
                       {branch.reps.length > 0 && ` • Reps: ${branch.reps.join(', ')}`}
                     </p>
                   </div>
                   <Badge
-                    variant={branch.status === 'Strong' ? 'success' : branch.status === 'Needs Reps' ? 'warning' : 'default'}
+                    variant={branch.status === 'Strong' || branch.status === 'Active' ? 'success' : (branch.status === 'Needs Reps' || branch.status === 'No data') ? 'warning' : 'default'}
                     size="sm"
                   >
-                    {branch.percentage || branch.status}
+                    {branch.status}
                   </Badge>
                 </div>
               </GlassCard>

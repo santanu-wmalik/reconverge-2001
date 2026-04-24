@@ -308,37 +308,8 @@
       "id": 1
     }
   ],
-  "orders": [
-    {
-      "userId": "alum-001",
-      "items": [
-        {
-          "productId": "merch-001",
-          "name": "Silver Jubilee Reunion T-Shirt",
-          "price": 799,
-          "image": "https://placehold.co/400x400/1e3a5f/d4a843?text=T-Shirt",
-          "size": "S",
-          "color": "Navy Blue",
-          "quantity": 1
-        }
-      ],
-      "total": 799,
-      "status": "confirmed",
-      "createdAt": "2026-02-28T23:57:02.115Z",
-      "id": 1
-    }
-  ],
-  "itineraries": [
-    {
-      "userId": "alum-001",
-      "selectedEventIds": [
-        "evt-001",
-        "evt-002"
-      ],
-      "updatedAt": "2026-03-01T01:25:54.974Z",
-      "id": 1
-    }
-  ],
+  "orders": [],
+  "itineraries": [],
   "users": [
     {
       "id": "user-001",
@@ -409,6 +380,131 @@
       "password": "REConverge@123",
       "alumniId": "alum-010",
       "role": "alumni"
+    }
+  ],
+  "announcements": [],
+  "rooming": [],
+  "travelItems": [],
+  "groupMemberships": [
+    {
+      "groupId": "grp-cs",
+      "alumniId": "alum-001",
+      "joinedAt": "2026-04-24T07:05:05.665Z",
+      "id": 1
+    },
+    {
+      "groupId": "custom-1777015006878",
+      "alumniId": "alum-001",
+      "joinedAt": "2026-04-24T07:16:46.917Z",
+      "id": 2
+    },
+    {
+      "groupId": "custom-1777015053915",
+      "alumniId": "alum-001",
+      "joinedAt": "2026-04-24T07:17:33.944Z",
+      "id": 3
+    },
+    {
+      "groupId": "custom-1777015053915",
+      "alumniId": "alum-002",
+      "joinedAt": "2026-04-24T07:17:59.350Z",
+      "id": 4
+    },
+    {
+      "groupId": "custom-locktest-1777015104655",
+      "alumniId": "alum-002",
+      "joinedAt": "2026-04-24T07:18:24.689Z",
+      "id": 5
+    },
+    {
+      "groupId": "custom-locktest-1777015104655",
+      "alumniId": "alum-001",
+      "joinedAt": "2026-04-24T07:18:24.718Z",
+      "id": 6
+    },
+    {
+      "groupId": "custom-1777015206408",
+      "alumniId": "alum-001",
+      "joinedAt": "2026-04-24T07:20:06.753Z",
+      "id": 7
+    }
+  ],
+  "groupAnnouncements": [
+    {
+      "groupId": "grp-cs",
+      "authorId": "alum-001",
+      "title": "Carpool from Bangalore",
+      "content": "Leaving 7am Dec 26. 2 seats left.",
+      "createdAt": "2026-04-24T07:05:06.896Z",
+      "id": 1
+    }
+  ],
+  "groupPolls": [
+    {
+      "groupId": "grp-cs",
+      "authorId": "alum-001",
+      "question": "Which photo day?",
+      "options": [
+        {
+          "id": "o1",
+          "text": "Dec 28 morning"
+        },
+        {
+          "id": "o2",
+          "text": "Dec 28 after Sadhya"
+        }
+      ],
+      "votes": {
+        "alum-001": "o1"
+      },
+      "createdAt": "2026-04-24T07:06:01.681Z",
+      "id": 1
+    }
+  ],
+  "customGroups": [
+    {
+      "id": "custom-1777015006878",
+      "name": "Cricket Play",
+      "description": "",
+      "category": "custom",
+      "creatorId": "alum-001",
+      "themeId": "lime",
+      "emoji": "🏆",
+      "coverImage": "https://placehold.co/800x400/2d5a8e/f8fafc?text=Cricket%20Play",
+      "createdAt": "2026-04-24T07:16:46.878Z"
+    },
+    {
+      "id": "custom-1777015053915",
+      "name": "Wayanad Trek Lovers",
+      "description": "For batchmates keen on a post-reunion hike",
+      "category": "custom",
+      "creatorId": "alum-001",
+      "themeId": "emerald",
+      "emoji": "🥾",
+      "coverImage": "https://placehold.co/800x400/0b3d2e/e8f5e9?text=Wayanad%20Trek%20Lovers",
+      "createdAt": "2026-04-24T07:17:33.915Z"
+    },
+    {
+      "id": "custom-locktest-1777015104655",
+      "name": "Music Nights",
+      "description": "Test group",
+      "category": "custom",
+      "creatorId": "alum-002",
+      "themeId": "fuchsia",
+      "emoji": "🎸",
+      "coverImage": "https://placehold.co/800x400/4a148c/f3e5f5?text=Music",
+      "createdAt": "2026-04-24T07:18:24.655Z"
+    },
+    {
+      "id": "custom-1777015206408",
+      "name": "Cricket Team",
+      "description": "",
+      "category": "custom",
+      "creatorId": "alum-001",
+      "themeId": "lime",
+      "emoji": "🏆",
+      "coverImage": "https://placehold.co/800x400/2d5a8e/f8fafc?text=Cricket%20Team",
+      "createdAt": "2026-04-24T07:20:06.409Z"
     }
   ]
 }

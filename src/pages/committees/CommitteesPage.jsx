@@ -3,7 +3,7 @@ import { pageTransition, staggerContainer, staggerItem } from '../../utils/anima
 import SectionHeading from '../../components/shared/SectionHeading';
 import GlassCard from '../../components/ui/GlassCard';
 import Badge from '../../components/ui/Badge';
-import { committees, branchRepresentatives } from '../../data/committees';
+import { committees, branchRepresentatives, stateChampions } from '../../data/committees';
 
 export default function CommitteesPage() {
   return (
@@ -44,8 +44,16 @@ export default function CommitteesPage() {
                   <div className="h-px bg-white/5 mb-3" />
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold uppercase tracking-wider text-gold-400">Lead</span>
-                    <span className="text-slate-400 text-xs italic">{committee.lead}</span>
+                    <span className={`text-xs ${String(committee.lead).toLowerCase().includes('tbd') ? 'text-amber-400 italic' : 'text-slate-300 font-medium'}`}>
+                      {committee.lead}
+                    </span>
                   </div>
+                  {committee.coLead && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-gold-400/70">Co-lead</span>
+                      <span className="text-slate-400 text-xs">{committee.coLead}</span>
+                    </div>
+                  )}
                 </>
               )}
 
@@ -107,6 +115,31 @@ export default function CommitteesPage() {
                 )}
                 <span>{br.notes}</span>
               </div>
+            </GlassCard>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* State Champions */}
+      <SectionHeading
+        title="State Champions"
+        subtitle="On-the-ground volunteers per region — help us fill these seats"
+      />
+
+      <motion.div
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16"
+      >
+        {stateChampions.map((sc) => (
+          <motion.div key={sc.state} variants={staggerItem}>
+            <GlassCard className="border-l-4 border-l-amber-500/60">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="text-white font-semibold text-sm">{sc.state}</h4>
+                <Badge variant="warning" size="sm">Volunteer Needed</Badge>
+              </div>
+              <p className="text-xs text-slate-500">{sc.note}</p>
             </GlassCard>
           </motion.div>
         ))}

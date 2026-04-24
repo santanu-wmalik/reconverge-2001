@@ -53,7 +53,13 @@ export default function EventSchedulePage() {
         ))}
       </div>
 
-      <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-4">
+      <motion.div
+        key={`${activeDay}-${activeCategory}`}
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+        className="space-y-4"
+      >
         {filtered.map((evt) => (
           <motion.div key={evt.id} variants={staggerItem}>
             <GlassCard className="flex flex-col md:flex-row md:items-center gap-4">
@@ -65,9 +71,8 @@ export default function EventSchedulePage() {
                 </div>
                 <p className="text-slate-400 text-sm mt-1 line-clamp-2">{evt.description}</p>
                 <div className="flex flex-wrap gap-3 mt-2 text-xs text-slate-500">
-                  <span>{formatTime(evt.startTime)} - {formatTime(evt.endTime)}</span>
-                  <span>{evt.venue}</span>
-                  <span>{evt.registered}/{evt.capacity} registered</span>
+                  <span>🕐 {formatTime(evt.startTime)} – {formatTime(evt.endTime)}</span>
+                  <span>📍 {evt.venue}</span>
                 </div>
               </div>
               <Button

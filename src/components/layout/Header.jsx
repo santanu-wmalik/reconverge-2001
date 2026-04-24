@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
-import { NAV_LINKS, NAV_LINKS_PORTAL, EVENT_CONFIG } from '../../data/constants';
+import { NAV_LINKS, EVENT_CONFIG } from '../../data/constants';
 import { cn } from '../../utils/cn';
 import Button from '../ui/Button';
 import Avatar from '../ui/Avatar';
@@ -18,11 +18,19 @@ export default function Header() {
 
   const isActive = (path) => location.pathname === path;
 
+  const navLinkClass = (path) =>
+    cn(
+      'px-3 py-2 text-sm rounded-lg transition-colors whitespace-nowrap',
+      isActive(path)
+        ? 'text-gold-400 bg-gold-400/10'
+        : 'text-slate-300 hover:text-white hover:bg-white/5'
+    );
+
   return (
     <header className="sticky top-0 z-50 w-full">
       <div className="bg-slate-950/80 backdrop-blur-xl border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center justify-between h-16 gap-4">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 flex-shrink-0">
               <img src={EVENT_CONFIG.logoUrl} alt="REConverge 2001" className="w-9 h-9 rounded-lg object-contain" />
@@ -32,27 +40,18 @@ export default function Header() {
               </div>
             </Link>
 
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-1">
-              {(isAuthenticated ? NAV_LINKS_PORTAL : NAV_LINKS).map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={cn(
-                    'px-3 py-2 text-sm rounded-lg transition-colors',
-                    isActive(link.path)
-                      ? 'text-gold-400 bg-gold-400/10'
-                      : 'text-slate-300 hover:text-white hover:bg-white/5'
-                  )}
-                >
+            {/* Desktop — Public nav (shown at 2xl+) */}
+            <nav className="hidden 2xl:flex items-center gap-1 flex-1 justify-start ml-4 overflow-hidden">
+              {NAV_LINKS.map((link) => (
+                <Link key={link.path} to={link.path} className={navLinkClass(link.path)}>
                   {link.label}
                 </Link>
               ))}
             </nav>
 
-            {/* Right side */}
-            <div className="flex items-center gap-3">
-              {/* Cart */}
+            {/* Right-side actions */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {/* Cart (auth only) */}
               {isAuthenticated && (
                 <Link to="/cart" className="relative p-2 text-slate-300 hover:text-white transition-colors">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,13 +65,10 @@ export default function Header() {
                 </Link>
               )}
 
-              {/* Auth */}
+              {/* Auth avatar or Sign-in buttons */}
               {isAuthenticated ? (
                 <div className="relative">
-                  <button
-                    onClick={() => setProfileOpen(!profileOpen)}
-                    className="flex items-center gap-2"
-                  >
+                  <button onClick={() => setProfileOpen(!profileOpen)} className="flex items-center gap-2">
                     <Avatar src={user?.avatar} name={user?.name} size="sm" />
                     <span className="hidden md:block text-sm text-slate-300">{user?.name?.split(' ')[0]}</span>
                   </button>
@@ -85,8 +81,7 @@ export default function Header() {
                         className="absolute right-0 top-full mt-2 w-48 bg-slate-900/95 backdrop-blur-xl rounded-xl border border-white/10 shadow-xl py-2 overflow-hidden"
                       >
                         <Link to="/profile" className="block px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white" onClick={() => setProfileOpen(false)}>My Profile</Link>
-                        <Link to="/events/my-plan" className="block px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white" onClick={() => setProfileOpen(false)}>My Itinerary</Link>
-                        <Link to="/profile/pass" className="block px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white" onClick={() => setProfileOpen(false)}>Digital Pass</Link>
+                        <Link to="/agenda" className="block px-4 py-2 text-sm text-slate-300 hover:bg-white/5 hover:text-white" onClick={() => setProfileOpen(false)}>My Portal</Link>
                         {isAdmin && (
                           <>
                             <hr className="my-1 border-white/10" />
@@ -116,7 +111,8 @@ export default function Header() {
               {/* Mobile menu toggle */}
               <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="lg:hidden p-2 text-slate-300 hover:text-white"
+                className="2xl:hidden p-2 text-slate-300 hover:text-white"
+                aria-label="Toggle navigation"
               >
                 <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   {mobileOpen ? (
@@ -131,17 +127,18 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Nav Drawer */}
+      {/* Mobile Nav Drawer — PUBLIC links only. The My Portal sub-bar (rendered
+          inside PortalLayout) carries the auth-required items for mobile too. */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-slate-950/95 backdrop-blur-xl border-b border-white/5 overflow-hidden"
+            className="2xl:hidden bg-slate-950/95 backdrop-blur-xl border-b border-white/5 overflow-hidden"
           >
             <nav className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
-              {(isAuthenticated ? NAV_LINKS_PORTAL : NAV_LINKS).map((link) => (
+              {NAV_LINKS.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
@@ -156,6 +153,7 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
+
               {!isAuthenticated && (
                 <div className="flex gap-2 mt-3 pt-3 border-t border-white/10">
                   <Button variant="ghost" size="sm" fullWidth onClick={() => { navigate('/login'); setMobileOpen(false); }}>Sign In</Button>

@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { pageTransition, staggerContainer, staggerItem } from '../../utils/animationVariants';
 import GlassCard from '../../components/ui/GlassCard';
 import Badge from '../../components/ui/Badge';
-import { budgetItems, bankingStatus } from '../../data/adminData';
+import { budgetItems, bankingStatus, budgetSummary } from '../../data/adminData';
 import { formatCurrency } from '../../utils/formatters';
 
 export default function BudgetPage() {
@@ -13,6 +13,31 @@ export default function BudgetPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-heading font-bold text-white">Budget & Finance</h1>
         <p className="text-slate-400 mt-1">Fee structure, bank account status, and tentative budget breakdown</p>
+      </div>
+
+      {/* v1 Totals */}
+      <h2 className="text-lg font-heading font-bold text-white mb-4">Budget v1 — Working Totals</h2>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <GlassCard className="border-gold-500/30 bg-gradient-to-br from-gold-500/5 to-primary-900/20">
+          <p className="text-xs uppercase tracking-wider text-slate-400">Total Estimate</p>
+          <p className="text-2xl font-heading font-bold text-gold-400 mt-1">{formatCurrency(budgetSummary.totalEstimate)}</p>
+          <p className="text-[11px] text-slate-500 mt-1">For {budgetSummary.assumedAlumniCount} alumni (~{Math.round(budgetSummary.assumedAlumniCount * (1 + budgetSummary.assumedFamilyPerAlumni))} pax)</p>
+        </GlassCard>
+        <GlassCard>
+          <p className="text-xs uppercase tracking-wider text-slate-400">Per Alumni</p>
+          <p className="text-2xl font-heading font-bold text-white mt-1">{formatCurrency(budgetSummary.perAlumniEstimate)}</p>
+          <p className="text-[11px] text-slate-500 mt-1">(Total − sponsorship − family fees) ÷ {budgetSummary.assumedAlumniCount}</p>
+        </GlassCard>
+        <GlassCard>
+          <p className="text-xs uppercase tracking-wider text-slate-400">Contingency Buffer</p>
+          <p className="text-2xl font-heading font-bold text-white mt-1">{formatCurrency(budgetSummary.contingencyAmount)}</p>
+          <p className="text-[11px] text-slate-500 mt-1">~10% of total — for unforeseen expenses</p>
+        </GlassCard>
+        <GlassCard>
+          <p className="text-xs uppercase tracking-wider text-slate-400">Status</p>
+          <Badge variant="warning" size="sm" className="mt-2">Draft v1</Badge>
+          <p className="text-[11px] text-slate-500 mt-2">{budgetSummary.status}</p>
+        </GlassCard>
       </div>
 
       {/* Fee Structure */}

@@ -5,6 +5,7 @@ import SectionHeading from '../../components/shared/SectionHeading';
 import GlassCard from '../../components/ui/GlassCard';
 import Badge from '../../components/ui/Badge';
 import { journeyMilestones, journeyCategories } from '../../data/journeyMilestones';
+import { inMemoriam, remembranceNote } from '../../data/inMemoriam';
 
 const categoryColors = {
   milestone: { bg: 'bg-gold-500/10', text: 'text-gold-400', border: 'border-gold-500/30', variant: 'gold' },
@@ -133,6 +134,47 @@ export default function OurJourneyPage() {
           })}
         </motion.div>
       </div>
+
+      {/* In Memoriam */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="mt-20"
+      >
+        <div className="text-center mb-8">
+          <h2 className="text-2xl md:text-3xl font-heading font-semibold text-white mb-2">In Memoriam</h2>
+          <div className="mt-3 flex items-center justify-center gap-2">
+            <div className="h-0.5 w-12 bg-gold-500/50 rounded-full" />
+            <div className="h-1.5 w-1.5 bg-gold-500 rounded-full" />
+            <div className="h-0.5 w-12 bg-gold-500/50 rounded-full" />
+          </div>
+        </div>
+
+        <GlassCard className="border-gold-500/20 bg-gradient-to-br from-primary-900/40 to-navy-950/40 max-w-3xl mx-auto">
+          <p className="text-slate-300 text-sm leading-relaxed mb-6 text-center italic">
+            {remembranceNote}
+          </p>
+          <div className="grid sm:grid-cols-2 gap-3">
+            {inMemoriam.map((person) => (
+              <div key={person.name} className="flex items-start gap-3 bg-white/5 rounded-xl px-4 py-3 border border-white/5">
+                <span className="text-gold-400 text-lg mt-0.5 flex-shrink-0">🕯️</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-medium text-sm">{person.name}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    {person.branch}
+                    {person.year ? ` · ${person.year}` : ''}
+                  </p>
+                  {person.note && (
+                    <p className="text-xs text-slate-500 italic mt-1">{person.note}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </GlassCard>
+      </motion.div>
 
       {/* Footer Note */}
       <motion.div

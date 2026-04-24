@@ -5,26 +5,23 @@ import Badge from '../../components/ui/Badge';
 import { outreachStats } from '../../data/adminData';
 
 export default function OutreachPage() {
-  const totalInGroups = outreachStats.reduce((sum, b) => {
-    const n = parseInt(b.inGroup) || 0;
-    return sum + n;
-  }, 0);
   const branchesWithReps = outreachStats.filter((b) => b.reps.length > 0).length;
+  const branchesWithGroupData = outreachStats.filter((b) => b.inGroup).length;
 
   return (
     <motion.div {...pageTransition}>
       <div className="mb-8">
         <h1 className="text-3xl font-heading font-bold text-white">Outreach & Alumni Tracking</h1>
-        <p className="text-slate-400 mt-1">Per-branch WhatsApp group sizes, alumni tracking progress, and missing batchmates</p>
+        <p className="text-slate-400 mt-1">Per-branch WhatsApp group sizes (as reported by volunteers), named branch reps, and flagged missing alumni.</p>
       </div>
 
       {/* Summary */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total Batch Strength', value: '350+', icon: '👥' },
-          { label: 'In WhatsApp Groups', value: `${totalInGroups}+`, icon: '📱' },
+          { label: 'Target Batch Strength', value: '~350', icon: '👥' },
+          { label: 'Branches with Group Data', value: `${branchesWithGroupData}/7`, icon: '📱' },
           { label: 'Branches with Reps', value: `${branchesWithReps}/7`, icon: '🏛️' },
-          { label: 'Coverage', value: `${Math.round((totalInGroups / 350) * 100)}%`, icon: '📊' },
+          { label: 'Open Branches', value: `${7 - branchesWithReps}`, icon: '🔍' },
         ].map((stat) => (
           <GlassCard key={stat.label} className="text-center">
             <div className="text-2xl mb-2">{stat.icon}</div>
@@ -51,7 +48,7 @@ export default function OutreachPage() {
                     <h3 className="text-white font-semibold">{branch.branch}</h3>
                     <Badge
                       variant={
-                        branch.status === 'Strong' ? 'success' :
+                        branch.status === 'Strong' || branch.status === 'Active' ? 'success' :
                         branch.status === 'Needs Reps' || branch.status === 'No data' ? 'warning' :
                         'default'
                       }
@@ -61,43 +58,27 @@ export default function OutreachPage() {
                     </Badge>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
                     <div>
-                      <p className="text-xs text-slate-500">Est. Total</p>
-                      <p className="text-sm text-white font-medium">{branch.totalEstimate}</p>
+                      <p className="text-xs text-slate-500">WhatsApp group size</p>
+                      <p className="text-sm text-white font-medium">{branch.inGroup || <span className="text-slate-500">Not reported</span>}</p>
                     </div>
                     <div>
-                      <p className="text-xs text-slate-500">In Group</p>
-                      <p className="text-sm text-white font-medium">{branch.inGroup || '-'}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-slate-500">Coverage</p>
-                      <p className="text-sm text-white font-medium">{branch.percentage || '-'}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-slate-500">Reps</p>
+                      <p className="text-xs text-slate-500">Branch representatives</p>
                       <p className="text-sm text-white font-medium">
-                        {branch.reps.length > 0 ? branch.reps.join(', ') : <span className="text-amber-400">None</span>}
+                        {branch.reps.length > 0 ? branch.reps.join(', ') : <span className="text-amber-400">None assigned</span>}
                       </p>
                     </div>
                   </div>
 
-                  {/* Progress Bar */}
-                  {branch.percentage && (
-                    <div className="mt-3">
-                      <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
-                        <div
-                          className="h-full bg-gradient-to-r from-gold-500 to-gold-400 rounded-full transition-all duration-500"
-                          style={{ width: branch.percentage }}
-                        />
-                      </div>
-                    </div>
+                  {branch.notes && (
+                    <p className="text-xs text-slate-500 mt-3 italic">{branch.notes}</p>
                   )}
 
                   {/* Missing Alumni */}
                   {branch.missingKnown && branch.missingKnown.length > 0 && (
                     <div className="mt-3 pt-3 border-t border-white/5">
-                      <p className="text-xs text-amber-400 font-medium mb-1">Known Missing Alumni:</p>
+                      <p className="text-xs text-amber-400 font-medium mb-1">Known missing alumni to trace:</p>
                       <div className="flex flex-wrap gap-2">
                         {branch.missingKnown.map((name) => (
                           <span key={name} className="text-xs bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded-md border border-amber-500/20">
@@ -124,7 +105,7 @@ export default function OutreachPage() {
         <GlassCard className="border-gold-500/20 text-center">
           <p className="text-slate-400 text-sm">
             🔍 If you know how to reach any missing batchmate, please contact the branch representatives
-            or email <a href="mailto:reconverge2001@gmail.com" className="text-gold-400 hover:text-gold-300">reconverge2001@gmail.com</a>
+            or email <a href="mailto:reconverge2001@gmail.com" className="text-gold-400 hover:text-gold-300">reconverge2001@gmail.com</a>.
           </p>
         </GlassCard>
       </motion.div>
