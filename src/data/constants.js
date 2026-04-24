@@ -57,6 +57,8 @@ export const HOSTELS = ['Cauvery Hostel', 'Ganga Hostel', 'Narmada Hostel', 'Kri
 export const TSHIRT_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
 export const DIETARY_OPTIONS = ['Veg', 'Non-Veg', 'Vegan'];
 export const TRAVEL_MODES = ['Flight', 'Train', 'Bus', 'Self-Drive', 'Other'];
+export const ROOM_PREFERENCES = ['Single (Deluxe)', 'Twin-sharing (Deluxe)', 'Single (Superior)', 'Twin-sharing (Superior)', 'Suite', 'Grand Suite', 'No accommodation needed'];
+export const ID_TYPES = ['Driving Licence', 'Passport', 'Voter ID', 'Aadhaar'];
 
 export const FAMILY_OPTIONS = [
   { label: 'Coming Solo', value: 0 },

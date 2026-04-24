@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { pageTransition } from '../../utils/animationVariants';
-import { BRANCHES, TSHIRT_SIZES, DIETARY_OPTIONS, TRAVEL_MODES, EVENT_CONFIG } from '../../data/constants';
+import { BRANCHES, TSHIRT_SIZES, DIETARY_OPTIONS, TRAVEL_MODES, ROOM_PREFERENCES, ID_TYPES, EVENT_CONFIG } from '../../data/constants';
 import { alumniApi, userApi } from '../../services/api';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -13,9 +13,6 @@ import GlassCard from '../../components/ui/GlassCard';
 import Stepper from '../../components/ui/Stepper';
 
 const steps = ['Personal', 'Academic', 'Travel & Stay', 'Preferences', 'Payment', 'Review'];
-
-const ROOM_PREFERENCES = ['Single (Deluxe)', 'Twin-sharing (Deluxe)', 'Single (Superior)', 'Twin-sharing (Superior)', 'Suite', 'Grand Suite', 'No accommodation needed'];
-const ID_TYPES = ['Driving Licence', 'Passport', 'Voter ID', 'Aadhaar'];
 
 function RequiredMark() {
   return <span className="text-red-400 ml-0.5" aria-hidden="true">*</span>;
@@ -71,9 +68,22 @@ export default function RegistrationPage() {
     setLoading(true);
     try {
       const allAlumni = await alumniApi.getAll();
+      // Duplicate-email guard (case-insensitive). We already fetched every
+      // alumnus for the registration-id counter, so reuse that list instead
+      // of making a second request.
+      const normalisedEmail = form.email.trim().toLowerCase();
+      const emailTaken = allAlumni.some(
+        (a) => (a.email || '').trim().toLowerCase() === normalisedEmail
+      );
+      if (emailTaken) {
+        setLoading(false);
+        showToast('An account with this email already exists. Please sign in instead.', 'error');
+        return;
+      }
       const { password, ...alumniData } = form;
       const newAlumni = {
         ...alumniData,
+        email: normalisedEmail,
         batch: 2001,
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(form.name || form.email)}`,
         registrationId: `SJ-2026-${String(allAlumni.length + 1).padStart(4, '0')}`,

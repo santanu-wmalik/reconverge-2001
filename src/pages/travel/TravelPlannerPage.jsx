@@ -34,12 +34,37 @@ function emptyFieldsFor(cat) {
   return out;
 }
 
-function ItemForm({ initial, onSave, onCancel }) {
+function ItemForm({ initial, onSave, onCancel, alumniList = [], currentUserId }) {
   const [catId, setCatId] = useState(initial?.categoryId || TRAVEL_CATEGORIES[0].id);
   const cat = getCategory(catId);
   const [fields, setFields] = useState(initial?.fields || emptyFieldsFor(cat));
   const [visibility, setVisibility] = useState(initial?.visibility || 'private');
   const [title, setTitle] = useState(initial?.title || '');
+  const [allowedAlumniIds, setAllowedAlumniIds] = useState(initial?.allowedAlumniIds || []);
+  const [pickerQuery, setPickerQuery] = useState('');
+
+  // Exclude the current user from the picker (no point "sharing with yourself")
+  // and anyone with a blank name (incomplete registrations). Sorted for easy scanning.
+  const pickerCandidates = useMemo(() => {
+    const q = pickerQuery.trim().toLowerCase();
+    return alumniList
+      .filter((a) => a.id && a.id !== currentUserId && (a.name || '').trim())
+      .filter((a) => {
+        if (!q) return true;
+        return (
+          (a.name || '').toLowerCase().includes(q) ||
+          (a.email || '').toLowerCase().includes(q) ||
+          (a.branch || '').toLowerCase().includes(q)
+        );
+      })
+      .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+  }, [alumniList, pickerQuery, currentUserId]);
+
+  const toggleAlumnus = (id) => {
+    setAllowedAlumniIds((prev) =>
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+    );
+  };
 
   const handleCategoryChange = (newId) => {
     setCatId(newId);
@@ -55,6 +80,9 @@ function ItemForm({ initial, onSave, onCancel }) {
       title: title.trim() || cat.label,
       fields,
       visibility,
+      // Only persist the allow-list when relevant; clear it otherwise so
+      // we don't carry stale IDs if the author flips visibility later.
+      allowedAlumniIds: visibility === 'specific' ? allowedAlumniIds : [],
     });
   };
 
@@ -128,29 +156,105 @@ function ItemForm({ initial, onSave, onCancel }) {
       <div className="mb-4 pt-4 border-t border-white/5">
         <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold mb-2">Who can see this?</p>
         <div className="grid sm:grid-cols-2 gap-2">
-          {VISIBILITY_LEVELS.map((v) => {
-            const disabled = v.id === 'specific';
-            return (
-              <button
-                key={v.id}
-                type="button"
-                disabled={disabled}
-                onClick={() => !disabled && setVisibility(v.id)}
-                className={`text-left flex items-start gap-3 px-3 py-2 rounded-xl border transition ${
-                  v.id === visibility
-                    ? 'border-gold-400/60 bg-gold-500/10'
-                    : 'border-white/10 bg-white/3 hover:bg-white/5'
-                } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
-              >
-                <span className="text-lg flex-shrink-0">{v.icon}</span>
-                <div>
-                  <p className="text-sm text-white font-medium">{v.label}{disabled && ' (coming soon)'}</p>
-                  <p className="text-xs text-slate-500">{v.blurb}</p>
-                </div>
-              </button>
-            );
-          })}
+          {VISIBILITY_LEVELS.map((v) => (
+            <button
+              key={v.id}
+              type="button"
+              onClick={() => setVisibility(v.id)}
+              className={`text-left flex items-start gap-3 px-3 py-2 rounded-xl border transition ${
+                v.id === visibility
+                  ? 'border-gold-400/60 bg-gold-500/10'
+                  : 'border-white/10 bg-white/3 hover:bg-white/5'
+              }`}
+            >
+              <span className="text-lg flex-shrink-0">{v.icon}</span>
+              <div>
+                <p className="text-sm text-white font-medium">{v.label}</p>
+                <p className="text-xs text-slate-500">{v.blurb}</p>
+              </div>
+            </button>
+          ))}
         </div>
+
+        {/* Specific-people picker — only shown when that visibility is selected */}
+        {visibility === 'specific' && (
+          <div className="mt-4 rounded-xl border border-gold-500/30 bg-gold-500/5 p-3">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold">
+                Pick batchmates
+              </p>
+              <p className="text-xs text-slate-400">
+                {allowedAlumniIds.length} selected
+              </p>
+            </div>
+
+            {/* Selected-chip row (quick remove) */}
+            {allowedAlumniIds.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {allowedAlumniIds.map((id) => {
+                  const a = alumniList.find((x) => x.id === id);
+                  if (!a) return null;
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      onClick={() => toggleAlumnus(id)}
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gold-500/20 text-gold-100 border border-gold-400/40 hover:bg-gold-500/30"
+                      title="Click to remove"
+                    >
+                      {a.name}
+                      <span aria-hidden>×</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+
+            <Input
+              value={pickerQuery}
+              onChange={(e) => setPickerQuery(e.target.value)}
+              placeholder="Search by name, email, or branch…"
+            />
+
+            <div className="mt-2 max-h-56 overflow-y-auto rounded-lg border border-white/5 bg-black/20 divide-y divide-white/5">
+              {pickerCandidates.length === 0 ? (
+                <p className="text-xs text-slate-500 p-3 text-center">
+                  {alumniList.length === 0
+                    ? 'No batchmates registered yet — check back once registrations pick up.'
+                    : 'No matches for this search.'}
+                </p>
+              ) : (
+                pickerCandidates.map((a) => {
+                  const checked = allowedAlumniIds.includes(a.id);
+                  return (
+                    <label
+                      key={a.id}
+                      className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer transition ${
+                        checked ? 'bg-gold-500/10 text-white' : 'text-slate-300 hover:bg-white/5'
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleAlumnus(a.id)}
+                        className="accent-gold-400"
+                      />
+                      <span className="flex-1 min-w-0">
+                        <span className="text-white">{a.name}</span>
+                        {a.branch && (
+                          <span className="text-xs text-slate-500"> · {a.branch}</span>
+                        )}
+                      </span>
+                    </label>
+                  );
+                })
+              )}
+            </div>
+            <p className="text-xs text-slate-500 mt-2">
+              Only the people you tick will see this item on the Who's Coming board.
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end gap-2 pt-4 border-t border-white/10">
@@ -207,6 +311,7 @@ export default function TravelPlannerPage() {
   const { showToast } = useToast();
   const [tab, setTab] = useState('my-plan');
   const [items, setItems] = useState([]);
+  const [alumniList, setAlumniList] = useState([]);
   const [alumniIndex, setAlumniIndex] = useState({});
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(null); // null | 'new' | itemId
@@ -216,6 +321,7 @@ export default function TravelPlannerPage() {
     Promise.all([travelItemApi.getAll().catch(() => []), alumniApi.getAll().catch(() => [])])
       .then(([tItems, alumni]) => {
         setItems(tItems);
+        setAlumniList(alumni);
         const map = {};
         alumni.forEach((a) => { map[a.id] = a.name; });
         setAlumniIndex(map);
@@ -228,10 +334,22 @@ export default function TravelPlannerPage() {
     [items, user]
   );
 
-  const publicItems = useMemo(
-    () => items.filter((i) => i.visibility === 'alumni'),
-    [items]
-  );
+  // Items that show up on the "Who's Coming" board for the current user:
+  //   - visibility 'alumni' → any logged-in batchmate
+  //   - visibility 'specific' → the owner + anyone named in allowedAlumniIds
+  //   - visibility 'private' → never shown here (only the owner + Travel
+  //     committee, which has its own view)
+  const publicItems = useMemo(() => {
+    const uid = user?.id;
+    return items.filter((i) => {
+      if (i.visibility === 'alumni') return true;
+      if (i.visibility === 'specific') {
+        if (i.alumniId === uid) return true;
+        return Array.isArray(i.allowedAlumniIds) && i.allowedAlumniIds.includes(uid);
+      }
+      return false;
+    });
+  }, [items, user]);
 
   const filteredBoardItems = useMemo(() => {
     if (boardFilter === 'all') return publicItems;
@@ -306,7 +424,12 @@ export default function TravelPlannerPage() {
                 exit={{ opacity: 0, y: -8 }}
                 className="mb-6"
               >
-                <ItemForm onSave={handleSave} onCancel={() => setEditing(null)} />
+                <ItemForm
+                  onSave={handleSave}
+                  onCancel={() => setEditing(null)}
+                  alumniList={alumniList}
+                  currentUserId={user?.id}
+                />
               </motion.div>
             )}
             {editingItem && (
@@ -316,7 +439,13 @@ export default function TravelPlannerPage() {
                 exit={{ opacity: 0, y: -8 }}
                 className="mb-6"
               >
-                <ItemForm initial={editingItem} onSave={handleSave} onCancel={() => setEditing(null)} />
+                <ItemForm
+                  initial={editingItem}
+                  onSave={handleSave}
+                  onCancel={() => setEditing(null)}
+                  alumniList={alumniList}
+                  currentUserId={user?.id}
+                />
               </motion.div>
             )}
           </AnimatePresence>
@@ -396,7 +525,7 @@ export default function TravelPlannerPage() {
           <div>
             <p className="text-sm text-white font-medium mb-1">How sharing works</p>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Every item is <b>Private by default</b>. Switch to <b>Registered alumni</b> to make it visible on the Who\u2019s Coming board for logged-in batchmates. <b>Specific people</b> sharing will unlock once the batch directory is published. Travel details never appear on the public website.
+              Every item is <b>Private by default</b>. Switch to <b>Registered alumni</b> to make it visible on the Who\u2019s Coming board for any logged-in batchmate, or pick <b>Specific people</b> to share with individual batchmates only — they\u2019ll see it on their board, nobody else will. Travel details never appear on the public website.
             </p>
           </div>
         </div>
