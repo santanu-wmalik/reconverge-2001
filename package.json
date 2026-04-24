@@ -8,8 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "node server.js",
-    "seed:local": "node scripts/seed-local.mjs",
-    "server": "npm run seed:local && json-server --watch server/db.json --port 3001 --routes server/routes.json",
+    "server": "node server.js",
     "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
     "dev:api": "npm run server"
   },
@@ -20,6 +19,7 @@
     "clsx": "^2.1.1",
     "framer-motion": "^12.34.3",
     "json-server": "^0.17.4",
+    "pg": "^8.20.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

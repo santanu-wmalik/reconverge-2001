@@ -2,16 +2,27 @@ services:
   - type: web
     name: reconverge-2001
     runtime: node
-    # Free tier does not support persistent disks — Starter is required so
-    # the live database file survives deploys and instance restarts.
-    plan: starter
+    # Free tier — sleeps after 15 min of inactivity. Cold-start takes ~30–60s
+    # for the first visitor. Data is NOT stored locally; it lives in the
+    # Postgres DB on EC2 (see envVars below), so spin-downs are safe.
+    plan: free
     buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
-    disk:
-      name: reconverge-data
-      mountPath: /data
-      # 1 GB is plenty for ~350 alumni + groups/polls/travel items.
-      sizeGB: 1
+      # Postgres connection — hosted on a self-managed EC2 instance.
+      # SECURITY: PGPASSWORD is committed to git for now per the project's
+      # current deploy directive. Before a real public launch, convert
+      # PGPASSWORD to a Render secret env var (dashboard → Environment →
+      # "Add Secret File" or sync=false) and rotate the credential.
+      - key: PGHOST
+        value: ec2-3-90-186-32.compute-1.amazonaws.com
+      - key: PGPORT
+        value: 5432
+      - key: PGUSER
+        value: reconverge_app
+      - key: PGPASSWORD
+        value: RECCon@1234
+      - key: PGDATABASE
+        value: reconverge
