@@ -4,6 +4,7 @@ import PublicLayout from './components/layout/PublicLayout';
 import PortalLayout from './components/layout/PortalLayout';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import AdminRoute from './components/layout/AdminRoute';
+import SuperAdminRoute from './components/layout/SuperAdminRoute';
 import AdminLayout from './components/layout/AdminLayout';
 
 // Lazy load all pages
@@ -46,6 +47,7 @@ const OutreachPage = lazy(() => import('./pages/admin/OutreachPage'));
 const EventDashboardPage = lazy(() => import('./pages/admin/EventDashboardPage'));
 const RoomingPage = lazy(() => import('./pages/admin/RoomingPage'));
 const MeetingsPage = lazy(() => import('./pages/admin/MeetingsPage'));
+const UsersPage = lazy(() => import('./pages/admin/UsersPage'));
 
 function PageLoader() {
   return (
@@ -123,6 +125,19 @@ export const router = createBrowserRouter([
           { path: 'admin/event-dashboard', element: <SuspenseWrapper><EventDashboardPage /></SuspenseWrapper> },
           { path: 'admin/rooming', element: <SuspenseWrapper><RoomingPage /></SuspenseWrapper> },
           { path: 'admin/meetings', element: <SuspenseWrapper><MeetingsPage /></SuspenseWrapper> },
+        ],
+      },
+    ],
+  },
+
+  // Super-admin-only routes (User Management)
+  {
+    element: <SuperAdminRoute />,
+    children: [
+      {
+        element: <AdminLayout />,
+        children: [
+          { path: 'admin/users', element: <SuspenseWrapper><UsersPage /></SuspenseWrapper> },
         ],
       },
     ],

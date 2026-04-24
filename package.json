@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "node server.js",
-    "server": "json-server --watch server/db.json --port 3001 --routes server/routes.json",
+    "seed:local": "node scripts/seed-local.mjs",
+    "server": "npm run seed:local && json-server --watch server/db.json --port 3001 --routes server/routes.json",
     "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
     "dev:api": "npm run server"
   },

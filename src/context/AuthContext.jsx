@@ -7,7 +7,19 @@ const initialState = {
   user: null,
   isAuthenticated: false,
   isAdmin: false,
+  isSuperAdmin: false,
 };
+
+// Role semantics:
+//   'alumni'       → regular portal only
+//   'admin'        → regular portal + admin portal
+//   'super-admin'  → regular portal + admin portal + User Management
+function deriveFlags(role) {
+  return {
+    isAdmin: role === 'admin' || role === 'super-admin',
+    isSuperAdmin: role === 'super-admin',
+  };
+}
 
 function authReducer(state, action) {
   switch (action.type) {
@@ -15,7 +27,7 @@ function authReducer(state, action) {
       return {
         user: action.payload,
         isAuthenticated: true,
-        isAdmin: action.payload.role === 'admin',
+        ...deriveFlags(action.payload.role),
       };
     case 'LOGOUT':
       return initialState;
@@ -24,6 +36,14 @@ function authReducer(state, action) {
         ...state,
         user: { ...state.user, ...action.payload },
       };
+    case 'UPDATE_ROLE': {
+      const nextUser = { ...state.user, role: action.payload };
+      return {
+        ...state,
+        user: nextUser,
+        ...deriveFlags(action.payload),
+      };
+    }
     default:
       return state;
   }

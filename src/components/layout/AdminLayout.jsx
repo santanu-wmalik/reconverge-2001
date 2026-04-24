@@ -5,8 +5,10 @@ import BackToTop from '../shared/BackToTop';
 import BackgroundSlideshow from '../shared/BackgroundSlideshow';
 import FloatingPhotos from '../shared/FloatingPhotos';
 import AnnouncementsBanner from '../shared/AnnouncementsBanner';
+import { useAuth } from '../../context/AuthContext';
 
-const adminNavLinks = [
+// Base admin nav shared by all admin-portal viewers.
+const BASE_ADMIN_NAV = [
   { label: 'Dashboard', path: '/admin', icon: '📊' },
   { label: 'Planning Log', path: '/admin/planning', icon: '📋' },
   { label: 'Committees', path: '/admin/committees', icon: '👥' },
@@ -17,8 +19,15 @@ const adminNavLinks = [
   { label: 'Meetings', path: '/admin/meetings', icon: '📝' },
 ];
 
+// Super-admin-only extras. Rendered only when `isSuperAdmin`.
+const SUPER_ADMIN_NAV = [
+  { label: 'Users', path: '/admin/users', icon: '🔑' },
+];
+
 export default function AdminLayout() {
   const location = useLocation();
+  const { isSuperAdmin } = useAuth();
+  const adminNavLinks = isSuperAdmin ? [...BASE_ADMIN_NAV, ...SUPER_ADMIN_NAV] : BASE_ADMIN_NAV;
 
   return (
     <div className="min-h-screen flex flex-col">

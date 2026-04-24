@@ -56,10 +56,16 @@ export const orderApi = {
 
 // --- Users (auth) ---
 export const userApi = {
+  getAll: () => request('/users'),
   getByEmail: (email) => request(`/users?email=${encodeURIComponent(email)}`),
   create: (data) =>
     request('/users', {
       method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  update: (id, data) =>
+    request(`/users/${id}`, {
+      method: 'PATCH',
       body: JSON.stringify(data),
     }),
 };

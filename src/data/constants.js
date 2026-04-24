@@ -69,7 +69,6 @@ export const FAMILY_OPTIONS = [
 // signing in.
 export const NAV_LINKS = [
   { label: 'Home', path: '/' },
-  { label: 'When & Where', path: '/when-where' },
   { label: 'Our Journey', path: '/our-journey' },
   { label: 'Committees', path: '/committees' },
   { label: 'FAQ', path: '/faq' },

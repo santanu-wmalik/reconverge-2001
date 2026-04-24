@@ -2,9 +2,16 @@ services:
   - type: web
     name: reconverge-2001
     runtime: node
-    plan: free
+    # Free tier does not support persistent disks — Starter is required so
+    # the live database file survives deploys and instance restarts.
+    plan: starter
     buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
+    disk:
+      name: reconverge-data
+      mountPath: /data
+      # 1 GB is plenty for ~350 alumni + groups/polls/travel items.
+      sizeGB: 1
