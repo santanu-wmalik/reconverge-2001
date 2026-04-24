@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "node server.js",
-    "server": "node server.js",
+    "start": "node --env-file-if-exists=.env server.js",
+    "server": "node --env-file-if-exists=.env server.js",
     "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
     "dev:api": "npm run server"
   },

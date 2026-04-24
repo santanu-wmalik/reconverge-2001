@@ -42,13 +42,20 @@ const PG_USER = process.env.PGUSER || 'CHANGE-ME';
 const PG_PASSWORD = process.env.PGPASSWORD || 'CHANGE-ME';
 const PG_DATABASE = process.env.PGDATABASE || 'CHANGE-ME';
 
+// Shared connect options. connectionTimeoutMillis is critical — without it
+// pg.Client.connect() will hang forever if the TCP handshake stalls (bad
+// security group, wrong listen_addresses, etc.), and Render will silently
+// kill the process for failing to bind a port before we ever log anything.
+const baseConnOpts = {
+  host: PG_HOST, port: PG_PORT, user: PG_USER, password: PG_PASSWORD,
+  connectionTimeoutMillis: 10_000,
+  statement_timeout: 30_000,
+};
+
 // Step 1 — ensure the target database exists. Connect to the default
 // `postgres` maintenance DB, check pg_database, CREATE if missing.
 async function ensureDatabase() {
-  const admin = new Client({
-    host: PG_HOST, port: PG_PORT, user: PG_USER,
-    password: PG_PASSWORD, database: 'postgres',
-  });
+  const admin = new Client({ ...baseConnOpts, database: 'postgres' });
   await admin.connect();
   const res = await admin.query(
     `SELECT 1 FROM pg_database WHERE datname = $1`,
@@ -87,22 +94,55 @@ async function loadOrSeedState(db) {
 }
 
 async function main() {
-  await ensureDatabase();
-
-  const db = new Client({
-    host: PG_HOST, port: PG_PORT, user: PG_USER,
-    password: PG_PASSWORD, database: PG_DATABASE,
-  });
-  await db.connect();
-
-  const state = await loadOrSeedState(db);
-
+  // Bind the port FIRST so Render's health check is satisfied even if the
+  // DB bootstrap takes a while (or fails). The API middleware below checks
+  // `ready` before serving; until the DB is loaded, /api/* returns 503.
   const app = jsonServer.create();
-  const router = jsonServer.router(state); // in-memory; no file on disk
   const distPath = join(__dirname, 'dist');
   const indexPath = join(distPath, 'index.html');
 
+  let router = null;
+  let ready = false;
+  let bootstrapError = null;
+
   app.use(jsonServer.bodyParser);
+
+  // Health check — useful for debugging deploys.
+  app.get('/api/_health', (req, res) => {
+    res.json({
+      ready,
+      error: bootstrapError?.message ?? null,
+      db: `postgres://${PG_USER}@${PG_HOST}:${PG_PORT}/${PG_DATABASE}`,
+    });
+  });
+
+  // Bind immediately — must happen before the DB bootstrap, which may block
+  // on a slow/unreachable EC2 Postgres.
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`[server] REConverge 2001 listening on 0.0.0.0:${PORT}`);
+    console.log(`[server] DB target: postgres://${PG_USER}@${PG_HOST}:${PG_PORT}/${PG_DATABASE}`);
+  });
+
+  // Now bootstrap the DB. Errors here are logged but do NOT crash the
+  // process — the health endpoint will expose the reason.
+  let db;
+  try {
+    console.log(`[db] Connecting to ${PG_HOST}:${PG_PORT} as ${PG_USER}...`);
+    await ensureDatabase();
+    db = new Client({ ...baseConnOpts, database: PG_DATABASE });
+    await db.connect();
+    console.log(`[db] Connected. Loading state...`);
+  } catch (err) {
+    bootstrapError = err;
+    console.error(`[db] Bootstrap failed: ${err.message}`);
+    console.error(`[db] → Check EC2 security group allows port ${PG_PORT} from Render's egress.`);
+    console.error(`[db] → Check postgresql.conf has listen_addresses = '*'`);
+    console.error(`[db] → Check pg_hba.conf has a 'host ... 0.0.0.0/0 scram-sha-256' line.`);
+    return; // leave the server up so logs + /api/_health remain reachable
+  }
+
+  const state = await loadOrSeedState(db);
+  router = jsonServer.router(state); // in-memory; no file on disk
 
   // Debounced persistence. If many writes arrive back-to-back (e.g. a batch
   // registration), we coalesce them into a single UPSERT so we don't
@@ -141,7 +181,8 @@ async function main() {
   // handing to the json-server router.
   app.use('/api', jsonServer.rewriter({ '/api/*': '/$1' }), router);
 
-  // Static frontend + SPA fallback.
+  // Static frontend + SPA fallback — registered last, and only after DB is
+  // ready so that /api/* is served by json-server, not swallowed by SPA.
   app.use(express.static(distPath));
   app.get('*', (req, res) => {
     if (existsSync(indexPath)) {
@@ -151,10 +192,8 @@ async function main() {
     }
   });
 
-  app.listen(PORT, () => {
-    console.log(`[server] REConverge 2001 listening on :${PORT}`);
-    console.log(`[server] DB: postgres://${PG_USER}@${PG_HOST}:${PG_PORT}/${PG_DATABASE}`);
-  });
+  ready = true;
+  console.log(`[server] Ready to serve requests.`);
 }
 
 main().catch((err) => {
