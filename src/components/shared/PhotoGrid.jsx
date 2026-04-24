@@ -3,8 +3,30 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { staggerContainer, staggerItem } from '../../utils/animationVariants';
 import ProtectedImage from './ProtectedImage';
 
-export default function PhotoGrid({ photos, columns = 3 }) {
+// Stable signature for the grid container's remount key. Using photo count +
+// first/last ids means: filter change, new upload, or delete all trigger a
+// clean re-render of the stagger animation — without thrashing on unrelated
+// parent re-renders (which would be the case with Math.random / Date.now).
+function gridKey(photos) {
+  if (!photos.length) return 'empty';
+  return `${photos.length}-${photos[0].id}-${photos[photos.length - 1].id}`;
+}
+
+export default function PhotoGrid({ photos, columns = 3, canDelete, onDelete }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDelete = async () => {
+    if (!selectedPhoto || !onDelete) return;
+    if (!window.confirm('Remove this photo? This cannot be undone.')) return;
+    setDeleting(true);
+    try {
+      await onDelete(selectedPhoto);
+      setSelectedPhoto(null);
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   const columnClass = {
     2: 'grid-cols-2',
@@ -15,10 +37,10 @@ export default function PhotoGrid({ photos, columns = 3 }) {
   return (
     <>
       <motion.div
+        key={gridKey(photos)}
         variants={staggerContainer}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
+        animate="visible"
         className={`grid ${columnClass[columns] || columnClass[3]} gap-3 md:gap-4`}
       >
         {photos.map((photo) => (
@@ -66,6 +88,17 @@ export default function PhotoGrid({ photos, columns = 3 }) {
                 imgClassName="max-w-full max-h-[70vh] object-contain rounded-xl"
               />
               <p className="text-center text-white mt-3 text-sm">{selectedPhoto.caption}</p>
+              {canDelete?.(selectedPhoto) && (
+                <div className="text-center mt-3">
+                  <button
+                    onClick={handleDelete}
+                    disabled={deleting}
+                    className="px-4 py-2 text-sm rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-400/30 disabled:opacity-50"
+                  >
+                    {deleting ? 'Deleting…' : 'Delete photo'}
+                  </button>
+                </div>
+              )}
               <button
                 onClick={() => setSelectedPhoto(null)}
                 className="absolute -top-3 -right-3 w-8 h-8 bg-white/10 backdrop-blur rounded-full flex items-center justify-center text-white hover:bg-white/20"

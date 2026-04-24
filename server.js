@@ -90,7 +90,21 @@ async function loadOrSeedState(db) {
     return seedData;
   }
   console.log(`[db] Loaded app_state from Postgres (transaction data preserved)`);
-  return res.rows[0].data;
+  // Reconcile: if we've added new top-level collections to seedData since the
+  // DB was first seeded (e.g. `photos`), merge them in as empty arrays/values
+  // so json-server can serve POST/GET on them. Existing keys are preserved.
+  const loaded = res.rows[0].data;
+  const added = [];
+  for (const key of Object.keys(seedData)) {
+    if (!(key in loaded)) {
+      loaded[key] = Array.isArray(seedData[key]) ? [] : seedData[key];
+      added.push(key);
+    }
+  }
+  if (added.length) {
+    console.log(`[db] Reconciled missing collections: ${added.join(', ')}`);
+  }
+  return loaded;
 }
 
 async function main() {
@@ -105,7 +119,12 @@ async function main() {
   let ready = false;
   let bootstrapError = null;
 
-  app.use(jsonServer.bodyParser);
+  // json-server's default bodyParser caps JSON at 1 MB — too tight for the
+  // alumni photo uploads, which arrive as base64 data URLs (~400 KB–1.5 MB
+  // after client-side resize). Swap in express parsers with a larger limit.
+  const express = require('express');
+  app.use(express.json({ limit: '12mb' }));
+  app.use(express.urlencoded({ extended: false, limit: '12mb' }));
 
   // Health check — useful for debugging deploys.
   app.get('/api/_health', (req, res) => {

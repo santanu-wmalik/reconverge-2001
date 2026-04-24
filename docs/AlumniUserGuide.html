@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>REConverge 2001 — Alumni User Guide</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1a1a1a;
+    line-height: 1.55;
+    font-size: 11.5pt;
+    margin: 0;
+    background: #fff;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 24px; }
+  h1 {
+    font-size: 26pt;
+    margin: 0 0 4px;
+    color: #0f2a4a;
+    letter-spacing: -0.5px;
+  }
+  .subtitle { color: #6b7280; font-size: 12pt; margin-bottom: 18px; }
+  h2 {
+    font-size: 15pt;
+    color: #0f2a4a;
+    border-bottom: 2px solid #d4af37;
+    padding-bottom: 4px;
+    margin-top: 28px;
+    page-break-after: avoid;
+  }
+  h3 { font-size: 12.5pt; margin: 18px 0 6px; color: #1f3a68; }
+  p, li { font-size: 11pt; }
+  ul, ol { padding-left: 20px; }
+  li { margin-bottom: 4px; }
+  code, .mono {
+    font-family: "SFMono-Regular", Consolas, Menlo, monospace;
+    background: #f1f3f6;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10pt;
+  }
+  .card {
+    border: 1px solid #e5e7eb;
+    border-left: 3px solid #d4af37;
+    background: #fafbfc;
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin: 10px 0;
+  }
+  .tip { border-left-color: #2563eb; background: #eff6ff; }
+  .warn { border-left-color: #d97706; background: #fffbeb; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; font-size: 10.5pt; }
+  th, td { border: 1px solid #e5e7eb; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #f3f4f6; }
+  .hero {
+    background: linear-gradient(135deg, #0f2a4a, #1f3a68);
+    color: #fff;
+    padding: 28px 26px;
+    border-radius: 10px;
+    margin-bottom: 22px;
+  }
+  .hero h1 { color: #fff; }
+  .hero .subtitle { color: #d4af37; }
+  .hero .url {
+    display: inline-block;
+    margin-top: 8px;
+    background: rgba(255,255,255,0.12);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 11pt;
+  }
+  .toc { columns: 2; column-gap: 30px; font-size: 10.5pt; }
+  .toc a { color: #1f3a68; text-decoration: none; }
+  .page-break { page-break-before: always; }
+  footer {
+    margin-top: 36px;
+    padding-top: 10px;
+    border-top: 1px solid #e5e7eb;
+    color: #6b7280;
+    font-size: 9.5pt;
+    text-align: center;
+  }
+  .step {
+    counter-reset: step;
+    padding-left: 0;
+    list-style: none;
+  }
+  .step > li {
+    counter-increment: step;
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 8px;
+  }
+  .step > li::before {
+    content: counter(step);
+    position: absolute; left: 0; top: 0;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: #d4af37; color: #0f2a4a;
+    font-weight: 700; font-size: 10pt;
+    display: flex; align-items: center; justify-content: center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="hero">
+  <h1>REConverge 2001</h1>
+  <div class="subtitle">Alumni User Guide · Reunion Portal</div>
+  <div class="url">https://reconverge.onrender.com</div>
+</div>
+
+<p>Welcome back! This short guide walks you through everything you can do on the reunion portal — from creating your account to planning a shared cab from the airport. Keep it handy; it's the quickest way to get the most out of the site.</p>
+
+<h2>Table of Contents</h2>
+<div class="toc">
+  <ol>
+    <li><a href="#start">Getting Started</a></li>
+    <li><a href="#register">Registering</a></li>
+    <li><a href="#login">Logging In</a></li>
+    <li><a href="#profile">Your Profile</a></li>
+    <li><a href="#itinerary">Event Schedule</a></li>
+    <li><a href="#travel">Travel Planner</a></li>
+    <li><a href="#stay">Stay &amp; Rooming</a></li>
+    <li><a href="#directory">Alumni Directory</a></li>
+    <li><a href="#nostalgia">Nostalgia — Photos &amp; Videos</a></li>
+    <li><a href="#store">Merchandise Store</a></li>
+    <li><a href="#groups">Groups &amp; Townhalls</a></li>
+    <li><a href="#giveback">Give Back</a></li>
+    <li><a href="#faq">FAQ &amp; Help</a></li>
+  </ol>
+</div>
+
+<h2 id="start">1. Getting Started</h2>
+<p>Open <span class="mono">https://reconverge.onrender.com</span> on any device — laptop, tablet, or phone. The site is mobile-friendly, so you can do everything from WhatsApp on the go.</p>
+<div class="card tip"><strong>Tip:</strong> The site is hosted on a free plan and may take ~30 seconds to wake up the first time you open it after a long gap. Be patient — it's normal.</div>
+
+<h2 id="register">2. Registering</h2>
+<ol class="step">
+  <li>Click <strong>Register / RSVP</strong> on the landing page.</li>
+  <li>Fill in your full name, <strong>email</strong> (this becomes your login), and a password.</li>
+  <li>Add your branch, hostel, roll number, current city &amp; company — this helps batchmates find you in the directory.</li>
+  <li>Enter travel &amp; stay preferences: how you're arriving, dates, room sharing, T-shirt size, dietary preference, and family members coming along.</li>
+  <li>Click <strong>Submit</strong>. You'll land on a success page and be logged in automatically.</li>
+</ol>
+<div class="card warn"><strong>Important:</strong> Use a real email. Duplicate emails are rejected. You can't change the email later — it's your account identity — but every other field is editable from the profile page.</div>
+
+<h2 id="login">3. Logging In</h2>
+<p>Already registered? Click <strong>Login</strong> (top-right), enter your email + password, and you'll land on your profile dashboard. Forgot your password? Ping the admin team on the WhatsApp group — manual resets until self-service is live.</p>
+
+<h2 id="profile">4. Your Profile</h2>
+<p>Your profile is the single source of truth the organising team uses for T-shirts, meals, rooming, and the cab manifest. Keep it up to date.</p>
+<h3>Edit profile</h3>
+<p>From the avatar menu (top-right) → <strong>Edit Profile</strong>. You can update:</p>
+<ul>
+  <li><strong>Avatar</strong> — paste any image URL, or hit <em>Randomise</em> to generate a fun cartoon avatar. <em>Reset to default</em> brings back the auto-generated one based on your name.</li>
+  <li><strong>Personal</strong> — name, phone, city, state/country, company, designation.</li>
+  <li><strong>Academic</strong> — branch, hostel, roll number.</li>
+  <li><strong>Travel &amp; Stay</strong> — mode of travel, arrival/departure date &amp; time, room preference, preferred roommate.</li>
+  <li><strong>Preferences</strong> — T-shirt size, dietary preference, adults / children count, special requests, notes.</li>
+  <li><strong>Payment &amp; ID</strong> — payment UID after you transfer fees, and last 4 digits of a govt. ID (for campus entry).</li>
+</ul>
+<p>Click <strong>Save Changes</strong> at the bottom. You'll see a green toast confirming the update.</p>
+
+<h2 id="itinerary">5. Event Schedule</h2>
+<p>The <strong>Itinerary</strong> page shows the day-by-day programme — welcome dinner, campus tour, batch photo, gala night, farewell brunch. Each event has a time, venue, and short blurb.</p>
+<p>Under <strong>My Itinerary</strong>, you can mark events you'll attend so the team gets headcounts for catering and seating.</p>
+
+<h2 id="travel">6. Travel Planner</h2>
+<p>The Travel Planner is a shared board where alumni post their transport plans and find others to share a cab or pick-up with.</p>
+<ol class="step">
+  <li>Open <strong>Travel Planner</strong> from the nav.</li>
+  <li>Click <strong>Add travel item</strong> — choose arrival or departure, fill in date, time, airport/station, and flight/train number.</li>
+  <li>Set <strong>Visibility</strong>:
+    <ul>
+      <li><em>Public</em> — everyone sees it.</li>
+      <li><em>Batch only</em> — only logged-in alumni.</li>
+      <li><em>Specific people</em> — pick from the searchable list; only those chosen batchmates see it.</li>
+    </ul>
+  </li>
+  <li>Save. Others can comment on your item to coordinate — "I land 20 minutes before you, let's share a cab."</li>
+</ol>
+<div class="card tip"><strong>Tip:</strong> Post your plans early. The more people on the board, the easier it is to cluster arrivals and split costs.</div>
+
+<h2 id="stay" class="page-break">7. Stay &amp; Rooming</h2>
+<p>The <strong>Stay</strong> page lists on-campus hostel allocation, nearby hotels, and rates. Your room preference from the profile feeds into the rooming chart the organising team prepares.</p>
+<p>If you have a specific roommate request, add their name in the <em>Preferred Roommate</em> field of your profile — the team tries to honour pairs where both sides list each other.</p>
+
+<h2 id="directory">8. Alumni Directory</h2>
+<p>Browse everyone who's registered — filter by branch or hostel, search by name. Click a card to see their current city, company, and (if shared) phone/email. Great for pre-reunion reconnects.</p>
+
+<h2 id="nostalgia">9. Nostalgia — Photos &amp; Videos</h2>
+<p>The <strong>Nostalgia</strong> section has two galleries:</p>
+<ul>
+  <li><strong>Photo Gallery</strong> — throwback pics from hostel life, fests, trips, farewells. Upload your own from the gallery page.</li>
+  <li><strong>Video Gallery</strong> — old clips, montages, and testimonial videos.</li>
+</ul>
+<p>Please upload! Every photo someone shares triggers five more memories from the group.</p>
+
+<h2 id="store">10. Merchandise Store</h2>
+<p>The <strong>Store</strong> has reunion hoodies, T-shirts, mugs, and a class-of-2001 coffee-table book. Add to cart → review → note the total. Payment is via the UID you paste into your profile (unified with event fees).</p>
+
+<h2 id="groups">11. Groups &amp; Townhalls</h2>
+<p><strong>Groups</strong> are interest/branch/hostel sub-circles — join one, post updates, plan meet-ups within the larger reunion. <strong>Townhalls</strong> are scheduled virtual sessions before the event — Q&amp;A with the organising committee, logistics run-throughs, sponsor announcements.</p>
+
+<h2 id="giveback">12. Give Back</h2>
+<p>The <strong>Give Back</strong> page lists causes the batch is collectively supporting — campus infra, scholarships, a memorial fund. Pledge any amount; every rupee is acknowledged on the honour roll.</p>
+
+<h2 id="faq">13. FAQ &amp; Help</h2>
+<p>The <strong>FAQ</strong> page covers the top 20 questions — payment, accommodation, family members, cancellations, campus access. If your question isn't there, ping the organising team on the WhatsApp group or use the contact form on the landing page.</p>
+
+<h2>Quick Reference</h2>
+<table>
+  <tr><th>I want to…</th><th>Go to</th></tr>
+  <tr><td>Confirm attendance</td><td>Register → fill profile</td></tr>
+  <tr><td>Update my travel dates</td><td>Edit Profile → Travel &amp; Stay</td></tr>
+  <tr><td>Find a cab-share partner</td><td>Travel Planner</td></tr>
+  <tr><td>Pick a roommate</td><td>Edit Profile → Preferred Roommate</td></tr>
+  <tr><td>See who's coming</td><td>Alumni Directory</td></tr>
+  <tr><td>Upload an old photo</td><td>Nostalgia → Photo Gallery</td></tr>
+  <tr><td>Buy a reunion T-shirt</td><td>Store</td></tr>
+  <tr><td>Pledge to a cause</td><td>Give Back</td></tr>
+  <tr><td>Check the schedule</td><td>Itinerary</td></tr>
+</table>
+
+<div class="card"><strong>Still stuck?</strong> Screenshot the problem and post in the alumni WhatsApp group. Someone from the organising team will get back to you the same day.</div>
+
+<footer>
+  REConverge 2001 · Alumni Reunion Portal · Built with love by the Class of 2001 organising team.
+</footer>
+
+</div>
+</body>
+</html>

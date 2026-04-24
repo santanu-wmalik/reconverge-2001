@@ -175,6 +175,17 @@ export const travelItemApi = {
     request(`/travelItems/${id}`, { method: 'DELETE' }),
 };
 
+// --- Photos (alumni-uploaded gallery) ---
+export const photoApi = {
+  getAll: () => request('/photos?_sort=createdAt&_order=desc'),
+  create: (data) =>
+    request('/photos', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  remove: (id) => request(`/photos/${id}`, { method: 'DELETE' }),
+};
+
 // --- Itineraries ---
 export const itineraryApi = {
   getAll: () => request('/itineraries'),

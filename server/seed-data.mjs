@@ -163,4 +163,5 @@ export const seedData = {
   groupAnnouncements: [],
   groupPolls: [],
   customGroups: [],
+  photos: [],
 };
