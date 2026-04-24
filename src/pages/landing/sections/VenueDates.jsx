@@ -2,7 +2,20 @@ import SectionHeading from '../../../components/shared/SectionHeading';
 import ScrollReveal from '../../../components/shared/ScrollReveal';
 import GlassCard from '../../../components/ui/GlassCard';
 import { EVENT_CONFIG } from '../../../data/constants';
+import { eventSchedule, eventDays } from '../../../data/events';
 import { fadeInLeft, fadeInRight } from '../../../utils/animationVariants';
+
+// Derive the landing-page schedule strip from the single source of truth
+// (`data/events.js`) so we don't drift from the Itinerary page. We surface
+// only `isFeatured` events to keep the landing block scannable; days with
+// nothing featured fall back to all events for that day.
+const schedule = eventDays.map((d) => {
+  const featured = eventSchedule.filter((e) => e.day === d.day && e.isFeatured);
+  const items = (featured.length ? featured : eventSchedule.filter((e) => e.day === d.day)).map(
+    (e) => e.title
+  );
+  return { day: d.label, title: d.subtitle, items };
+});
 
 export default function VenueDates() {
   return (
@@ -43,11 +56,7 @@ export default function VenueDates() {
               <div className="text-3xl mb-4">📅</div>
               <h3 className="text-xl font-heading font-bold text-white mb-3">The Schedule</h3>
               <div className="space-y-4">
-                {[
-                  { day: 'Day 1 - Dec 27', title: 'Check-in & Gala', items: ['Hotel Check-in & Relaxation', 'Registration & Goodies', 'REConverge Gala Program', 'Musical Evening & Gala Dinner'] },
-                  { day: 'Day 2 - Dec 28', title: 'Campus Day', items: ['Bus to NITC Campus', 'Batch Procession @ Rajpath', 'Alumni Day Function', 'Kerala Traditional Sadhya', 'Campus Tour & Branch Dinner'] },
-                  { day: 'Day 3 - Dec 29', title: 'Departure', items: ['Relaxed Breakfast', 'Checkout & Optional Kerala Tour'] },
-                ].map((d) => (
+                {schedule.map((d) => (
                   <div key={d.day} className="border-l-2 border-gold-500/30 pl-4">
                     <p className="text-gold-400 font-semibold text-sm">{d.day}</p>
                     <p className="text-white text-sm font-medium">{d.title}</p>

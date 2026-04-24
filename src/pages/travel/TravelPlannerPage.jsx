@@ -525,7 +525,7 @@ export default function TravelPlannerPage() {
           <div>
             <p className="text-sm text-white font-medium mb-1">How sharing works</p>
             <p className="text-xs text-slate-400 leading-relaxed">
-              Every item is <b>Private by default</b>. Switch to <b>Registered alumni</b> to make it visible on the Who\u2019s Coming board for any logged-in batchmate, or pick <b>Specific people</b> to share with individual batchmates only — they\u2019ll see it on their board, nobody else will. Travel details never appear on the public website.
+              Every item is <b>Private by default</b>. Switch to <b>Registered alumni</b> to make it visible on the Who's Coming board for any logged-in batchmate, or pick <b>Specific people</b> to share with individual batchmates only — they'll see it on their board, nobody else will. Travel details never appear on the public website.
             </p>
           </div>
         </div>

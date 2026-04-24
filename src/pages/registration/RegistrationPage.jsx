@@ -213,9 +213,9 @@ export default function RegistrationPage() {
             <div className="pt-4 border-t border-white/5">
               <p className="text-xs text-gold-400 uppercase tracking-wider font-semibold mb-3">Who's coming with you?</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Input label="Adults (incl. self)" type="number" min="1" max="6" value={form.adults} onChange={(e) => update('adults', Math.max(1, parseInt(e.target.value) || 1))} />
-                <Input label="Children < 10" type="number" min="0" max="6" value={form.childrenUnder10} onChange={(e) => update('childrenUnder10', parseInt(e.target.value) || 0)} />
-                <Input label="Children 10+" type="number" min="0" max="6" value={form.children10Plus} onChange={(e) => update('children10Plus', parseInt(e.target.value) || 0)} />
+                <Input label="Adults (incl. self)" type="number" min="1" max="6" value={form.adults} onFocus={(e) => e.target.select()} onChange={(e) => update('adults', Math.max(1, parseInt(e.target.value) || 1))} />
+                <Input label="Children < 10" type="number" min="0" max="6" value={form.childrenUnder10} onFocus={(e) => e.target.select()} onChange={(e) => update('childrenUnder10', parseInt(e.target.value) || 0)} />
+                <Input label="Children 10+" type="number" min="0" max="6" value={form.children10Plus} onFocus={(e) => e.target.select()} onChange={(e) => update('children10Plus', parseInt(e.target.value) || 0)} />
               </div>
               <p className="text-xs text-slate-500 mt-2">Per hotel policy, children 10+ count as extra persons in room billing.</p>
             </div>

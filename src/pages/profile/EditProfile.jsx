@@ -271,6 +271,7 @@ export default function EditProfile() {
               min="1"
               max="6"
               value={form.adults}
+              onFocus={(e) => e.target.select()}
               onChange={(e) => update('adults', Math.max(1, parseInt(e.target.value) || 1))}
             />
             <Input
@@ -279,6 +280,7 @@ export default function EditProfile() {
               min="0"
               max="6"
               value={form.childrenUnder10}
+              onFocus={(e) => e.target.select()}
               onChange={(e) => update('childrenUnder10', parseInt(e.target.value) || 0)}
             />
             <Input
@@ -287,6 +289,7 @@ export default function EditProfile() {
               min="0"
               max="6"
               value={form.children10Plus}
+              onFocus={(e) => e.target.select()}
               onChange={(e) => update('children10Plus', parseInt(e.target.value) || 0)}
             />
           </div>

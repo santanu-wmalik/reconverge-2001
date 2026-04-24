@@ -90,7 +90,7 @@ function ICARSection() {
           <div>
             <h3 className="text-white font-heading font-semibold mb-1">Pre-meeting Q&A with NITC ICAR</h3>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Eight topic buckets drafted ahead of the ICAR (International, Alumni &amp; Corporate Relations) meeting at NIT Calicut. The SPOC captures the institute\u2019s responses alongside each question as the meeting unfolds.
+              Eight topic buckets drafted ahead of the ICAR (International, Alumni &amp; Corporate Relations) meeting at NIT Calicut. The SPOC captures the institute's responses alongside each question as the meeting unfolds.
             </p>
           </div>
         </div>
