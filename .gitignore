@@ -9,10 +9,10 @@ dist/
 .env.local
 .env.production
 
-# Live json-server database file. NOT committed — the committed
-# server/db.seed.json is the first-boot template. In production this lives
+# Live json-server database file. NOT committed — the embedded seed in
+# server/seed-data.mjs is the first-boot template. In production this lives
 # on Render's persistent disk at /data/db.json; locally it's regenerated
-# from db.seed.json on first `npm run server`.
+# from the embedded seed on first `npm run server`.
 server/db.json
 /data/
 
