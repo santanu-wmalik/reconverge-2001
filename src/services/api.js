@@ -1,20 +1,64 @@
 const BASE_URL = '/api';
 
+// Auth token plumbing. AuthContext owns the lifecycle (login sets it, logout
+// clears it). Every request below pulls the current token from localStorage
+// so a refresh in another tab still picks it up. Kept as a separate getter
+// (instead of a closure) so tests / scripts can override it without
+// reimporting the module.
+const TOKEN_STORAGE_KEY = 'alumni-token';
+export function getAuthToken() {
+  try {
+    return localStorage.getItem(TOKEN_STORAGE_KEY) || null;
+  } catch {
+    return null;
+  }
+}
+export function setAuthToken(token) {
+  try {
+    if (token) localStorage.setItem(TOKEN_STORAGE_KEY, token);
+    else localStorage.removeItem(TOKEN_STORAGE_KEY);
+  } catch {
+    // ignore — Safari private mode etc.
+  }
+}
+
 async function request(endpoint, options = {}) {
   const url = `${BASE_URL}${endpoint}`;
-  const config = {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    ...options,
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(options.headers || {}),
   };
-
-  const response = await fetch(url, config);
+  const token = getAuthToken();
+  if (token && !headers.Authorization) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  const response = await fetch(url, { ...options, headers });
   if (!response.ok) {
-    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    // Surface 401/403 distinctly so the UI can prompt re-login vs deny.
+    const err = new Error(`API Error: ${response.status} ${response.statusText}`);
+    err.status = response.status;
+    throw err;
   }
   return response.json();
 }
+
+// --- Auth ---
+export const authApi = {
+  login: (email, password) =>
+    request('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    }),
+  // `data` is the full registration payload (alumni profile fields + password).
+  // The server creates both rows atomically and returns { user, token }.
+  register: (data) =>
+    request('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  logout: () => request('/auth/logout', { method: 'POST' }),
+  me: () => request('/auth/me'),
+};
 
 // --- Alumni ---
 export const alumniApi = {

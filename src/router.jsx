@@ -52,6 +52,7 @@ const RegistrationSuccess = lazyWithReload(() => import('./pages/registration/Re
 const ProfileDashboard = lazyWithReload(() => import('./pages/profile/ProfileDashboard'));
 const EditProfile = lazyWithReload(() => import('./pages/profile/EditProfile'));
 const EventSchedulePage = lazyWithReload(() => import('./pages/itinerary/EventSchedulePage'));
+const WhosComingPage = lazyWithReload(() => import('./pages/whos-coming/WhosComingPage'));
 const MyItineraryPage = lazyWithReload(() => import('./pages/itinerary/MyItineraryPage'));
 const GroupsListPage = lazyWithReload(() => import('./pages/groups/GroupsListPage'));
 const GroupDetailPage = lazyWithReload(() => import('./pages/groups/GroupDetailPage'));
@@ -125,6 +126,7 @@ export const router = createBrowserRouter([
           { path: 'profile', element: <SuspenseWrapper><ProfileDashboard /></SuspenseWrapper> },
           { path: 'profile/edit', element: <SuspenseWrapper><EditProfile /></SuspenseWrapper> },
           { path: 'agenda', element: <SuspenseWrapper><EventSchedulePage /></SuspenseWrapper> },
+          { path: 'whos-coming', element: <SuspenseWrapper><WhosComingPage /></SuspenseWrapper> },
           { path: 'events', element: <SuspenseWrapper><EventSchedulePage /></SuspenseWrapper> },
           { path: 'events/my-plan', element: <SuspenseWrapper><MyItineraryPage /></SuspenseWrapper> },
           { path: 'groups', element: <SuspenseWrapper><GroupsListPage /></SuspenseWrapper> },

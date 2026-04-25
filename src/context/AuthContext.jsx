@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
-import { alumniApi, userApi } from '../services/api';
+import { alumniApi, authApi, getAuthToken, setAuthToken } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -100,39 +100,52 @@ export function AuthProvider({ children }) {
     localStorage.setItem('alumni-auth', JSON.stringify(state));
   }, [state]);
 
+  // Migration / sanity check: if we have a "logged in" user from before the
+  // token-auth migration (or after a server restart that flushed the in-memory
+  // token table), every API call would 401 silently. Verify the token at
+  // boot and if it's stale, drop the session so the UI prompts a re-login.
+  useEffect(() => {
+    if (!state.isAuthenticated) return;
+    const token = getAuthToken();
+    if (!token) {
+      dispatch({ type: 'LOGOUT' });
+      return;
+    }
+    authApi.me().catch((err) => {
+      if (err?.status === 401) {
+        setAuthToken(null);
+        dispatch({ type: 'LOGOUT' });
+      }
+    });
+    // Run once at mount; we don't want this to refire on every state change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const login = async (email, password) => {
     if (!email || !password) {
       return { success: false, error: 'Email and password are required' };
     }
 
     try {
-      // Step 1: Validate credentials against users table
-      const users = await userApi.getByEmail(email);
-      if (users.length === 0) {
-        return { success: false, error: 'No account found with this email' };
-      }
-
-      const userRecord = users[0];
-      if (userRecord.password !== password) {
-        return { success: false, error: 'Invalid password. Please try again.' };
-      }
-
-      // Step 2: Fetch the full alumni profile
-      const alumni = await alumniApi.getByEmail(email);
-      if (alumni.length === 0) {
-        return { success: false, error: 'Alumni profile not found' };
-      }
-
-      // Step 3: Use role from users table (authoritative source)
-      const user = { ...alumni[0], role: userRecord.role };
+      // Server-side validation: passwords no longer travel back to the client.
+      // The endpoint returns { user, token } on success. The token is what
+      // every subsequent /api/* request authenticates with.
+      const { user, token } = await authApi.login(email, password);
+      setAuthToken(token);
       dispatch({ type: 'LOGIN', payload: user });
       return { success: true, user };
-    } catch {
+    } catch (err) {
+      if (err?.status === 401) {
+        return { success: false, error: 'Invalid email or password' };
+      }
       return { success: false, error: 'Server unavailable. Please try again.' };
     }
   };
 
   const logout = () => {
+    // Best-effort server invalidation — don't block UI on it.
+    authApi.logout().catch(() => {});
+    setAuthToken(null);
     dispatch({ type: 'LOGOUT' });
   };
 

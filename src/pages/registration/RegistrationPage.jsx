@@ -5,7 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { pageTransition } from '../../utils/animationVariants';
 import { BRANCHES, TSHIRT_SIZES, DIETARY_OPTIONS, TRAVEL_MODES, ROOM_PREFERENCES, ID_TYPES, EVENT_CONFIG } from '../../data/constants';
-import { alumniApi, userApi } from '../../services/api';
+import { authApi } from '../../services/api';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
@@ -67,47 +67,35 @@ export default function RegistrationPage() {
     }
     setLoading(true);
     try {
-      const allAlumni = await alumniApi.getAll();
-      // Duplicate-email guard (case-insensitive). We already fetched every
-      // alumnus for the registration-id counter, so reuse that list instead
-      // of making a second request.
-      const normalisedEmail = form.email.trim().toLowerCase();
-      const emailTaken = allAlumni.some(
-        (a) => (a.email || '').trim().toLowerCase() === normalisedEmail
-      );
-      if (emailTaken) {
-        setLoading(false);
-        showToast('An account with this email already exists. Please sign in instead.', 'error');
-        return;
-      }
-      const { password, ...alumniData } = form;
-      const newAlumni = {
-        ...alumniData,
-        email: normalisedEmail,
-        batch: 2001,
+      // Single-shot atomic registration. The server handles uniqueness, role
+      // normalisation, registration-id allocation, and token issuance — so
+      // the client never needs to read the alumni list or write a users row
+      // directly. Credentials never travel back; we get a token + the new
+      // user record.
+      await authApi.register({
+        ...form,
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(form.name || form.email)}`,
-        registrationId: `SJ-2026-${String(allAlumni.length + 1).padStart(4, '0')}`,
-        isRegistered: true,
         familyMembers: familyCount,
         registrationFee,
         paymentStatus: form.paymentUid ? 'pending-verification' : 'unpaid',
         groups: [],
-        role: 'alumni',
-        createdAt: new Date().toISOString(),
-      };
-      const created = await alumniApi.create(newAlumni);
-      await userApi.create({
-        email: created.email,
-        password: password,
-        alumniId: created.id,
-        role: 'alumni',
       });
-      await login(created.email, password);
+      // Re-use the standard login flow so AuthContext + token storage end up
+      // in the same state as a normal sign-in. (Server is fine with this —
+      // the previous registration token simply orphans and ages out on
+      // restart.)
+      await login(form.email, form.password);
       showToast('Registration successful! Welcome to the reunion!', 'success');
       navigate('/register/success');
     } catch (error) {
       console.error('Registration error:', error);
-      showToast('Registration failed. Please try again.', 'error');
+      const msg =
+        error?.status === 409
+          ? 'An account with this email already exists. Please sign in instead.'
+          : error?.status === 400
+          ? 'Please check the email and password and try again.'
+          : 'Registration failed. Please try again.';
+      showToast(msg, 'error');
     } finally {
       setLoading(false);
     }
