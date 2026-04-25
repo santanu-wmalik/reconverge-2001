@@ -32,9 +32,10 @@ export const townhalls = [
       'Budget and registration costs',
       'Open floor Q&A',
     ],
-    recordingUrl: null,
+    recordingUrl: 'https://drive.google.com/file/d/1lQ1X7XQDvkx9c_du151UGke2nU9GHwZW/view',
+    recordingEmbedUrl: 'https://drive.google.com/file/d/1lQ1X7XQDvkx9c_du151UGke2nU9GHwZW/preview',
     transcriptUrl: null,
-    recordingNotes: 'Auto-record enabled on the Meet invite; recording + transcript will be attached here once the session wraps.',
+    recordingNotes: 'Full session recording — plays inline below.',
   },
   {
     id: 'townhall-apr26-s2',

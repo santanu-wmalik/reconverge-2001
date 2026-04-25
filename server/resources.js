@@ -12,7 +12,7 @@
 // already uses: same paths, same camelCase field names, same query params.
 
 import { tables, sqlTable, coerce, rowToJson } from './columns.js';
-import { query } from './db.js';
+import { query, getPool } from './db.js';
 
 const newId = (prefix) =>
   `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
@@ -137,6 +137,36 @@ export function mountResource(app, name, opts = {}) {
       const setSql = cols.map((c, i) => `${c} = $${i + 1}`).join(', ');
       const sql = `UPDATE ${table} SET ${setSql} WHERE ${idColDef.col} = $${cols.length + 1} RETURNING *`;
       const params = [...Object.values(data), coerce(req.params.id, idColDef.type)];
+
+      // Email lives in two tables (alumni.email + users.email). If the
+      // alumni email changes, the matching users row must move with it or
+      // login breaks for that account. Wrap both updates in a transaction.
+      if (name === 'alumni' && Object.prototype.hasOwnProperty.call(data, 'email')) {
+        const client = await getPool().connect();
+        try {
+          await client.query('BEGIN');
+          const r = await client.query(sql, params);
+          if (r.rowCount === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({ error: 'alumni not found' });
+          }
+          await client.query(
+            `UPDATE users SET email = $1 WHERE alumni_id = $2`,
+            [data.email, coerce(req.params.id, idColDef.type)]
+          );
+          await client.query('COMMIT');
+          return res.json(rowToJson(name, r.rows[0]));
+        } catch (err) {
+          await client.query('ROLLBACK').catch(() => {});
+          if (err.code === '23505') {
+            return res.status(409).json({ error: 'That email is already in use.' });
+          }
+          throw err;
+        } finally {
+          client.release();
+        }
+      }
+
       const r = await query(sql, params);
       if (r.rowCount === 0) return res.status(404).json({ error: `${name} not found` });
       res.json(rowToJson(name, r.rows[0]));

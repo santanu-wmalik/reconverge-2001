@@ -4,26 +4,95 @@ import { pageTransition, staggerContainer, staggerItem } from '../../utils/anima
 import GlassCard from '../../components/ui/GlassCard';
 import SectionHeading from '../../components/shared/SectionHeading';
 
+// Pull the 11-char id out of any common YouTube URL shape:
+//   https://www.youtube.com/watch?v=ID
+//   https://youtu.be/ID
+//   https://www.youtube.com/embed/ID
+// Returns null if we can't find one — the card then falls back to a plain
+// link instead of breaking the iframe with garbage.
+function youtubeIdFrom(url) {
+  if (!url) return null;
+  try {
+    const u = new URL(url);
+    if (u.hostname === 'youtu.be') return u.pathname.slice(1) || null;
+    if (u.searchParams.get('v')) return u.searchParams.get('v');
+    const m = u.pathname.match(/\/embed\/([\w-]{6,})/);
+    if (m) return m[1];
+  } catch {
+    // not a valid URL — ignore
+  }
+  return null;
+}
+
 export default function VideoGalleryPage() {
   return (
     <motion.div {...pageTransition}>
-      <SectionHeading title="Video Gallery" subtitle="Watch and relive the memorable moments" />
-      <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {galleryVideos.map((v) => (
-          <motion.div key={v.id} variants={staggerItem}>
-            <GlassCard>
-              <div className="relative rounded-xl overflow-hidden mb-3">
-                <img src={v.thumbnail} alt={v.title} className="w-full h-48 object-cover" />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                  <div className="w-14 h-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center text-2xl">▶️</div>
-                </div>
-                <span className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">{v.duration}</span>
-              </div>
-              <h3 className="text-white font-semibold text-sm">{v.title}</h3>
-            </GlassCard>
-          </motion.div>
-        ))}
-      </motion.div>
+      <SectionHeading
+        title="Video Gallery"
+        subtitle="Watch and relive the memorable moments"
+      />
+
+      {galleryVideos.length === 0 ? (
+        <p className="text-center text-slate-400 py-12">
+          No videos yet — check back as more clips are added.
+        </p>
+      ) : (
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          animate="visible"
+          className="grid md:grid-cols-2 gap-5"
+        >
+          {galleryVideos.map((v) => {
+            const id = youtubeIdFrom(v.youtubeUrl);
+            return (
+              <motion.div key={v.id} variants={staggerItem}>
+                <GlassCard hover={false}>
+                  {id ? (
+                    // 16:9 responsive wrapper — works on phones without the
+                    // iframe overflowing or getting clipped.
+                    <div
+                      className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-black/40 mb-3"
+                      style={{ paddingTop: '56.25%' }}
+                    >
+                      <iframe
+                        src={`https://www.youtube.com/embed/${id}?rel=0`}
+                        title={v.title}
+                        loading="lazy"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        className="absolute inset-0 w-full h-full"
+                      />
+                    </div>
+                  ) : (
+                    <a
+                      href={v.youtubeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-sm text-gold-400 underline mb-3"
+                    >
+                      Watch on YouTube ↗
+                    </a>
+                  )}
+                  <h3 className="text-white font-heading font-semibold">{v.title}</h3>
+                  {v.description && (
+                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">{v.description}</p>
+                  )}
+                  {v.publishedAt && (
+                    <p className="text-[11px] uppercase tracking-wider text-slate-500 mt-2">
+                      {new Date(v.publishedAt).toLocaleDateString('en-IN', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                      })}
+                    </p>
+                  )}
+                </GlassCard>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      )}
     </motion.div>
   );
 }

@@ -160,8 +160,31 @@ export default function TownhallsPage() {
                   </div>
                 )}
 
-                {/* Recording slot */}
-                {!upcoming && !th.recordingUrl && th.recordingNotes && (
+                {/* Inline recording player — Drive's /preview iframe.
+                    Renders only when an explicit embed URL is provided so
+                    we don't try to <iframe> arbitrary external links. */}
+                {th.recordingEmbedUrl && (
+                  <div className="mt-5 pt-4 border-t border-white/5">
+                    <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold mb-2">
+                      Recording
+                    </p>
+                    <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-black/40" style={{ paddingTop: '56.25%' }}>
+                      <iframe
+                        src={th.recordingEmbedUrl}
+                        title={`${th.title} — recording`}
+                        allow="autoplay"
+                        allowFullScreen
+                        className="absolute inset-0 w-full h-full"
+                      />
+                    </div>
+                    {th.recordingNotes && (
+                      <p className="text-xs text-slate-500 italic mt-2">{th.recordingNotes}</p>
+                    )}
+                  </div>
+                )}
+
+                {/* Recording slot — note-only fallback when there's no embed yet */}
+                {!upcoming && !th.recordingEmbedUrl && !th.recordingUrl && th.recordingNotes && (
                   <p className="text-xs text-slate-500 italic mt-4 pt-3 border-t border-white/5">
                     {th.recordingNotes}
                   </p>

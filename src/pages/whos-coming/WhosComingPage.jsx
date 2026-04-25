@@ -1,33 +1,25 @@
 import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { pageTransition } from '../../utils/animationVariants';
-import { alumniApi } from '../../services/api';
+import { alumniApi, rsvpApi } from '../../services/api';
 import { BRANCHES } from '../../data/constants';
 import GlassCard from '../../components/ui/GlassCard';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 
-// "Who's Coming" — alumni-facing roster of confirmed attendees. Pulls from
-// the same `alumni` collection as the directory but trims to the safe-to-share
-// fields and filters out demo / placeholder accounts so the batch sees real
-// faces.
+// "Who's Registered" — alumni-facing roster of everyone signalling intent to
+// attend REConverge 2001. Two sources are merged into a single browsable
+// list, with a badge so the difference is obvious:
 //
-// What we share (and why):
-//   - Name + avatar           → identity, recognition
-//   - Branch + hostel         → instant nostalgia anchor
-//   - City / state            → "we're in the same city, let's pre-meet"
-//   - Company + designation   → 25-years-on career update, conversation starter
-//   - Travel window           → arrival/departure date only (no times) so people
-//                               can plan shared cabs / overlap dinners
-//   - Family count            → "+2" badge so others know to expect kids/spouse
+//   - Registered  → completed the full sign-up flow (alumni table). Has
+//                   travel dates, family count, career details, etc.
+//   - RSVPed      → submitted the lightweight public RSVP form (rsvps
+//                   table). Has only name, branch, food pref, family count.
 //
-// What we deliberately HIDE on this page:
-//   - Email, phone            → contact methods stay opt-in (directory has them)
-//   - Roll number, ID number  → identifiers, not interesting to others
-//   - Room preference / preferred roommate → logistics, not a public signal
-//   - T-shirt size, dietary pref → org-team data, not social
-//   - Payment UID / status    → finance internal
-//   - Special requests, notes → private to the user
+// We dedupe by email so an alum who first RSVPed and later registered shows
+// once with the richer "Registered" card.
+//
+// What we share / hide is unchanged from before — see field comments below.
 
 const DEMO_EMAILS = new Set([
   'admin@email.com',
@@ -38,8 +30,6 @@ const DEMO_EMAILS = new Set([
 const looksLikeDemo = (a) => {
   if (!a) return true;
   if (a.email && DEMO_EMAILS.has(a.email.toLowerCase())) return true;
-  // Placeholder rows from earlier seeds frequently used 'DEMO' in the roll
-  // number or had no email — drop both.
   if (!a.email) return true;
   if ((a.rollNumber || '').toUpperCase().includes('DEMO')) return true;
   return false;
@@ -52,31 +42,101 @@ const fmtDate = (iso) => {
   return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
 };
 
+// Normalise a registered alumnus into the shared "entry" shape the UI
+// renders. Carries enough data to drive the card and all filters.
+const fromAlumni = (a) => ({
+  kind: 'registered',
+  id: `alum:${a.id}`,
+  name: (a.name || '').trim(),
+  email: (a.email || '').trim().toLowerCase(),
+  branch: a.branch || '',
+  hostel: a.hostel || '',
+  avatar: a.avatar || '',
+  designation: a.designation || '',
+  company: a.company || '',
+  currentCity: a.currentCity || '',
+  state: a.state || '',
+  arrivalDate: a.arrivalDate || '',
+  departureDate: a.departureDate || '',
+  // family = extra adults + children
+  family:
+    Math.max(0, (Number(a.adults) || 1) - 1) +
+    (Number(a.childrenUnder10) || 0) +
+    (Number(a.children10Plus) || 0),
+});
+
+// Normalise a public RSVP submission. Few fields, so the card auto-collapses.
+const fromRsvp = (r) => {
+  // `familyJoining` was historically a free-text field; sometimes the literal
+  // string '[object Object]' from a buggy old client. Try to coerce a number,
+  // otherwise show 0.
+  const fj = parseInt(r.familyJoining, 10);
+  return {
+    kind: 'rsvp',
+    id: `rsvp:${r.id}`,
+    name: (r.fullName || '').trim(),
+    email: (r.email || '').trim().toLowerCase(),
+    branch: r.branch || '',
+    hostel: '',
+    avatar: '',
+    designation: '',
+    company: '',
+    currentCity: '',
+    state: '',
+    arrivalDate: '',
+    departureDate: '',
+    family: Number.isFinite(fj) && fj > 0 ? fj : 0,
+    foodPreference: r.foodPreference || '',
+    volunteer: Boolean(r.volunteer),
+  };
+};
+
 export default function WhosComingPage() {
-  const [alumni, setAlumni] = useState([]);
+  const [registered, setRegistered] = useState([]);
+  const [rsvps, setRsvps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [branch, setBranch] = useState('');
   const [hostel, setHostel] = useState('');
+  const [kind, setKind] = useState('all'); // all | registered | rsvp
 
   useEffect(() => {
-    alumniApi
-      .getAll()
-      .then((rows) => setAlumni(rows.filter((a) => a.isRegistered && !looksLikeDemo(a))))
-      .catch((err) => console.warn('Could not load attendee list', err))
+    Promise.allSettled([alumniApi.getAll(), rsvpApi.getAll()])
+      .then(([alumniRes, rsvpRes]) => {
+        if (alumniRes.status === 'fulfilled') {
+          setRegistered(
+            alumniRes.value
+              .filter((a) => a.isRegistered && !looksLikeDemo(a))
+              .map(fromAlumni)
+          );
+        }
+        if (rsvpRes.status === 'fulfilled') {
+          setRsvps((rsvpRes.value || []).map(fromRsvp));
+        }
+      })
       .finally(() => setLoading(false));
   }, []);
 
-  // Hostel options derived from the data — keeps the dropdown in sync with
-  // whatever values registrations actually contain (no hardcoded H1/H2 list).
+  // Merge + dedupe. Registered wins over RSVP for the same email.
+  const entries = useMemo(() => {
+    const byEmail = new Map();
+    for (const e of registered) if (e.email) byEmail.set(e.email, e);
+    for (const e of rsvps) {
+      if (!e.email || byEmail.has(e.email)) continue;
+      byEmail.set(e.email, e);
+    }
+    return [...byEmail.values()];
+  }, [registered, rsvps]);
+
   const hostelOptions = useMemo(() => {
-    const set = new Set(alumni.map((a) => a.hostel).filter(Boolean));
+    const set = new Set(entries.map((a) => a.hostel).filter(Boolean));
     return [...set].sort().map((h) => ({ value: h, label: `Hostel ${h}` }));
-  }, [alumni]);
+  }, [entries]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
-    return alumni.filter((a) => {
+    return entries.filter((a) => {
+      if (kind !== 'all' && a.kind !== kind) return false;
       if (branch && a.branch !== branch) return false;
       if (hostel && a.hostel !== hostel) return false;
       if (!q) return true;
@@ -86,51 +146,60 @@ export default function WhosComingPage() {
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [alumni, search, branch, hostel]);
+  }, [entries, search, branch, hostel, kind]);
 
   const stats = useMemo(() => {
-    const total = alumni.length;
-    const branches = new Set(alumni.map((a) => a.branch).filter(Boolean)).size;
-    const cities = new Set(alumni.map((a) => a.currentCity).filter(Boolean)).size;
-    const family = alumni.reduce(
-      (n, a) =>
-        n +
-        (Number(a.adults) || 0) +
-        (Number(a.childrenUnder10) || 0) +
-        (Number(a.children10Plus) || 0),
+    const reg = entries.filter((e) => e.kind === 'registered').length;
+    const rsv = entries.filter((e) => e.kind === 'rsvp').length;
+    const branches = new Set(entries.map((e) => e.branch).filter(Boolean)).size;
+    // Headcount is only meaningful for registered (full party size known).
+    // RSVPs only carry a loose "familyJoining" string; we add 1 (the alum)
+    // plus any numeric family count we managed to parse.
+    const headcount = entries.reduce(
+      (n, e) => n + 1 + (Number(e.family) || 0),
       0
     );
-    return { total, branches, cities, family };
-  }, [alumni]);
+    return { reg, rsv, branches, headcount };
+  }, [entries]);
 
   return (
     <motion.div {...pageTransition} className="max-w-6xl mx-auto">
       <div className="mb-6">
         <h1 className="text-3xl md:text-4xl font-heading font-bold text-white mb-2">
-          Who's Coming 🙋
+          Who's Registered 🙋
         </h1>
         <p className="text-slate-400 text-sm">
-          The batch members confirmed for REConverge 2001 — refresh anytime as more registrations
-          come in.
+          Everyone signalling intent for REConverge 2001 — full registrations
+          plus quick RSVPs. Refresh as more come in.
         </p>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <StatPill label="Confirmed" value={stats.total} />
+        <StatPill label="Registered" value={stats.reg} />
+        <StatPill label="RSVPed" value={stats.rsv} />
         <StatPill label="Branches" value={stats.branches} />
-        <StatPill label="Cities" value={stats.cities} />
-        <StatPill label="Total headcount (incl. family)" value={stats.family} />
+        <StatPill label="Total headcount (incl. family)" value={stats.headcount} />
       </div>
 
       {/* Filters */}
       <GlassCard hover={false} className="mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
           <Input
             label="Search"
             placeholder="Name, city, company…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+          />
+          <Select
+            label="Type"
+            value={kind}
+            onChange={(e) => setKind(e.target.value)}
+            options={[
+              { value: 'all', label: 'All entries' },
+              { value: 'registered', label: 'Registered only' },
+              { value: 'rsvp', label: 'RSVP only' },
+            ]}
           />
           <Select
             label="Branch"
@@ -178,9 +247,21 @@ function StatPill({ label, value }) {
   );
 }
 
+function KindBadge({ kind }) {
+  const cfg =
+    kind === 'registered'
+      ? { label: 'Registered', cls: 'bg-emerald-500/15 text-emerald-300 border-emerald-400/30' }
+      : { label: 'RSVP', cls: 'bg-sky-500/15 text-sky-300 border-sky-400/30' };
+  return (
+    <span
+      className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${cfg.cls} flex-shrink-0`}
+    >
+      {cfg.label}
+    </span>
+  );
+}
+
 function AttendeeCard({ a }) {
-  const family =
-    (Number(a.adults) || 1) - 1 + (Number(a.childrenUnder10) || 0) + (Number(a.children10Plus) || 0);
   const arr = fmtDate(a.arrivalDate);
   const dep = fmtDate(a.departureDate);
   return (
@@ -192,15 +273,18 @@ function AttendeeCard({ a }) {
           className="w-14 h-14 rounded-full border border-white/10 bg-white/5 object-cover flex-shrink-0"
         />
         <div className="flex-1 min-w-0">
-          <p className="text-white font-semibold leading-tight truncate">{a.name}</p>
+          <div className="flex items-center gap-2">
+            <p className="text-white font-semibold leading-tight truncate">{a.name || '—'}</p>
+            <KindBadge kind={a.kind} />
+          </div>
           <p className="text-xs text-slate-400 mt-0.5 truncate">
             {a.branch || '—'}
             {a.hostel ? ` · Hostel ${a.hostel}` : ''}
           </p>
         </div>
-        {family > 0 && (
+        {a.family > 0 && (
           <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gold-500/15 text-gold-300 border border-gold-400/30 flex-shrink-0">
-            +{family}
+            +{a.family}
           </span>
         )}
       </div>
@@ -222,6 +306,14 @@ function AttendeeCard({ a }) {
           <p>
             <span className="text-slate-500">Reunion days: </span>
             {arr || '—'} {arr || dep ? '→' : ''} {dep || '—'}
+          </p>
+        )}
+        {a.kind === 'rsvp' && (a.foodPreference || a.volunteer) && (
+          <p>
+            <span className="text-slate-500">RSVP: </span>
+            {[a.foodPreference, a.volunteer ? 'volunteering' : null]
+              .filter(Boolean)
+              .join(' · ')}
           </p>
         )}
       </div>

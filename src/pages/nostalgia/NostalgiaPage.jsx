@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { pageTransition, staggerContainer, staggerItem } from '../../utils/animationVariants';
 import GlassCard from '../../components/ui/GlassCard';
 import SectionHeading from '../../components/shared/SectionHeading';
-import Badge from '../../components/ui/Badge';
 
 const sections = [
   { title: 'Photo Gallery', description: 'Browse through hundreds of photos from campus life, events, and hostel days.', icon: '📸', path: '/nostalgia/photos' },
@@ -21,10 +20,6 @@ export default function NostalgiaPage() {
         title="The Yearbook"
         subtitle="Echoes and Images of 2001"
       />
-
-      <div className="flex justify-center mb-8">
-        <Badge variant="gold" size="lg">Coming Soon...</Badge>
-      </div>
 
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-12">
         {sections.map((s) => (

@@ -82,7 +82,7 @@ export const NAV_LINKS = [
 // out of this list until SC/MCC have real content — one-line change to add.
 export const NAV_LINKS_PROTECTED = [
   { label: 'Agenda', path: '/agenda', icon: '📅' },
-  { label: "Who's Coming", path: '/whos-coming', icon: '🙋' },
+  { label: "Who's Registered", path: '/whos-coming', icon: '🙋' },
   { label: 'My Events', path: '/events/my-plan', icon: '📋' },
   { label: 'Stay', path: '/stay', icon: '🏨' },
   { label: 'Travel', path: '/travel', icon: '🚐' },

@@ -83,7 +83,17 @@ export const galleryPhotos = [
   ...scannedPhotos,
 ];
 
-export const galleryVideos = [];
+// Curated batch videos. To add more, append an entry with a YouTube URL —
+// the gallery page parses out the video id and renders an inline player.
+export const galleryVideos = [
+  {
+    id: 'v-townhall-2026-04',
+    title: 'Golden memories - 1',
+    description: 'First batch-wide sync (Apr 2026). Title reveal, website walkthrough, run order, Giveback, budget, and Q&A.',
+    youtubeUrl: 'https://www.youtube.com/watch?v=Jiz1OKUVI8A',
+    publishedAt: '2026-04-25',
+  },
+];
 
 export const galleryCategories = [
   { id: 'all', label: 'All' },
