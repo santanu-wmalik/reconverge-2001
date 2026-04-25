@@ -5,6 +5,7 @@ import BackToTop from '../shared/BackToTop';
 import BackgroundSlideshow from '../shared/BackgroundSlideshow';
 import FloatingPhotos from '../shared/FloatingPhotos';
 import AnnouncementsBanner from '../shared/AnnouncementsBanner';
+import ImpersonationBanner from './ImpersonationBanner';
 
 export default function PublicLayout() {
   return (
@@ -12,6 +13,7 @@ export default function PublicLayout() {
       <BackgroundSlideshow />
       <FloatingPhotos />
       <div className="flex flex-col min-h-screen lg:px-44">
+        <ImpersonationBanner />
         <Header />
         <AnnouncementsBanner />
         <main className="flex-1 relative z-[1]">

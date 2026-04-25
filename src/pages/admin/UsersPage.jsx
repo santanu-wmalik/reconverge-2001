@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { pageTransition, staggerContainer, staggerItem } from '../../utils/animationVariants';
 import { alumniApi, userApi } from '../../services/api';
@@ -41,8 +42,9 @@ function Toggle({ on, disabled, onChange, label }) {
 }
 
 export default function UsersPage() {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, isSuperAdmin: viewerIsSuperAdmin, impersonating, impersonate } = useAuth();
   const { showToast } = useToast();
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [alumniByEmail, setAlumniByEmail] = useState({});
   const [loading, setLoading] = useState(true);
@@ -67,6 +69,26 @@ export default function UsersPage() {
     const supers = users.filter((u) => u.role === 'super-admin').length;
     return { total, admins, supers, alumni: total - admins - supers };
   }, [users]);
+
+  const handleImpersonate = async (row) => {
+    // Confirm — the action immediately swaps the live session, so a stray
+    // click on the wrong row would be confusing without a beat to react.
+    const ok = window.confirm(
+      `Impersonate ${row.email}? You'll see the portal as them. A banner stays on screen until you stop.`
+    );
+    if (!ok) return;
+    setBusyId(row.id);
+    const res = await impersonate(row.id);
+    setBusyId(null);
+    if (!res.success) {
+      showToast(res.error || 'Could not impersonate', 'error');
+      return;
+    }
+    showToast(`Now viewing as ${row.email}`, 'success');
+    // Send them where the target user actually lives. Admins/super-admins go
+    // to the admin dashboard; regular alumni land on their profile.
+    navigate(row.role === 'alumni' ? '/profile' : '/admin');
+  };
 
   const handleToggle = async (row, nextOn) => {
     // Guard rails (also enforced via disabled state, but belt-and-braces):
@@ -150,16 +172,33 @@ export default function UsersPage() {
                       </p>
                     )}
                   </div>
-                  <div className="flex flex-col items-end gap-1 flex-shrink-0">
-                    <Toggle
-                      on={on}
-                      disabled={disabled}
-                      onChange={(next) => handleToggle(u, next)}
-                      label={`Admin portal access for ${u.email}`}
-                    />
-                    <p className="text-[10px] uppercase tracking-wider text-slate-500">
-                      Admin portal {on ? 'on' : 'off'}
-                    </p>
+                  <div className="flex items-center gap-3 flex-shrink-0">
+                    {/* Impersonate — super-admin only, never on self, never
+                        while already impersonating. Hidden otherwise so
+                        regular admins viewing this page (none today, but
+                        possible in future) don't see a button they can't use. */}
+                    {viewerIsSuperAdmin && !isSelf && !impersonating && (
+                      <button
+                        type="button"
+                        onClick={() => handleImpersonate(u)}
+                        disabled={busyId === u.id}
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gold-400/40 text-gold-300 hover:bg-gold-400/10 disabled:opacity-50 whitespace-nowrap"
+                        title={`View the portal as ${u.email}`}
+                      >
+                        {busyId === u.id ? 'Switching…' : 'Impersonate'}
+                      </button>
+                    )}
+                    <div className="flex flex-col items-end gap-1">
+                      <Toggle
+                        on={on}
+                        disabled={disabled}
+                        onChange={(next) => handleToggle(u, next)}
+                        label={`Admin portal access for ${u.email}`}
+                      />
+                      <p className="text-[10px] uppercase tracking-wider text-slate-500">
+                        Admin portal {on ? 'on' : 'off'}
+                      </p>
+                    </div>
                   </div>
                 </motion.li>
               );

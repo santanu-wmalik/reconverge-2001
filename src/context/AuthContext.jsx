@@ -8,6 +8,10 @@ const initialState = {
   isAuthenticated: false,
   isAdmin: false,
   isSuperAdmin: false,
+  // Impersonation: when a super-admin "Views as" another user, we still want
+  // to know they originally were super-admin so the banner + Stop button
+  // render. The flag flips via the LOGIN action's optional `impersonating`.
+  impersonating: false,
 };
 
 // Role semantics:
@@ -27,6 +31,14 @@ function authReducer(state, action) {
       return {
         user: action.payload,
         isAuthenticated: true,
+        impersonating: false,
+        ...deriveFlags(action.payload.role),
+      };
+    case 'IMPERSONATE':
+      return {
+        user: action.payload,
+        isAuthenticated: true,
+        impersonating: true,
         ...deriveFlags(action.payload.role),
       };
     case 'LOGOUT':
@@ -149,6 +161,38 @@ export function AuthProvider({ children }) {
     dispatch({ type: 'LOGOUT' });
   };
 
+  // Super-admin only. The server enforces — the UI just provides the entry
+  // point. On success we swap our token + user so every subsequent request
+  // is "as" the target user. We deliberately keep the React state shape
+  // unchanged (same `user` object), only flipping `impersonating: true`,
+  // so the rest of the app behaves identically to a real session.
+  const impersonate = async (targetUserId) => {
+    try {
+      const { user, token } = await authApi.impersonate(targetUserId);
+      setAuthToken(token);
+      dispatch({ type: 'IMPERSONATE', payload: user });
+      return { success: true, user };
+    } catch (err) {
+      return {
+        success: false,
+        error: err?.status === 403 ? 'Super-admin access required' : 'Could not impersonate.',
+      };
+    }
+  };
+
+  const stopImpersonating = async () => {
+    try {
+      const { user, token } = await authApi.stopImpersonating();
+      setAuthToken(token);
+      // LOGIN action — clears the impersonating flag and re-derives super-admin
+      // flags from the original role.
+      dispatch({ type: 'LOGIN', payload: user });
+      return { success: true };
+    } catch (err) {
+      return { success: false, error: 'Could not stop impersonating. Please log in again.' };
+    }
+  };
+
   const updateProfile = async (data) => {
     dispatch({ type: 'UPDATE_PROFILE', payload: data });
     if (state.user?.id) {
@@ -161,7 +205,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ ...state, login, logout, updateProfile }}>
+    <AuthContext.Provider value={{ ...state, login, logout, updateProfile, impersonate, stopImpersonating }}>
       {children}
     </AuthContext.Provider>
   );

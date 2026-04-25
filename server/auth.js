@@ -146,6 +146,95 @@ export function mountAuth(app) {
     res.json({ ok: true });
   });
 
+  // ── POST /api/auth/impersonate ─────────────────────────────────────────
+  // Super-admin-only. Issues a new token that acts as the target user but
+  // remembers the original super-admin so they can switch back without
+  // re-entering their password. The new token's session carries an
+  // `impersonatedBy` field; the role used for authz is the TARGET user's
+  // role (not super-admin) so the impersonator sees the portal exactly the
+  // way the target sees it.
+  app.post('/api/auth/impersonate', async (req, res, next) => {
+    try {
+      const callerToken = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+      const caller = callerToken && tokens.get(callerToken);
+      if (!caller || caller.role !== 'super-admin') {
+        return res.status(403).json({ error: 'Super-admin access required' });
+      }
+      // Don't allow chained impersonation — keeps the back-button trail simple.
+      if (caller.impersonatedBy) {
+        return res
+          .status(400)
+          .json({ error: 'Already impersonating; stop first before starting a new session.' });
+      }
+      const { targetUserId } = req.body || {};
+      if (!targetUserId) return res.status(400).json({ error: 'targetUserId is required' });
+      const ur = await query(`SELECT * FROM users WHERE id = $1`, [targetUserId]);
+      const targetUser = ur.rows[0];
+      if (!targetUser) return res.status(404).json({ error: 'Target user not found' });
+      if (targetUser.id === caller.userId) {
+        return res.status(400).json({ error: 'Cannot impersonate yourself' });
+      }
+      const targetAlumni = targetUser.alumni_id
+        ? await findAlumniById(targetUser.alumni_id)
+        : null;
+      if (!targetAlumni) return res.status(404).json({ error: 'Target alumni profile missing' });
+
+      const token = newToken();
+      tokens.set(token, {
+        userId: targetUser.id,
+        alumniId: targetAlumni.id,
+        role: targetUser.role || 'alumni',
+        email: targetUser.email,
+        issuedAt: Date.now(),
+        // Snapshot enough to switch back without a password.
+        impersonatedBy: {
+          userId: caller.userId,
+          alumniId: caller.alumniId,
+          role: caller.role,
+          email: caller.email,
+        },
+      });
+      // We deliberately leave the caller's original token alive — if they
+      // open a second tab, that tab keeps working as super-admin. The "Stop
+      // impersonating" call below also re-issues a fresh super-admin token,
+      // so cleanup is automatic from either side.
+      res.json({
+        user: { ...rowToJson('alumni', targetAlumni), role: targetUser.role || 'alumni' },
+        token,
+        impersonating: true,
+      });
+    } catch (err) { next(err); }
+  });
+
+  // ── POST /api/auth/stop-impersonating ──────────────────────────────────
+  app.post('/api/auth/stop-impersonating', async (req, res, next) => {
+    try {
+      const t = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+      const session = t && tokens.get(t);
+      if (!session || !session.impersonatedBy) {
+        return res.status(400).json({ error: 'Not currently impersonating' });
+      }
+      // Look up the original super-admin's alumni record to return as `user`.
+      const orig = session.impersonatedBy;
+      const alumniRow = await findAlumniById(orig.alumniId);
+      if (!alumniRow) return res.status(409).json({ error: 'Original account no longer exists' });
+      // Drop the impersonation token; mint a fresh super-admin token.
+      tokens.delete(t);
+      const newT = newToken();
+      tokens.set(newT, {
+        userId: orig.userId,
+        alumniId: orig.alumniId,
+        role: orig.role,
+        email: orig.email,
+        issuedAt: Date.now(),
+      });
+      res.json({
+        user: { ...rowToJson('alumni', alumniRow), role: orig.role },
+        token: newT,
+      });
+    } catch (err) { next(err); }
+  });
+
   // ── GET /api/auth/me ───────────────────────────────────────────────────
   app.get('/api/auth/me', async (req, res, next) => {
     try {
@@ -154,7 +243,13 @@ export function mountAuth(app) {
       if (!session) return res.status(401).json({ error: 'Not signed in' });
       const alumniRow = await findAlumniById(session.alumniId);
       if (!alumniRow) return res.status(401).json({ error: 'Account no longer exists' });
-      res.json({ user: { ...rowToJson('alumni', alumniRow), role: session.role } });
+      res.json({
+        user: { ...rowToJson('alumni', alumniRow), role: session.role },
+        impersonating: Boolean(session.impersonatedBy),
+        impersonatedBy: session.impersonatedBy
+          ? { name: session.impersonatedBy.email, role: session.impersonatedBy.role }
+          : null,
+      });
     } catch (err) { next(err); }
   });
 }

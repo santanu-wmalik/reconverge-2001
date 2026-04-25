@@ -5,6 +5,7 @@ import BackToTop from '../shared/BackToTop';
 import BackgroundSlideshow from '../shared/BackgroundSlideshow';
 import FloatingPhotos from '../shared/FloatingPhotos';
 import AnnouncementsBanner from '../shared/AnnouncementsBanner';
+import ImpersonationBanner from './ImpersonationBanner';
 import { useAuth } from '../../context/AuthContext';
 
 // Base admin nav shared by all admin-portal viewers.
@@ -34,6 +35,7 @@ export default function AdminLayout() {
       <BackgroundSlideshow />
       <FloatingPhotos />
       <div className="flex flex-col min-h-screen lg:px-44">
+        <ImpersonationBanner />
         <Header />
         <AnnouncementsBanner />
         <main className="flex-1 relative z-[1]">

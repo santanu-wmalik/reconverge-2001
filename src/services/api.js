@@ -58,6 +58,12 @@ export const authApi = {
     }),
   logout: () => request('/auth/logout', { method: 'POST' }),
   me: () => request('/auth/me'),
+  impersonate: (targetUserId) =>
+    request('/auth/impersonate', {
+      method: 'POST',
+      body: JSON.stringify({ targetUserId }),
+    }),
+  stopImpersonating: () => request('/auth/stop-impersonating', { method: 'POST' }),
 };
 
 // --- Alumni ---
