@@ -101,8 +101,8 @@ export const planningLog = [
     date: '2026-02-26',
     title: 'Banking & Website Progress',
     summary: 'Bank-account work advanced. Website launch announced.',
-    internalNotes: 'Banks visited: Axis (responded), ICICI (no response), HDFC (no response). Mahroof (Civil, Calicut-based) working with SBI on the NITC campus. Account will open as an Association of Persons (unregistered committee) — needs seal and letterhead. Vinu Joseph (EEE, DGM at SBI) offered to lead the Finance Committee.',
-    actionItems: ['Close bank-account setup at SBI CREC', 'Launch the website at the next volunteers meeting', 'Onboard Vinu Joseph to the Finance Committee'],
+    internalNotes: 'Banks visited: Axis (responded), ICICI (no response), HDFC (no response). Mahroof (Civil, Calicut-based) working with SBI on the NITC campus. Account will open as an Association of Persons (unregistered committee) — needs seal and letterhead.',
+    actionItems: ['Close bank-account setup at SBI CREC', 'Launch the website at the next volunteers meeting'],
     status: 'in_progress',
   },
   {
@@ -282,7 +282,7 @@ export const budgetItems = [
 ];
 
 // Sources: chat log 2/16 (Axis/ICICI/HDFC outreach), 2/26 (Mahroof/SBI, account
-// holders, Vinu Joseph), xlsx MoM tab (Association-of-Persons structure).
+// holders), xlsx MoM tab (Association-of-Persons structure).
 export const bankingStatus = {
   status: 'in_progress',
   type: 'Association of Persons (Unregistered Committee)',
@@ -293,7 +293,6 @@ export const bankingStatus = {
     { bank: 'SBI (NITC Campus)', status: 'in_progress', notes: 'Mahroof working with the branch. Needs seal + letterhead.' },
   ],
   accountHolders: ['Shyam', 'Mahroof'],
-  financeHead: 'Vinu Joseph (EEE) — DGM at SBI (proposed)',
 };
 
 // Branch outreach — totalEstimate / percentage were fabricated earlier.
@@ -479,7 +478,6 @@ export const actionItems = [
   { id: 'ai-07', task: 'Collect website feedback from volunteers', assignee: 'Rajasimha / Shrinath', priority: 'medium', status: 'in_progress' },
   { id: 'ai-08', task: 'Contact Yagya Dutt for post-event Kerala tour options', assignee: 'Prithwi', priority: 'low', status: 'open' },
   { id: 'ai-09', task: 'Compile list of departed batchmates for the remembrance segment', assignee: 'Branch Reps', priority: 'medium', status: 'in_progress', notes: '5 confirmed in xlsx Remembrance sheet.' },
-  { id: 'ai-10', task: 'Onboard Vinu Joseph to the Finance Committee', assignee: 'Shyam', priority: 'high', status: 'open' },
-  { id: 'ai-11', task: 'Lock Townhall agenda and speakers for 25/26 Apr sessions', assignee: 'Robin / Sharmishta', priority: 'high', status: 'in_progress' },
-  { id: 'ai-12', task: 'Freeze logo brief with Vipin Chandran', assignee: 'Sharmishta', priority: 'medium', status: 'in_progress' },
+  { id: 'ai-10', task: 'Lock Townhall agenda and speakers for 25/26 Apr sessions', assignee: 'Robin / Sharmishta', priority: 'high', status: 'in_progress' },
+  { id: 'ai-11', task: 'Freeze logo brief with Vipin Chandran', assignee: 'Sharmishta', priority: 'medium', status: 'in_progress' },
 ];

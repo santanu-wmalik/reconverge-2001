@@ -82,7 +82,7 @@ export const journeyMilestones = [
     id: 'jm-010',
     date: '2026-02-26',
     title: 'Banking Progress & Website Launch Announced',
-    description: 'Bank account work advanced through Mahroof (Civil, Calicut) who was coordinating with the SBI branch on the NITC campus. The decision was to open the account as an unregistered Association of Persons, with two account holders to start. Vinu Joseph (EEE, DGM at SBI) offered to lead the Finance Committee. The REConverge 2001 website launch was announced for the upcoming volunteers call.',
+    description: 'Bank account work advanced through Mahroof (Civil, Calicut) who was coordinating with the SBI branch on the NITC campus. The decision was to open the account as an unregistered Association of Persons, with two account holders to start. The REConverge 2001 website launch was announced for the upcoming volunteers call.',
     category: 'milestone',
     highlight: true,
   },
