@@ -3,6 +3,7 @@ import { galleryVideos } from '../../data/galleryPhotos';
 import { pageTransition, staggerContainer, staggerItem } from '../../utils/animationVariants';
 import GlassCard from '../../components/ui/GlassCard';
 import SectionHeading from '../../components/shared/SectionHeading';
+import { formatDate } from '../../utils/formatters';
 
 // Pull the 11-char id out of any common YouTube URL shape:
 //   https://www.youtube.com/watch?v=ID
@@ -80,11 +81,7 @@ export default function VideoGalleryPage() {
                   )}
                   {v.publishedAt && (
                     <p className="text-[11px] uppercase tracking-wider text-slate-500 mt-2">
-                      {new Date(v.publishedAt).toLocaleDateString('en-IN', {
-                        year: 'numeric',
-                        month: 'short',
-                        day: 'numeric',
-                      })}
+                      {formatDate(v.publishedAt, { month: 'short' })}
                     </p>
                   )}
                 </GlassCard>

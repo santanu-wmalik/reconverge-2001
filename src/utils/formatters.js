@@ -8,7 +8,13 @@ export function formatCurrency(amount, currency = 'INR') {
 }
 
 export function formatDate(dateStr, options = {}) {
-  const date = new Date(dateStr);
+  // Bare 'YYYY-MM-DD' strings are calendar days, not UTC instants. Parsing
+  // them via `new Date(str)` anchors to UTC midnight, which renders as the
+  // *previous* day for viewers in timezones west of UTC. Detect that shape
+  // and construct a local-midnight Date so the displayed day matches what
+  // was typed, regardless of where the viewer is.
+  const m = typeof dateStr === 'string' && /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateStr.trim());
+  const date = m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(dateStr);
   return date.toLocaleDateString('en-IN', {
     day: 'numeric',
     month: 'long',

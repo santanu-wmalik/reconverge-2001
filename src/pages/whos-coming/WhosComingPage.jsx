@@ -37,7 +37,14 @@ const looksLikeDemo = (a) => {
 
 const fmtDate = (iso) => {
   if (!iso) return null;
-  const d = new Date(iso);
+  // The DB stores arrival/departure as plain 'YYYY-MM-DD' strings — calendar
+  // days, not instants. `new Date('2026-12-25')` would parse that as UTC
+  // midnight, and anyone viewing from a timezone west of UTC sees the
+  // *previous* day after toLocaleDateString. Parse as local-time instead so
+  // the displayed day matches what the user typed in the form, regardless
+  // of where they (or the viewer) happen to be.
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso).trim());
+  const d = m ? new Date(+m[1], +m[2] - 1, +m[3]) : new Date(iso);
   if (Number.isNaN(d.getTime())) return iso;
   return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
 };
