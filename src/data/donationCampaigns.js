@@ -5,6 +5,37 @@
 // The batch's Give Back contribution flows through NITCAA to the New Health
 // Centre project (Susrutha Swastya Kendram) — the institute's flagship
 // fundraise for the expanding NITC campus.
+//
+// ── Two separate accounts — do not mix ─────────────────────────────────
+//   • REGISTRATION FEE  → `batchBankAccount` (below) — the CREC Alumni
+//     Association 2001 Batch account at SBI NITC Campus, opened 01-Aug-2026.
+//   • GIVE BACK DONATION → `paymentChannels.domestic` / `paymentChannels.fcra` —
+//     the NITCAA project account. Contributions flow through NITCAA per
+//     college mandate.
+//
+// The purpose line quoted with any Give Back transaction is "REC 2001 Batch
+// — Health Centre" so NITCAA can reconcile per-batch (per Uma NITCAA on
+// WhatsApp, 6-Aug-2026 process note).
+
+// ── REConverge 2001 batch bank account (REGISTRATION FEE only) ─────────
+// Opened at SBI NIT Calicut branch on 01-Aug-2026; announced on the
+// volunteers group by Shyam the same day. Used only for the reunion
+// registration fee and reunion expenses — never for Give Back donations.
+export const batchBankAccount = {
+  purpose: 'REConverge 2001 registration fee',
+  beneficiary: 'CREC Alumni Association 2001 Batch',
+  accountNumber: '45429696620',
+  ifsc: 'SBIN0002207',
+  bankBranch: 'State Bank of India — NIT Calicut Campus',
+  branchCode: '02207',
+  branchAddress: 'NIT Calicut Campus, Chathamangalam PO, Dist. Kozhikode, Kerala 673601',
+  branchEmail: 'sbi.02207@sbi.co.in',
+  branchPhones: ['9188937176', '9447788838'],
+  accountType: 'SAVINGS / Association of Persons',
+  openedOn: '2026-08-01',
+  supports: ['NEFT', 'RTGS', 'IMPS', 'UPI'],
+  paymentReferenceHint: 'Quote your Registration ID (SJ-2026-####) in the transfer remarks.',
+};
 
 export const healthCentreProject = {
   id: 'nitcaa-health-centre',
@@ -60,14 +91,59 @@ export const paymentChannels = {
   },
 };
 
+// Per Uma (NITCAA Office, 6-Aug-2026 WhatsApp): the info to submit for every
+// donation. Mirrors the NITCAA thank-you email template that Aravind
+// Parameswaran received for the 2000-batch Giving Back initiative.
 export const paymentRequiredInfo = [
-  'NEFT / RTGS / IMPS / UPI / SWIFT transaction number',
-  'Name of the donor and full address',
-  'PAN (if you want the 80G tax-exemption certificate)',
-  'Passport copy (mandatory for NRI / foreign donors)',
-  'Purpose of contribution (quote: "REConverge 2001 — Health Centre")',
-  'Email the above to nitcaa@nitc.ac.in',
+  'Donor name and branch',
+  'Phone and email',
+  'Amount (INR)',
+  'Transaction reference (NEFT / RTGS / IMPS / UPI / SWIFT)',
+  'Transaction date and mode of payment',
+  'PAN — required for 80G receipt (Indian citizens only)',
+  'Passport copy — for NRI / foreign citizens',
+  'Purpose of contribution (quote: "REC 2001 Batch — Health Centre")',
+  'Submit via the batch Google Form or email nitcaa@nitc.ac.in (with a copy to the REConverge 2001 Finance Committee for reconciliation).',
 ];
+
+// NITCAA contribution process — Uma NITCAA, 6-Aug-2026. Explains what happens
+// after the donor pays: how batches submit details, how NITCAA reconciles,
+// receipts, thank-you emails, and Wall of Honor recognition.
+export const nitcaaContributionProcess = [
+  {
+    step: 'Submit contribution details',
+    detail:
+      'Each donor submits their contribution details via the REConverge 2001 batch Google Form (circulated by the Finance Committee), or directly by emailing nitcaa@nitc.ac.in.',
+  },
+  {
+    step: 'Batch coordinator maintains the list',
+    detail:
+      'The batch coordinator/team keeps the running contributor list. NITCAA also receives the contribution details via the project account.',
+  },
+  {
+    step: 'NITCAA reconciles',
+    detail:
+      "NITCAA cross-checks contributions received in the project account against the batch coordinator's list.",
+  },
+  {
+    step: '80G receipt (on request, if eligible)',
+    detail:
+      'NITCAA issues 80G receipts on request. Eligibility: Indian citizens who provide PAN and address, and who are eligible to claim the deduction under the applicable Old Tax Regime.',
+  },
+  {
+    step: 'Thank-you email',
+    detail: 'NITCAA sends a formal thank-you email to every contributor.',
+  },
+  {
+    step: 'Donor Wall of Honor',
+    detail:
+      'Contributors of ₹1 lakh or more will have their names displayed on the Donor Wall of the New Health Centre.',
+  },
+];
+
+// One-line eligibility note we surface next to the 80G tag anywhere it appears.
+export const eightyGEligibilityNote =
+  '80G receipts are issued only to Indian citizens who provide PAN and address, and who are eligible to claim the deduction under the applicable Old Tax Regime.';
 
 // The Class of 2001's batch-level initiative: rally contributions to the
 // NITCAA Health Centre, plus an optional support-staff welfare add-on.

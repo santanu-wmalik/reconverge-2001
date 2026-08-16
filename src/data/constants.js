@@ -28,7 +28,7 @@ export const EVENT_CONFIG = {
     checkinDate: '2026-12-27',
     checkoutDate: '2026-12-29',
   },
-  registrationFee: 12500,
+  registrationFee: 13500,
   familyMemberFee: 2500,
   registrationDeadline: 'Jun 30th, 2026',
   batchYear: 2001,
@@ -82,6 +82,7 @@ export const NAV_LINKS = [
 // out of this list until SC/MCC have real content — one-line change to add.
 export const NAV_LINKS_PROTECTED = [
   { label: 'Agenda', path: '/agenda', icon: '📅' },
+  { label: 'My Payments', path: '/payments', icon: '💳' },
   { label: "Who's Registered", path: '/whos-coming', icon: '🙋' },
   { label: 'My Events', path: '/events/my-plan', icon: '📋' },
   { label: 'Stay', path: '/stay', icon: '🏨' },
@@ -127,10 +128,10 @@ export const FAQ_DATA = [
   { id: 'f-evt-6', question: 'When will the event logo be revealed?', category: 'Event', answer: 'The logo is being designed by Vipin Chandran (from the batch). We decided not to rush it for the townhall — reveal will happen a week or so after, once the design is finalised. Title (REConverge 2001) stays constant.' },
 
   // === Fees & Payment ===
-  { id: 'f-fee-1', question: 'What does registration cost?', category: 'Fees', answer: 'Registration is ₹12,500 per alumnus and ₹2,500 per additional family member (partner, child, parent). Fee is locked. This excludes accommodation (paid to the hotel), travel to Calicut, and the Giving Back contribution (separate channel).' },
-  { id: 'f-fee-2', question: 'How do I pay the registration fee?', category: 'Fees', answer: 'Payment is made via direct bank transfer / SWIFT to the batch bank account — the website itself does not collect payments (batch decision, MoM 1 March 2026). Bank details will be published to registered alumni once the SBI CREC account setup completes. After you pay, paste the transaction reference as your Payment UID on your profile — the Finance Committee reconciles and flips the status to "Payment Confirmed".' },
-  { id: 'f-fee-3', question: 'What is the "Giving Back" program — and is it tax-deductible?', category: 'Fees', answer: 'Our batch\u2019s Give Back rallies behind NITCAA\u2019s flagship project — the Susrutha Swastya Kendram, a new on-campus Health Centre (₹3.5 crore total; Class of 1999 has already pledged ₹47 lakhs). Contributions flow directly through the NITCAA account, separate from the reunion registration fee. Indian donors get 80G tax exemption; international donors use the FCRA route at SBI New Delhi. Individual contributions of ₹1 lakh+ are recognised on the campus Wall of Honor. Full banking details and the UPI QR sit on the Give Back page.' },
-  { id: 'f-fee-4', question: 'Can I contribute to Give Back even if I can\u2019t attend the reunion?', category: 'Fees', answer: 'Absolutely. The Give Back contribution is independent of registration — you can transfer directly to the NITCAA account (or the FCRA account for non-Indian-passport donors) and email the transaction reference to nitcaa@nitc.ac.in with the purpose line "REConverge 2001 — Health Centre". You\u2019ll still receive the 80G certificate and Wall of Honor recognition at the ₹1 lakh+ threshold.' },
+  { id: 'f-fee-1', question: 'What does registration cost?', category: 'Fees', answer: 'Registration is ₹13,500 per alumnus and ₹2,500 per additional family member (partner, child, parent). Fee is locked. This excludes accommodation (paid to the hotel), travel to Calicut, and the Giving Back contribution (separate channel).' },
+  { id: 'f-fee-2', question: 'How do I pay the registration fee?', category: 'Fees', answer: 'Payment is made via direct bank transfer to the REConverge 2001 batch bank account — the website itself does not collect payments (batch decision, MoM 1 March 2026). Account: CREC Alumni Association 2001 Batch, A/c 45429696620, IFSC SBIN0002207, SBI NIT Calicut Campus (Branch 02207). NEFT / RTGS / IMPS / UPI all supported. Quote your Registration ID (SJ-2026-####) in the remarks, then paste the transaction reference as your Payment UID on your profile — the Finance Committee reconciles and flips the status to "Payment Confirmed".' },
+  { id: 'f-fee-3', question: 'What is the "Giving Back" program — and is it tax-deductible?', category: 'Fees', answer: 'Our batch\u2019s Give Back rallies behind NITCAA\u2019s flagship project — the Susrutha Swastya Kendram, a new on-campus Health Centre (₹3.5 crore total; Class of 1999 has already pledged ₹47 lakhs). Contributions flow directly through the NITCAA project account — separate from the REConverge 2001 batch account used for registration. Quote the purpose as "REC 2001 Batch — Health Centre" so NITCAA can reconcile per-batch. 80G receipts are issued only to Indian citizens who provide PAN and address and who are eligible to claim the deduction under the applicable Old Tax Regime. International donors use the FCRA route at SBI New Delhi. Contributions of ₹1 lakh or more will have the donor’s name displayed on the Wall of Honor at the New Health Centre. Full banking details, the UPI QR, and the step-by-step NITCAA process sit on the Give Back page.' },
+  { id: 'f-fee-4', question: 'Can I contribute to Give Back even if I can\u2019t attend the reunion?', category: 'Fees', answer: 'Absolutely. The Give Back contribution is independent of registration — you can transfer directly to the NITCAA account (or the FCRA account for non-Indian-passport donors) and email the transaction reference to nitcaa@nitc.ac.in with the purpose line "REC 2001 Batch — Health Centre" (with a copy to the REConverge 2001 Finance Committee for reconciliation). You\u2019ll still be eligible for an 80G receipt if you are an Indian citizen who provides PAN and address and qualifies under the Old Tax Regime. Wall of Honor recognition kicks in at the ₹1 lakh threshold.' },
 
   // === Communications & Engagement ===
   { id: 'f-comms-1', question: 'What are the townhalls — and do I have to attend?', category: 'Comms', answer: 'Townhalls are batch-wide calls where the volunteer team shares progress and takes questions live. The first pair is scheduled for 25 Apr (Sat 8–9 PM IST) and 26 Apr (Sun 10–11 AM IST) — split across time zones so everyone has a friendly slot. Attendance is not required; every session is auto-recorded and the recording + transcript get posted to the Townhalls page (visible once you log in).' },

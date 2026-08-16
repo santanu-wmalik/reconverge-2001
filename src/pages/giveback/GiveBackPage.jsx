@@ -1,5 +1,12 @@
 import { motion } from 'framer-motion';
-import { healthCentreProject, paymentChannels, paymentRequiredInfo, giveBackInitiatives } from '../../data/donationCampaigns';
+import {
+  healthCentreProject,
+  paymentChannels,
+  paymentRequiredInfo,
+  giveBackInitiatives,
+  nitcaaContributionProcess,
+  eightyGEligibilityNote,
+} from '../../data/donationCampaigns';
 import { pageTransition, staggerContainer, staggerItem } from '../../utils/animationVariants';
 import GlassCard from '../../components/ui/GlassCard';
 import Badge from '../../components/ui/Badge';
@@ -128,7 +135,7 @@ export default function GiveBackPage() {
       {/* How to contribute */}
       <div className="mb-12">
         <h3 className="text-xl font-heading font-bold text-white mb-2">How to contribute</h3>
-        <p className="text-slate-400 text-sm mb-6">All channels below route to the official NIT Calicut Alumni Association (NITCAA) account — the only legitimate recipient for this project. Always quote <span className="text-gold-400">&quot;REConverge 2001 — Health Centre&quot;</span> as the purpose.</p>
+        <p className="text-slate-400 text-sm mb-6">All channels below route to the official NIT Calicut Alumni Association (NITCAA) account — the only legitimate recipient for this project. Always quote <span className="text-gold-400">&quot;REC 2001 Batch — Health Centre&quot;</span> as the purpose so NITCAA can reconcile per-batch.</p>
 
         <div className="grid lg:grid-cols-3 gap-5">
           {/* UPI */}
@@ -182,7 +189,7 @@ export default function GiveBackPage() {
             <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-2xl flex-shrink-0">📋</div>
             <div className="flex-1">
               <h4 className="text-white font-heading font-semibold mb-2">After you pay — send these to NITCAA</h4>
-              <p className="text-slate-400 text-sm mb-3">NITCAA needs the following with every transfer so your contribution is credited correctly and your 80G certificate is issued:</p>
+              <p className="text-slate-400 text-sm mb-3">NITCAA needs the following with every transfer so your contribution is credited correctly and (if eligible) your 80G certificate is issued:</p>
               <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1 text-sm text-slate-300">
                 {paymentRequiredInfo.map((info, i) => (
                   <li key={i} className="flex items-start gap-2">
@@ -192,11 +199,38 @@ export default function GiveBackPage() {
                 ))}
               </ul>
               <p className="text-xs text-slate-500 mt-4">
-                Email everything to <a href={`mailto:${hc.contactEmail}?subject=${encodeURIComponent('REConverge 2001 - Health Centre contribution')}`} className="text-gold-400 hover:text-gold-300 underline">{hc.contactEmail}</a>
+                Email everything to <a href={`mailto:${hc.contactEmail}?subject=${encodeURIComponent('REC 2001 Batch - Health Centre contribution')}`} className="text-gold-400 hover:text-gold-300 underline">{hc.contactEmail}</a>
               </p>
             </div>
           </div>
         </GlassCard>
+      </div>
+
+      {/* NITCAA contribution process */}
+      <div className="mb-12">
+        <h3 className="text-xl font-heading font-bold text-white mb-2">How NITCAA handles your contribution</h3>
+        <p className="text-slate-400 text-sm mb-6">
+          The process was formally shared by the NITCAA Office (Uma N., 6 Aug 2026). Six steps
+          from your transfer to the Wall of Honor.
+        </p>
+        <div className="grid md:grid-cols-2 gap-4">
+          {nitcaaContributionProcess.map((step, i) => (
+            <GlassCard key={step.step}>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-full bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-sm font-semibold text-gold-300 flex-shrink-0">
+                  {i + 1}
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold text-sm mb-1">{step.step}</h4>
+                  <p className="text-slate-400 text-sm leading-relaxed">{step.detail}</p>
+                </div>
+              </div>
+            </GlassCard>
+          ))}
+        </div>
+        <div className="mt-4 rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-100/90">
+          <span className="font-semibold">80G eligibility:</span> {eightyGEligibilityNote}
+        </div>
       </div>
 
       {/* Secondary initiatives */}

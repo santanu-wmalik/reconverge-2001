@@ -68,6 +68,7 @@ const ProductDetailPage = lazyWithReload(() => import('./pages/merchandise/Produ
 const CartPage = lazyWithReload(() => import('./pages/merchandise/CartPage'));
 const NewsPage = lazyWithReload(() => import('./pages/news/NewsPage'));
 const TownhallsPage = lazyWithReload(() => import('./pages/townhalls/TownhallsPage'));
+const MyPaymentsPage = lazyWithReload(() => import('./pages/payments/MyPaymentsPage'));
 
 // New pages from real event
 const WhenWherePage = lazyWithReload(() => import('./pages/whenwhere/WhenWherePage'));
@@ -147,6 +148,7 @@ export const router = createBrowserRouter([
           { path: 'cart', element: <SuspenseWrapper><CartPage /></SuspenseWrapper> },
           { path: 'news', element: <SuspenseWrapper><NewsPage /></SuspenseWrapper> },
           { path: 'townhalls', element: <SuspenseWrapper><TownhallsPage /></SuspenseWrapper> },
+          { path: 'payments', element: <SuspenseWrapper><MyPaymentsPage /></SuspenseWrapper> },
         ],
       },
     ],

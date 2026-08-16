@@ -48,7 +48,7 @@ export default function BudgetPage() {
             <span className="text-2xl">🎫</span>
             <div>
               <p className="text-xs text-slate-400 uppercase tracking-wider">Per Person Registration</p>
-              <p className="text-2xl font-heading font-bold text-gold-400">{formatCurrency(12500)}</p>
+              <p className="text-2xl font-heading font-bold text-gold-400">{formatCurrency(13500)}</p>
             </div>
           </div>
           <ul className="text-xs text-slate-400 space-y-1">
@@ -92,7 +92,60 @@ export default function BudgetPage() {
             <p className="text-xs text-slate-400 mb-1">Account Holders</p>
             <p className="text-sm text-white">{bankingStatus.accountHolders.join(' & ')}</p>
           </div>
+          {bankingStatus.openedOn && (
+            <div className="bg-white/3 rounded-lg p-3 border border-white/5 md:col-span-2">
+              <p className="text-xs text-slate-400 mb-1">Opened On</p>
+              <p className="text-sm text-emerald-300">{bankingStatus.openedOn}</p>
+            </div>
+          )}
         </div>
+
+        {bankingStatus.account && (
+          <div className="mb-4 rounded-lg border border-emerald-500/30 bg-emerald-500/5 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-emerald-400">✅</span>
+              <h4 className="text-sm font-semibold text-white">Live Account Details</h4>
+            </div>
+            <div className="grid md:grid-cols-2 gap-x-6 gap-y-2 text-sm">
+              <div>
+                <p className="text-xs text-slate-400">Beneficiary</p>
+                <p className="text-white">{bankingStatus.account.beneficiary}</p>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400">Account Number</p>
+                <p className="text-white font-mono">{bankingStatus.account.accountNumber}</p>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400">IFSC</p>
+                <p className="text-white font-mono">{bankingStatus.account.ifsc}</p>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400">Branch</p>
+                <p className="text-white">{bankingStatus.account.bank} — {bankingStatus.account.branch} ({bankingStatus.account.branchCode})</p>
+              </div>
+              <div className="md:col-span-2">
+                <p className="text-xs text-slate-400">Branch Address</p>
+                <p className="text-white">{bankingStatus.account.branchAddress}</p>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400">Branch Email</p>
+                <p className="text-white">{bankingStatus.account.branchEmail}</p>
+              </div>
+              <div>
+                <p className="text-xs text-slate-400">Branch Phones</p>
+                <p className="text-white">{bankingStatus.account.branchPhones.join(' · ')}</p>
+              </div>
+              <div className="md:col-span-2">
+                <p className="text-xs text-slate-400">Supports</p>
+                <p className="text-white">{bankingStatus.account.supports.join(' · ')}</p>
+              </div>
+            </div>
+            <p className="mt-3 text-xs text-slate-400 italic">
+              This account is for the REConverge 2001 registration fee only. Give Back
+              donations route through the NITCAA project account — see the Give Back page.
+            </p>
+          </div>
+        )}
 
         <h4 className="text-xs font-semibold uppercase tracking-wider text-gold-400 mb-2">Bank Outreach</h4>
         <div className="space-y-2">

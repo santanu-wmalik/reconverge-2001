@@ -235,7 +235,7 @@ export const planningLog = [
 
 // Budget v1 from the xlsx "Budget v1 Template" sheet — under review by the
 // Finance Committee (Shyamnandan T). Numbers are planning estimates for 350
-// attendees (200 alumni + ~150 family). The registration fee (₹12,500) is
+// attendees (200 alumni + ~150 family). The registration fee (₹13,500) is
 // locked; line-item amounts are working estimates pending FC sign-off.
 export const budgetSummary = {
   assumedAlumniCount: 200,
@@ -243,13 +243,13 @@ export const budgetSummary = {
   totalEstimate: 3105000,       // ₹31.05 L
   perAlumniEstimate: 13650,     // ₹13,650 per alumni
   contingencyAmount: 500000,     // 5-10% buffer
-  registrationFee: 12500,
+  registrationFee: 13500,
   familyMemberFee: 2500,
   status: 'v1 draft — pending Finance Committee sign-off',
 };
 
 export const budgetItems = [
-  { category: 'Registration', item: 'Per person registration', amount: 12500, notes: 'Covers Gala dinner, Sadhya lunch on campus, souvenir kit, campus day activities. Locked.' },
+  { category: 'Registration', item: 'Per person registration', amount: 13500, notes: 'Covers Gala dinner, Sadhya lunch on campus, souvenir kit, campus day activities. Locked.' },
   { category: 'Registration', item: 'Additional family member', amount: 2500, notes: 'Per partner / child / parent. Locked.' },
 
   { category: 'Food & Beverage', item: 'Day 1 dinner buffet', amount: 280000, notes: '₹800/pax × 350 — includes hall reservation.' },
@@ -284,13 +284,26 @@ export const budgetItems = [
 // Sources: chat log 2/16 (Axis/ICICI/HDFC outreach), 2/26 (Mahroof/SBI, account
 // holders), xlsx MoM tab (Association-of-Persons structure).
 export const bankingStatus = {
-  status: 'in_progress',
+  status: 'complete',
   type: 'Association of Persons (Unregistered Committee)',
+  openedOn: '2026-08-01',
+  account: {
+    beneficiary: 'CREC Alumni Association 2001 Batch',
+    accountNumber: '45429696620',
+    ifsc: 'SBIN0002207',
+    bank: 'State Bank of India',
+    branch: 'NIT Calicut Campus',
+    branchCode: '02207',
+    branchAddress: 'NIT Calicut Campus, Chathamangalam PO, Dist. Kozhikode, Kerala 673601',
+    branchEmail: 'sbi.02207@sbi.co.in',
+    branchPhones: ['9188937176', '9447788838'],
+    supports: ['NEFT', 'RTGS', 'IMPS', 'UPI'],
+  },
   attempts: [
     { bank: 'Axis Bank', status: 'responded', notes: 'Provided the required documents' },
     { bank: 'ICICI Bank', status: 'no_response', notes: 'Visited — no response' },
     { bank: 'HDFC Bank', status: 'no_response', notes: 'Visited — no response' },
-    { bank: 'SBI (NITC Campus)', status: 'in_progress', notes: 'Mahroof working with the branch. Needs seal + letterhead.' },
+    { bank: 'SBI (NITC Campus)', status: 'complete', notes: 'Opened 01-Aug-2026 as CREC Alumni Association 2001 Batch (led by Mahroof). Seed transfer completed the same day.' },
   ],
   accountHolders: ['Shyam', 'Mahroof'],
 };
@@ -469,8 +482,8 @@ export const icarAgenda = [
 // so they have been removed; only where a real date is captured (e.g. set as a
 // committee deliverable) is `dueDate` kept.
 export const actionItems = [
-  { id: 'ai-01', task: 'Complete bank account setup at SBI CREC (NITC campus)', assignee: 'Shyam & Mahroof', priority: 'critical', status: 'in_progress' },
-  { id: 'ai-02', task: 'Launch registration process once bank account is live', assignee: 'Registration Committee', priority: 'critical', status: 'blocked', blockedBy: 'Bank account' },
+  { id: 'ai-01', task: 'Complete bank account setup at SBI CREC (NITC campus)', assignee: 'Shyam & Mahroof', priority: 'critical', status: 'complete', completedOn: '2026-08-01', notes: 'A/c 45429696620 (CREC Alumni Association 2001 Batch), IFSC SBIN0002207.' },
+  { id: 'ai-02', task: 'Launch registration process now that bank account is live', assignee: 'Registration Committee', priority: 'critical', status: 'in_progress' },
   { id: 'ai-03', task: 'Fill ECE branch representative positions', assignee: 'All volunteers', priority: 'high', status: 'open' },
   { id: 'ai-04', task: 'Fill Architecture branch representative positions', assignee: 'All volunteers', priority: 'high', status: 'open' },
   { id: 'ai-05', task: 'Roll out Give Back comms — Health Centre flagship', assignee: 'Giving Back Committee', priority: 'high', status: 'in_progress' },

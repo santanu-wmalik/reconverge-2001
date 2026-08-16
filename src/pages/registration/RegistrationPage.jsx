@@ -5,6 +5,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { pageTransition } from '../../utils/animationVariants';
 import { BRANCHES, TSHIRT_SIZES, DIETARY_OPTIONS, TRAVEL_MODES, ROOM_PREFERENCES, ID_TYPES, EVENT_CONFIG } from '../../data/constants';
+import { batchBankAccount } from '../../data/donationCampaigns';
 import { authApi } from '../../services/api';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -49,7 +50,7 @@ export default function RegistrationPage() {
 
   const update = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
 
-  // Registration fee: self (12500) + each additional family member (2500).
+  // Registration fee: self (13500) + each additional family member (2500).
   // Family = extra adults + all children (both buckets).
   const familyCount = Math.max(0, (form.adults - 1) + form.childrenUnder10 + form.children10Plus);
   const registrationFee = EVENT_CONFIG.registrationFee + familyCount * EVENT_CONFIG.familyMemberFee;
@@ -249,6 +250,18 @@ export default function RegistrationPage() {
               <p className="text-xs text-slate-500 mt-1">Accommodation &amp; Giving Back are billed separately.</p>
             </div>
 
+            <div className="rounded-lg border border-gold-500/30 bg-gold-500/5 p-4 space-y-2 text-sm">
+              <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold">Where to send the payment</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 text-slate-200">
+                <div><span className="text-slate-400">Beneficiary:</span> {batchBankAccount.beneficiary}</div>
+                <div><span className="text-slate-400">Account No:</span> <span className="font-mono">{batchBankAccount.accountNumber}</span></div>
+                <div><span className="text-slate-400">IFSC:</span> <span className="font-mono">{batchBankAccount.ifsc}</span></div>
+                <div><span className="text-slate-400">Branch:</span> {batchBankAccount.bankBranch} ({batchBankAccount.branchCode})</div>
+                <div className="md:col-span-2"><span className="text-slate-400">Supports:</span> {batchBankAccount.supports.join(' · ')}</div>
+              </div>
+              <p className="text-xs text-slate-400 italic">{batchBankAccount.paymentReferenceHint}</p>
+            </div>
+
             <Input
               label="Payment UID (transaction / UPI ref)"
               value={form.paymentUid}
@@ -256,7 +269,7 @@ export default function RegistrationPage() {
               placeholder="Paste after bank / UPI transfer — or add later from your Profile"
             />
             <p className="text-xs text-slate-500 -mt-2">
-              Payment goes direct to the reunion bank account (SWIFT / bank transfer — not through the website). You can register first and add the Payment UID later; status will stay "Unpaid" until the Finance Committee verifies.
+              Payment goes direct to the REConverge 2001 batch bank account (the website does not collect payments). You can register first and add the Payment UID later from your Profile; status will stay "Unpaid" until the Finance Committee verifies.
             </p>
 
             <div className="pt-4 border-t border-white/5">
