@@ -205,3 +205,19 @@ CREATE TABLE IF NOT EXISTS photos (
 );
 CREATE INDEX IF NOT EXISTS photos_uploader_idx ON photos (uploader_id);
 CREATE INDEX IF NOT EXISTS photos_created_at_idx ON photos (created_at DESC);
+
+-- ─── password_resets (forgot-password flow) ──────────────────────────────
+-- Only the SHA-256 hash of the reset token is stored, never the raw token.
+-- A leak of this table cannot be turned into a working reset link.
+CREATE TABLE IF NOT EXISTS password_resets (
+  id          SERIAL PRIMARY KEY,
+  user_id     TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  token_hash  TEXT NOT NULL UNIQUE,
+  expires_at  TIMESTAMPTZ NOT NULL,
+  used_at     TIMESTAMPTZ,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  ip_address  TEXT,
+  user_agent  TEXT
+);
+CREATE INDEX IF NOT EXISTS password_resets_user_idx ON password_resets (user_id);
+CREATE INDEX IF NOT EXISTS password_resets_token_idx ON password_resets (token_hash);

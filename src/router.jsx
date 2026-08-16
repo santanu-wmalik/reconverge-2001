@@ -46,6 +46,8 @@ import AdminLayout from './components/layout/AdminLayout';
 // Lazy load all pages
 const LandingPage = lazyWithReload(() => import('./pages/landing/LandingPage'));
 const LoginPage = lazyWithReload(() => import('./pages/auth/LoginPage'));
+const ForgotPasswordPage = lazyWithReload(() => import('./pages/auth/ForgotPasswordPage'));
+const ResetPasswordPage = lazyWithReload(() => import('./pages/auth/ResetPasswordPage'));
 const NotFoundPage = lazyWithReload(() => import('./pages/not-found/NotFoundPage'));
 const RegistrationPage = lazyWithReload(() => import('./pages/registration/RegistrationPage'));
 const RegistrationSuccess = lazyWithReload(() => import('./pages/registration/RegistrationSuccess'));
@@ -105,6 +107,8 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <SuspenseWrapper><LandingPage /></SuspenseWrapper> },
       { path: 'login', element: <SuspenseWrapper><LoginPage /></SuspenseWrapper> },
+      { path: 'forgot-password', element: <SuspenseWrapper><ForgotPasswordPage /></SuspenseWrapper> },
+      { path: 'reset-password', element: <SuspenseWrapper><ResetPasswordPage /></SuspenseWrapper> },
       { path: 'register', element: <SuspenseWrapper><RegistrationPage /></SuspenseWrapper> },
       { path: 'register/success', element: <SuspenseWrapper><RegistrationSuccess /></SuspenseWrapper> },
       // New public pages from real event site

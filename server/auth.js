@@ -7,9 +7,41 @@
 import crypto from 'crypto';
 import { query } from './db.js';
 import { tables, coerce, rowToJson } from './columns.js';
+import { sendPasswordResetEmail } from './mailer.js';
 
 const tokens = new Map(); // token → { userId, alumniId, role, email, issuedAt }
 const newToken = () => crypto.randomBytes(24).toString('hex');
+
+// ── password-reset config ──────────────────────────────────────────────
+const RESET_TOKEN_TTL_MINUTES = 30;
+const RESET_MIN_PASSWORD_LEN = 6;
+const sha256 = (s) => crypto.createHash('sha256').update(s).digest('hex');
+
+// Simple in-memory rate limiter: max N events per key per window.
+// Restart wipes the counters — fine for this scale.
+function createRateLimiter({ max, windowMs }) {
+  const hits = new Map(); // key → [timestamp, ...]
+  return function allow(key) {
+    const now = Date.now();
+    const arr = (hits.get(key) || []).filter((t) => now - t < windowMs);
+    if (arr.length >= max) {
+      hits.set(key, arr);
+      return false;
+    }
+    arr.push(now);
+    hits.set(key, arr);
+    return true;
+  };
+}
+const forgotLimitByIp = createRateLimiter({ max: 10, windowMs: 60 * 60 * 1000 });
+const forgotLimitByEmail = createRateLimiter({ max: 3, windowMs: 60 * 60 * 1000 });
+
+// Purge every live session for the given user (used after password reset).
+function purgeSessionsForUser(userId) {
+  for (const [tok, sess] of tokens.entries()) {
+    if (sess.userId === userId) tokens.delete(tok);
+  }
+}
 
 async function findUserByEmail(email) {
   const r = await query(`SELECT * FROM users WHERE LOWER(email) = LOWER($1)`, [email]);
@@ -232,6 +264,130 @@ export function mountAuth(app) {
         user: { ...rowToJson('alumni', alumniRow), role: orig.role },
         token: newT,
       });
+    } catch (err) { next(err); }
+  });
+
+  // ── POST /api/auth/forgot-password ─────────────────────────────────────
+  // Always responds 200 with a generic message — never leaks whether the
+  // email exists. If the account is real we generate a random token, store
+  // only its SHA-256 hash in password_resets, invalidate prior unused tokens
+  // for the same user, and email the raw token as a link.
+  app.post('/api/auth/forgot-password', async (req, res, next) => {
+    const genericResponse = {
+      ok: true,
+      message:
+        "If an account exists for that email, we've sent a reset link. " +
+        'Check your inbox (and spam). The link expires in ' +
+        RESET_TOKEN_TTL_MINUTES + ' minutes.',
+    };
+    try {
+      const emailRaw = String((req.body || {}).email || '').trim().toLowerCase();
+      if (!emailRaw || !/^\S+@\S+\.\S+$/.test(emailRaw)) {
+        return res.status(400).json({ error: 'Please enter a valid email address' });
+      }
+
+      const ip = (req.headers['x-forwarded-for'] || req.ip || 'unknown').toString().split(',')[0].trim();
+      const ua = (req.headers['user-agent'] || '').slice(0, 500);
+      if (!forgotLimitByIp(ip) || !forgotLimitByEmail(emailRaw)) {
+        // Same generic 200 — don't tell scrapers they hit a limit.
+        return res.json(genericResponse);
+      }
+
+      const userRow = await findUserByEmail(emailRaw);
+      if (!userRow) return res.json(genericResponse);
+
+      const rawToken = crypto.randomBytes(32).toString('hex');
+      const tokenHash = sha256(rawToken);
+      const expiresAt = new Date(Date.now() + RESET_TOKEN_TTL_MINUTES * 60 * 1000);
+
+      // Invalidate any prior live tokens for this user — only the newest link works.
+      await query(
+        `UPDATE password_resets SET used_at = NOW()
+         WHERE user_id = $1 AND used_at IS NULL AND expires_at > NOW()`,
+        [userRow.id]
+      );
+      await query(
+        `INSERT INTO password_resets (user_id, token_hash, expires_at, ip_address, user_agent)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [userRow.id, tokenHash, expiresAt.toISOString(), ip, ua]
+      );
+
+      // Build reset URL. Prefer APP_URL; fall back to the request's own origin.
+      const base = (process.env.APP_URL || '').replace(/\/$/, '')
+        || `${req.protocol}://${req.get('host')}`;
+      const resetUrl = `${base}/reset-password?token=${rawToken}`;
+
+      const alumniRow = await findAlumniByEmail(emailRaw);
+      const displayName = alumniRow?.name || '';
+
+      // Fire-and-log — don't leak send failures to the response.
+      try {
+        await sendPasswordResetEmail({
+          to: emailRaw,
+          name: displayName,
+          resetUrl,
+          expiresMinutes: RESET_TOKEN_TTL_MINUTES,
+        });
+      } catch (mailErr) {
+        console.error('[auth] password reset email send failed:', mailErr);
+      }
+
+      return res.json(genericResponse);
+    } catch (err) { next(err); }
+  });
+
+  // ── POST /api/auth/reset-password ──────────────────────────────────────
+  // Consumes a reset token (single-use, time-boxed), updates the password,
+  // and purges every live session for that user so any other logged-in
+  // devices are signed out.
+  app.post('/api/auth/reset-password', async (req, res, next) => {
+    try {
+      const { token, newPassword } = req.body || {};
+      if (!token || typeof token !== 'string') {
+        return res.status(400).json({ error: 'Reset token is required' });
+      }
+      if (!newPassword || typeof newPassword !== 'string' || newPassword.length < RESET_MIN_PASSWORD_LEN) {
+        return res.status(400).json({
+          error: `Password must be at least ${RESET_MIN_PASSWORD_LEN} characters`,
+        });
+      }
+      const tokenHash = sha256(token);
+      const r = await query(
+        `SELECT * FROM password_resets
+         WHERE token_hash = $1 AND used_at IS NULL AND expires_at > NOW()
+         LIMIT 1`,
+        [tokenHash]
+      );
+      const resetRow = r.rows[0];
+      if (!resetRow) {
+        return res.status(400).json({
+          error: 'This reset link is invalid or has expired. Please request a new one.',
+        });
+      }
+
+      // Atomic: update password, mark token used, purge sessions.
+      const { getPool } = await import('./db.js');
+      const client = await getPool().connect();
+      try {
+        await client.query('BEGIN');
+        await client.query(
+          `UPDATE users SET password = $1 WHERE id = $2`,
+          [newPassword, resetRow.user_id]
+        );
+        await client.query(
+          `UPDATE password_resets SET used_at = NOW() WHERE id = $1`,
+          [resetRow.id]
+        );
+        await client.query('COMMIT');
+      } catch (err) {
+        await client.query('ROLLBACK').catch(() => {});
+        throw err;
+      } finally {
+        client.release();
+      }
+
+      purgeSessionsForUser(resetRow.user_id);
+      return res.json({ ok: true, message: 'Password updated. You can now sign in.' });
     } catch (err) { next(err); }
   });
 

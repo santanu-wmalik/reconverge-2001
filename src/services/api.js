@@ -34,8 +34,13 @@ async function request(endpoint, options = {}) {
   }
   const response = await fetch(url, { ...options, headers });
   if (!response.ok) {
-    // Surface 401/403 distinctly so the UI can prompt re-login vs deny.
-    const err = new Error(`API Error: ${response.status} ${response.statusText}`);
+    // Try to surface the server's `error` field so UI can show a real message.
+    let serverMessage = null;
+    try {
+      const body = await response.json();
+      serverMessage = body?.error || body?.message || null;
+    } catch { /* not json */ }
+    const err = new Error(serverMessage || `API Error: ${response.status} ${response.statusText}`);
     err.status = response.status;
     throw err;
   }
@@ -64,6 +69,16 @@ export const authApi = {
       body: JSON.stringify({ targetUserId }),
     }),
   stopImpersonating: () => request('/auth/stop-impersonating', { method: 'POST' }),
+  forgotPassword: (email) =>
+    request('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    }),
+  resetPassword: (token, newPassword) =>
+    request('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ token, newPassword }),
+    }),
 };
 
 // --- Alumni ---

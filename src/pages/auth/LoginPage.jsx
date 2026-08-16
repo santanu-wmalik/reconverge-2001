@@ -91,16 +91,24 @@ export default function LoginPage() {
             autoComplete="current-password"
           />
 
-          {/* Remember Me */}
-          <label className="flex items-center gap-2 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              checked={rememberMe}
-              onChange={(e) => setRememberMe(e.target.checked)}
-              className="w-4 h-4 rounded border-white/20 bg-white/5 text-gold-400 focus:ring-gold-400/30 focus:ring-offset-0 cursor-pointer"
-            />
-            <span className="text-sm text-slate-400">Remember me</span>
-          </label>
+          {/* Remember Me + Forgot Password */}
+          <div className="flex items-center justify-between">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="w-4 h-4 rounded border-white/20 bg-white/5 text-gold-400 focus:ring-gold-400/30 focus:ring-offset-0 cursor-pointer"
+              />
+              <span className="text-sm text-slate-400">Remember me</span>
+            </label>
+            <Link
+              to="/forgot-password"
+              className="text-sm text-gold-400 hover:text-gold-300 font-medium"
+            >
+              Forgot password?
+            </Link>
+          </div>
 
           <Button fullWidth loading={loading} type="submit">
             Sign In

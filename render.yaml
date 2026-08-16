@@ -26,3 +26,16 @@ services:
         value: RECCon@1234
       - key: PGDATABASE
         value: reconverge
+      # Public origin used to build password-reset URLs sent by email.
+      - key: APP_URL
+        value: https://reconverge-2001.onrender.com
+      # Transactional email via Resend. From-address must be at a Resend-
+      # verified domain (reconverge.downstream-solutions.com). Reply-To is
+      # optional — set it if you want alumni replies to land in a real inbox.
+      - key: MAIL_FROM
+        value: REConverge 2001 <noreply@reconverge.downstream-solutions.com>
+      - key: MAIL_REPLY_TO
+        value: santanu.kumar.malik@gmail.com
+      # SECRET — set from the Render dashboard, do NOT commit the value.
+      - key: RESEND_API_KEY
+        sync: false
