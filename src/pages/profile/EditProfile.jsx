@@ -27,6 +27,21 @@ function dicebearUrl(seed) {
   return `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(safeSeed)}`;
 }
 
+// Defined at module scope on purpose. Previously this lived inside
+// EditProfile, so a new Section function was created on every render — React
+// then treated it as a different component type at the same JSX position and
+// unmounted/remounted the whole field subtree on every keystroke. That killed
+// focus, tore down inputs mid-keypress (breaking held-backspace / word
+// delete), and reset text selection. Keep it out here.
+function Section({ title, children }) {
+  return (
+    <div className="pt-6 mt-6 border-t border-white/5 first:pt-0 first:mt-0 first:border-0">
+      <p className="text-xs text-gold-400 uppercase tracking-wider font-semibold mb-4">{title}</p>
+      <div className="space-y-4">{children}</div>
+    </div>
+  );
+}
+
 export default function EditProfile() {
   const { user, updateProfile } = useAuth();
   const { showToast } = useToast();
@@ -98,13 +113,6 @@ export default function EditProfile() {
       setSaving(false);
     }
   };
-
-  const Section = ({ title, children }) => (
-    <div className="pt-6 mt-6 border-t border-white/5 first:pt-0 first:mt-0 first:border-0">
-      <p className="text-xs text-gold-400 uppercase tracking-wider font-semibold mb-4">{title}</p>
-      <div className="space-y-4">{children}</div>
-    </div>
-  );
 
   return (
     <motion.div {...pageTransition} className="max-w-3xl mx-auto px-4 py-8">
