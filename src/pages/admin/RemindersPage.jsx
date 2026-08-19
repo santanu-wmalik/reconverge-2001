@@ -69,6 +69,39 @@ export default function RemindersPage() {
   // reflects whichever super-admin is doing the blast.
   const senderName = user?.name || 'Reunion Volunteer';
 
+  // Optional attachment — { filename, contentType, size, contentBase64 }.
+  // Read once from a File, kept in memory for both the batch send and the
+  // test-send. 5 MB hard cap so the base64 payload stays inside the 12 MB
+  // request-body ceiling on the server.
+  const [attachment, setAttachment] = useState(null);
+  const [attachmentError, setAttachmentError] = useState('');
+  const MAX_ATTACHMENT_BYTES = 5 * 1024 * 1024;
+
+  const handlePickAttachment = (e) => {
+    setAttachmentError('');
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > MAX_ATTACHMENT_BYTES) {
+      setAttachmentError(`Too large: ${(file.size / 1024 / 1024).toFixed(1)} MB (max 5 MB).`);
+      e.target.value = '';
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = String(reader.result || '');
+      // dataUrl looks like "data:<mime>;base64,<b64>"; strip the prefix.
+      const b64 = dataUrl.includes(',') ? dataUrl.split(',', 2)[1] : dataUrl;
+      setAttachment({
+        filename: file.name,
+        contentType: file.type || undefined,
+        size: file.size,
+        contentBase64: b64,
+      });
+    };
+    reader.onerror = () => setAttachmentError('Could not read that file.');
+    reader.readAsDataURL(file);
+  };
+
   // Test-send modal state
   const [testOpen, setTestOpen] = useState(false);
   const [testEmail, setTestEmail] = useState(user?.email || '');
@@ -223,6 +256,13 @@ export default function RemindersPage() {
         linkUrl: linkUrl.trim() || undefined,
         linkLabel: linkLabel.trim() || undefined,
         senderName,
+        attachment: attachment
+          ? {
+              filename: attachment.filename,
+              contentType: attachment.contentType,
+              contentBase64: attachment.contentBase64,
+            }
+          : undefined,
       });
       setLastResult(result);
       showToast(
@@ -257,6 +297,13 @@ export default function RemindersPage() {
         linkUrl: linkUrl.trim() || undefined,
         linkLabel: linkLabel.trim() || undefined,
         senderName,
+        attachment: attachment
+          ? {
+              filename: attachment.filename,
+              contentType: attachment.contentType,
+              contentBase64: attachment.contentBase64,
+            }
+          : undefined,
       });
       if (result.sentCount === 1) {
         showToast(`Test sent to ${testEmail.trim()}`, 'success');
@@ -333,6 +380,45 @@ export default function RemindersPage() {
               placeholder="Open the reunion site"
             />
           </div>
+          {/* Optional attachment */}
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-1.5">
+              Attachment (optional) <span className="text-slate-500 text-xs">— max 5 MB</span>
+            </label>
+            {!attachment ? (
+              <label className="inline-flex items-center gap-2 cursor-pointer text-xs px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-gold-400/40 hover:text-white transition">
+                📎 Choose file…
+                <input
+                  type="file"
+                  className="hidden"
+                  onChange={handlePickAttachment}
+                />
+              </label>
+            ) : (
+              <div className="flex flex-wrap items-center gap-3 text-xs bg-white/5 border border-white/10 rounded-lg px-3 py-2">
+                <span>📎</span>
+                <span className="text-white font-medium break-all">{attachment.filename}</span>
+                <span className="text-slate-500">
+                  {(attachment.size / 1024).toFixed(0)} KB
+                  {attachment.contentType ? ` · ${attachment.contentType}` : ''}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => { setAttachment(null); setAttachmentError(''); }}
+                  className="ml-auto text-red-300 hover:text-red-200 transition"
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+            {attachmentError && (
+              <p className="text-xs text-red-300 mt-1">{attachmentError}</p>
+            )}
+            <p className="text-[11px] text-slate-500 mt-1">
+              Attached to every recipient's email. Common formats work: PDF, PNG, JPG, DOCX, XLSX.
+            </p>
+          </div>
+
           <div className="flex flex-wrap items-center gap-3">
             <Button variant="ghost" size="sm" onClick={insertLinkMarker}>
               ↩ Append link to message

@@ -111,7 +111,29 @@ export function mountReminders(app) {
       return res.status(403).json({ error: 'Super-admin access required' });
     }
 
-    const { recipients, subject, body, linkUrl, linkLabel, senderName } = req.body || {};
+    const { recipients, subject, body, linkUrl, linkLabel, senderName, attachment } = req.body || {};
+
+    // Validate attachment shape / size (5 MB cap on the RAW file).
+    // Base64 grows ~4/3× — a 5 MB file arrives as ~6.7 MB of base64 string,
+    // which comfortably fits under the express.json 12 MB limit and stays
+    // well inside mail-provider limits.
+    let attachments;
+    if (attachment && attachment.filename && attachment.contentBase64) {
+      const b64 = String(attachment.contentBase64);
+      // Base64 length × 0.75 ≈ raw bytes (ignoring padding).
+      const approxBytes = Math.floor((b64.length * 3) / 4);
+      const MAX = 5 * 1024 * 1024;
+      if (approxBytes > MAX) {
+        return res.status(413).json({
+          error: `Attachment too large: ${(approxBytes / 1024 / 1024).toFixed(1)} MB (max 5 MB).`,
+        });
+      }
+      attachments = [{
+        filename: String(attachment.filename).slice(0, 200),
+        content: b64,
+        contentType: attachment.contentType ? String(attachment.contentType).slice(0, 100) : undefined,
+      }];
+    }
     if (!Array.isArray(recipients) || recipients.length === 0) {
       return res.status(400).json({ error: 'recipients must be a non-empty array' });
     }
@@ -165,6 +187,7 @@ export function mountReminders(app) {
           subject: personalisedSubject,
           text: toText({ greeting, bodyLines: personalisedBodyLines, linkUrl, linkLabel, senderName: cleanSenderName }),
           html: toHtml({ greeting, bodyLines: personalisedBodyLines, linkUrl, linkLabel, senderName: cleanSenderName }),
+          attachments,
         });
         recordSend(session.userId);
         sent.push(r.email);

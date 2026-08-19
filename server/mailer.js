@@ -22,7 +22,7 @@ async function getClient() {
 
 const DEFAULT_FROM = 'REConverge 2001 <noreply@reconverge.downstream-solutions.com>';
 
-export async function sendEmail({ to, subject, html, text }) {
+export async function sendEmail({ to, subject, html, text, attachments }) {
   const from = process.env.MAIL_FROM || DEFAULT_FROM;
   const replyTo = process.env.MAIL_REPLY_TO || undefined;
   const client = await getClient();
@@ -37,14 +37,26 @@ export async function sendEmail({ to, subject, html, text }) {
     return { skipped: true };
   }
 
-  const { data, error } = await client.emails.send({
+  const payload = {
     from,
     to,
     subject,
     html,
     text,
     replyTo,
-  });
+  };
+  // Resend accepts an `attachments` array: [{ filename, content, contentType }].
+  // `content` may be a base64 string or a Buffer. Skip the key entirely if
+  // no valid attachments were provided — sending `attachments: []` is fine
+  // but omitting keeps the payload minimal.
+  if (Array.isArray(attachments) && attachments.length) {
+    payload.attachments = attachments.map((a) => ({
+      filename: a.filename,
+      content: a.content,          // base64 string
+      contentType: a.contentType,  // optional; Resend infers from filename
+    }));
+  }
+  const { data, error } = await client.emails.send(payload);
   if (error) {
     console.error('[mailer] Resend error:', error);
     throw new Error(error.message || 'Failed to send email');
