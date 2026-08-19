@@ -234,51 +234,75 @@ export const planningLog = [
 ];
 
 // Budget v1 from the xlsx "Budget v1 Template" sheet — under review by the
-// Finance Committee (Shyamnandan T). Numbers are planning estimates for 350
-// attendees (200 alumni + ~150 family). The registration fee (₹13,500) is
-// locked; line-item amounts are working estimates pending FC sign-off.
+// Finance Committee (Shyamnandan T). Master source is the shared Google
+// Sheet — do NOT hand-edit numbers here without reconciling that tab first:
+//   https://docs.google.com/spreadsheets/d/1ddkuRAmOYJH5iF8jvAYBhWuCSz00VRyynm8sHtCjsPw/edit?gid=317647696
+//
+// Snapshot below reflects the sheet as of Aug 2026:
+//   - 150 alumni + 75 family = 225 pax basis (was 200 + 150 = 350).
+//   - EM (OVIO / Ishas) full-service quote now ₹12.81 L and absorbs T-shirts,
+//     souvenirs, batch-photo rig, campus procession, Day-1 band, Day-2 DJ,
+//     photography & video.
+//   - Program booklets, airport pickups, on-call medical, kids zone — DROPPED
+//     or parked (see sheet strike-throughs / "Not required" notes).
+//   - Contingency trimmed from ₹5 L to ₹1 L.
+//   - Auditorium/NITCAA charges and Day-2 sadya are still TBD (pink cells).
+//   - Family registration recovers ₹1.875 L against the ₹22.24 L total.
 export const budgetSummary = {
-  assumedAlumniCount: 200,
-  assumedFamilyPerAlumni: 0.75,
-  totalEstimate: 3105000,       // ₹31.05 L
-  perAlumniEstimate: 13650,     // ₹13,650 per alumni
-  contingencyAmount: 500000,     // 5-10% buffer
+  assumedAlumniCount: 150,
+  assumedFamilyPerAlumni: 0.5,
+  assumedFamilyMembers: 75,
+  totalPax: 225,
+  totalEstimate: 2223982,           // ₹22.24 L (sheet TOTAL)
+  perAlumniEstimate: 13577,          // (Total − family registration) / 150
+  contingencyAmount: 100000,         // ₹1 L (sheet)
   registrationFee: 13500,
   familyMemberFee: 2500,
-  status: 'v1 draft — pending Finance Committee sign-off',
+  familyRegistrationRevenue: 187500, // 75 × ₹2,500
+  sponsorshipTarget: null,           // blank in sheet — awaiting FC target
+  status: 'Sync’d to master sheet — Aug 2026 snapshot',
 };
 
 export const budgetItems = [
-  { category: 'Registration', item: 'Per person registration', amount: 13500, notes: 'Covers Gala dinner, Sadhya lunch on campus, souvenir kit, campus day activities. Locked.' },
+  { category: 'Registration', item: 'Per person registration', amount: 13500, notes: 'Locked early-bird price. Covers Day-1 dinner, Day-2 Gala, Day-2 sadya, campus day activities, souvenir kit.' },
   { category: 'Registration', item: 'Additional family member', amount: 2500, notes: 'Per partner / child / parent. Locked.' },
 
-  { category: 'Food & Beverage', item: 'Day 1 dinner buffet', amount: 280000, notes: '₹800/pax × 350 — includes hall reservation.' },
-  { category: 'Food & Beverage', item: 'Day 2 Gala dinner (Gokulam)', amount: 420000, notes: '₹1,200/pax × 350 — multi-cuisine, live counters; drinks built into cost (senior advice to avoid separate bar).' },
-  { category: 'Food & Beverage', item: 'High-tea, snacks, water (all days)', amount: 105000, notes: '₹300/pax × 350.' },
-  { category: 'Food & Beverage', item: 'Day 2 campus lunch (Sadhya)', amount: 0, notes: 'Provided by NITCAA — confirmed (xlsx Sheet 6). No batch spend.' },
-  { category: 'Food & Beverage', item: 'Day 3 breakfast/brunch', amount: 0, notes: 'Included in hotel room package.' },
+  // ── Food & Beverage — pax basis 225 (150 alumni + 75 family) ───────────
+  { category: 'Food & Beverage', item: 'Day 1 dinner buffet', amount: 180000, notes: '₹800/pax × 225. Ice-breaker evening — includes hall reservation.' },
+  { category: 'Food & Beverage', item: 'Day 2 campus lunch (Sadya)', amount: null, notes: 'TBD (sheet blank). Kerala sadya or similar — provided by REC / NITCAA; final billing to confirm.' },
+  { category: 'Food & Beverage', item: 'Day 2 Gala dinner (Gokulam)', amount: 270000, notes: '₹1,200/pax × 225. Multi-cuisine with live counters; includes hall reservation. Seniors suggested rolling drinks into this line (would raise the number).' },
+  { category: 'Food & Beverage', item: 'Day 3 breakfast/brunch', amount: null, notes: 'Included in the hotel room package — no batch spend.' },
+  { category: 'Food & Beverage', item: 'High-tea, snacks, water (all days)', amount: 67500, notes: '₹300/pax × 225.' },
 
-  { category: 'Event Management', item: 'Event company (OVIO / Ishas) — full service', amount: 850000, notes: 'Décor, stage, sound, lights, batch-photo rig, Day-1 band, Day-2 DJ, campus procession, photography/video — all rolled in.' },
+  // ── Event Management — one giant line, everything below is INSIDE it ──
+  { category: 'Event Management', item: 'Event company (OVIO / Ishas) — full service', amount: 1281482, notes: 'Décor, stage, sound, lights, coordination. Absorbs the six sub-items below.' },
+  { category: 'Event Management', item: '↳ Batch photo structure (included in EM)', amount: null, notes: 'Bundled into EM quote. Seniors said "worth every rupee".' },
+  { category: 'Event Management', item: '↳ Campus procession logistics (included in EM)', amount: null, notes: 'Banners, coordination — bundled into EM quote.' },
+  { category: 'Entertainment', item: '↳ Day 1 live band / acoustic (included in EM)', amount: null, notes: '3-3.5 hours — bundled into EM quote.' },
+  { category: 'Entertainment', item: '↳ Day 2 DJ + waterdrum / live band (included in EM)', amount: null, notes: 'Jaspira / Melodia / DJ Jozion level — bundled into EM quote.' },
+  { category: 'Entertainment', item: 'Kids zone (2.5 days)', amount: null, notes: 'PARKED — clowns / magician / art corner. Marked "Not required" by SNT; leave in list for visibility.' },
+  { category: 'Photography & Video', item: '↳ Lead photo/video team (included in EM)', amount: null, notes: 'Full coverage + edited film. Now scoped for 2 days only — quote may drop slightly.' },
 
-  { category: 'Merchandise & Souvenirs', item: 'T-shirts (alumni + families)', amount: 140000, notes: '₹400 × 350. Souvenir kit: T-shirt, REC-lingo tote, ID card, hangover kit, Mallu snacks, playlist QR.' },
-  { category: 'Merchandise & Souvenirs', item: 'Badges, lanyards, kits', amount: 70000, notes: '₹200 × 350 — simple name tags to start.' },
-  { category: 'Merchandise & Souvenirs', item: 'Program booklets, signage', amount: 75000, notes: 'Printed programme + venue signage.' },
+  // ── Transport ────────────────────────────────────────────────────────
+  { category: 'Transport', item: 'Campus shuttle buses (Day 2)', amount: 150000, notes: '10 trips × Hotel ↔ NITC round-trip.' },
 
-  { category: 'Transport', item: 'Airport / rail pickups and drop-offs', amount: 140000, notes: '₹1,500 × 93 trips — staggered Dec 27 arrivals and Dec 29 departures.' },
-  { category: 'Transport', item: 'Campus shuttle buses (Day 2)', amount: 150000, notes: '5 × 44-seater buses × ₹15,000 — confirmed in the EM quote.' },
+  // ── Merchandise & Souvenirs — now entirely inside EM ─────────────────
+  { category: 'Merchandise & Souvenirs', item: '↳ T-shirts (alumni + families) (included in EM)', amount: null, notes: 'Assumed ₹400 × 180 units, absorbed into EM. Senior batch spent ~₹3K/pax on souvenirs — batch chose to trim.' },
+  { category: 'Merchandise & Souvenirs', item: '↳ Souvenir kit (included in EM)', amount: null, notes: 'Assumed ₹1,500 × 180 units, absorbed into EM. Simplified — name tags plus core kit.' },
 
-  { category: 'NITC Campus', item: 'Auditorium usage, campus permissions', amount: 100000, notes: 'Through NITCAA / ICAR office.' },
-  { category: 'NITC Campus', item: 'Support-staff gratitude', amount: 100000, notes: 'Planned upfront per senior-batch recommendation; final figure being checked with seniors.' },
+  // ── NITC Campus ──────────────────────────────────────────────────────
+  { category: 'NITC Campus', item: 'Auditorium usage, campus permissions', amount: null, notes: 'TBD (sheet pink) — through NITCAA; open question on whether we pay this and what else it covers.' },
+  { category: 'NITC Campus', item: 'Mess staff gratitude / non-teaching staff', amount: 100000, notes: 'Planned upfront per senior-batch recommendation; exact figure still being checked with seniors.' },
 
-  { category: 'Miscellaneous', item: 'Contingency and buffer (~10%)', amount: 500000, notes: 'Unforeseen expenses.' },
-
+  // ── Miscellaneous / Admin ────────────────────────────────────────────
+  { category: 'Miscellaneous', item: 'Contingency and buffer (5-10% of total)', amount: 100000, notes: 'Unforeseen expenses. Trimmed from earlier ₹5 L placeholder to the sheet’s ₹1 L working figure.' },
   { category: 'Audit & Admin', item: 'CA audit fees', amount: 50000, notes: 'Identified from day zero.' },
   { category: 'Audit & Admin', item: 'Bank charges, admin', amount: 25000, notes: 'Reunion bank account operating costs.' },
 
-  { category: 'Accommodation', item: 'Gokulam Grand room block (52 rooms)', amount: null, notes: 'Paid directly to the hotel — outside the reunion budget. Deluxe ₹6-7k / Superior ₹9-10k / Suite ₹12k / Grand Suite ₹13k + GST per night.' },
-  { category: 'Accommodation', item: 'Gala banquet — Manachira rooftop', amount: null, notes: 'Menu tiers: ₹1,150 / ₹1,300 / ₹1,400 per person + 18% GST. Included in the Day-2 Gala line above as catering-inclusive; banquet hall itself blocked via hotel advance.' },
-
-  { category: 'Giving Back', item: 'NITCAA Health Centre (Susrutha Swastya Kendram)', amount: null, notes: 'Flagship Give Back target. SEPARATE from the reunion budget — contributions flow through the NITCAA account.' },
+  // ── Outside the reunion budget (informational) ───────────────────────
+  { category: 'Accommodation', item: 'Gokulam Grand room block (52 rooms)', amount: null, notes: 'Paid directly to the hotel — outside the reunion budget. Deluxe ₹6-7 k / Superior ₹9-10 k / Suite ₹12 k / Grand Suite ₹13 k + GST per night.' },
+  { category: 'Accommodation', item: 'Gala banquet — Manachira rooftop', amount: null, notes: 'Included in the Day-2 Gala catering line above. Banquet hall itself blocked via hotel advance.' },
+  { category: 'Giving Back', item: 'NITCAA Health Centre (Susrutha Swastya Kendram)', amount: null, notes: 'SEPARATE from the reunion budget — contributions flow through the NITCAA account.' },
 ];
 
 // Sources: chat log 2/16 (Axis/ICICI/HDFC outreach), 2/26 (Mahroof/SBI, account

@@ -48,7 +48,7 @@ export default function BudgetPage() {
             <span className="text-2xl">🎫</span>
             <div>
               <p className="text-xs text-slate-400 uppercase tracking-wider">Per Person Registration</p>
-              <p className="text-2xl font-heading font-bold text-gold-400">{formatCurrency(13500)}</p>
+              <p className="text-2xl font-heading font-bold text-gold-400">{formatCurrency(budgetSummary.registrationFee)}</p>
             </div>
           </div>
           <ul className="text-xs text-slate-400 space-y-1">
