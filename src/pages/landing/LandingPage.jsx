@@ -6,12 +6,10 @@ import TestimonialsSection from './sections/TestimonialsSection';
 import SponsorsSection from './sections/SponsorsSection';
 import GiveBackPreview from './sections/GiveBackPreview';
 import CTASection from './sections/CTASection';
-import ScrollingPoem from '../../components/shared/ScrollingPoem';
 
 export default function LandingPage() {
   return (
-    <div className="relative">
-      <ScrollingPoem />
+    <div>
       <HeroSection />
       <EventHighlights />
       <VenueDates />

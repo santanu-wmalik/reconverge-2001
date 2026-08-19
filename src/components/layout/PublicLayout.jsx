@@ -4,6 +4,7 @@ import Footer from './Footer';
 import BackToTop from '../shared/BackToTop';
 import BackgroundSlideshow from '../shared/BackgroundSlideshow';
 import FloatingPhotos from '../shared/FloatingPhotos';
+import ScrollingPoem from '../shared/ScrollingPoem';
 import AnnouncementsBanner from '../shared/AnnouncementsBanner';
 import ImpersonationBanner from './ImpersonationBanner';
 
@@ -12,6 +13,7 @@ export default function PublicLayout() {
     <div className="min-h-screen flex flex-col">
       <BackgroundSlideshow />
       <FloatingPhotos />
+      <ScrollingPoem />
       <div className="flex flex-col min-h-screen lg:px-44">
         <ImpersonationBanner />
         <Header />
