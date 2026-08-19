@@ -113,7 +113,7 @@ export default function HeroSection() {
           {!earlyBirdOver && (
             <motion.div variants={staggerItem} className="mb-6 flex justify-center">
               <Link
-                to="/rsvp"
+                to="/register"
                 className="group inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs sm:text-sm font-bold text-black bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 shadow-lg shadow-gold-500/40 hover:shadow-gold-500/70 hover:scale-105 transition-all animate-pulse-glow"
                 style={{ textShadow: 'none' }}
               >

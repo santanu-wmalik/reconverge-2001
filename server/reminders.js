@@ -48,19 +48,24 @@ function personalise(str, { name }) {
 }
 
 function toHtml({ greeting, bodyLines, linkUrl, linkLabel, senderName }) {
+  // Inline the text color on EVERY paragraph. Many mail clients (Yahoo,
+  // Outlook web, some Gmail views) don't inherit `color` from <body> into
+  // nested tables, so paragraphs render in the client's default which on
+  // a dark card is invisible. Explicit per-element color is the safe fix.
+  const P = 'margin:0 0 12px;line-height:1.55;color:#e5e7eb;font-size:15px;';
   const bodyHtml = bodyLines
-    .map((line) => `<p style="margin:0 0 12px; line-height:1.55;">${escapeHtml(line)}</p>`)
+    .map((line) => `<p style="${P}">${escapeHtml(line)}</p>`)
     .join('');
   const buttonHtml = linkUrl
     ? `
-      <p style="text-align:center; margin:24px 0;">
+      <p style="text-align:center;margin:24px 0;color:#e5e7eb;">
         <a href="${escapeAttr(linkUrl)}"
-           style="display:inline-block; padding:12px 28px; background:#fbbf24; color:#0b1220; text-decoration:none; font-weight:600; border-radius:8px;">
+           style="display:inline-block;padding:12px 28px;background:#fbbf24;color:#0b1220;text-decoration:none;font-weight:600;border-radius:8px;">
           ${escapeHtml(linkLabel || 'Open link')}
         </a>
       </p>
-      <p style="margin:0 0 12px; font-size:13px; color:#9ca3af; line-height:1.5;">
-        Or copy this URL: <span style="word-break:break-all; color:#d1d5db;">${escapeHtml(linkUrl)}</span>
+      <p style="margin:0 0 12px;font-size:13px;color:#d1d5db;line-height:1.5;">
+        Or copy this URL: <span style="word-break:break-all;color:#fbbf24;">${escapeHtml(linkUrl)}</span>
       </p>`
     : '';
   return `
@@ -69,15 +74,15 @@ function toHtml({ greeting, bodyLines, linkUrl, linkLabel, senderName }) {
   <body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;background:#0b1220;padding:24px;color:#e5e7eb;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
       style="max-width:560px;margin:0 auto;background:#111827;border-radius:12px;padding:32px;border:1px solid #1f2937;">
-      <tr><td>
+      <tr><td style="color:#e5e7eb;">
         <h1 style="font-size:20px;margin:0 0 16px;color:#fbbf24;">REConverge 2001</h1>
-        <p style="margin:0 0 12px;line-height:1.55;">${escapeHtml(greeting)}</p>
+        <p style="${P}"><strong style="color:#ffffff;">${escapeHtml(greeting)}</strong></p>
         ${bodyHtml}
         ${buttonHtml}
         <hr style="border:none;border-top:1px solid #1f2937;margin:24px 0;" />
-        <p style="margin:0 0 4px;font-size:13px;color:#d1d5db;line-height:1.5;">Thank you,</p>
-        <p style="margin:0;font-size:14px;color:#fbbf24;font-weight:600;line-height:1.5;">${escapeHtml(senderName)}</p>
-        <p style="margin:2px 0 0;font-size:12px;color:#9ca3af;line-height:1.5;">On behalf of the 2001 Reunion Team</p>
+        <p style="margin:0 0 4px;font-size:14px;color:#e5e7eb;line-height:1.5;">Thank you,</p>
+        <p style="margin:0;font-size:15px;color:#fbbf24;font-weight:600;line-height:1.5;">${escapeHtml(senderName)}</p>
+        <p style="margin:2px 0 0;font-size:13px;color:#d1d5db;line-height:1.5;">On behalf of the 2001 Reunion Team</p>
       </td></tr>
     </table>
   </body>
