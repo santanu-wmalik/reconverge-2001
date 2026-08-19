@@ -108,6 +108,15 @@ export const rsvpApi = {
     }),
 };
 
+// --- Admin: reminder / update email blast ---
+export const adminApi = {
+  sendReminder: ({ recipients, subject, body, linkUrl, linkLabel }) =>
+    request('/admin/send-reminder', {
+      method: 'POST',
+      body: JSON.stringify({ recipients, subject, body, linkUrl, linkLabel }),
+    }),
+};
+
 // --- Orders ---
 export const orderApi = {
   getAll: () => request('/orders'),

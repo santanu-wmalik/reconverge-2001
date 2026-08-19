@@ -1,3 +1,8 @@
+// Early-bird registration deadline — public teaser on the landing page and
+// full details on the protected /early-bird page count down against this.
+// Change here and both surfaces update.
+export const EARLY_BIRD_DEADLINE = new Date('2026-09-30T23:59:59+05:30');
+
 export const EVENT_CONFIG = {
   collegeName: 'Regional Engineering College Calicut',
   collegeShort: 'REC',
@@ -82,6 +87,7 @@ export const NAV_LINKS = [
 // out of this list until SC/MCC have real content — one-line change to add.
 export const NAV_LINKS_PROTECTED = [
   { label: 'Agenda', path: '/agenda', icon: '📅' },
+  { label: 'Early Bird', path: '/early-bird', icon: '🎟' },
   { label: 'My Payments', path: '/payments', icon: '💳' },
   { label: "Who's Registered", path: '/whos-coming', icon: '🙋' },
   { label: 'My Events', path: '/events/my-plan', icon: '📋' },

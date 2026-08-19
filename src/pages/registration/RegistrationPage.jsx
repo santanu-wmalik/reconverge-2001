@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
@@ -107,6 +107,18 @@ export default function RegistrationPage() {
       <div className="text-center mb-6">
         <h1 className="text-3xl md:text-4xl font-heading font-bold text-white mb-2">Register for the Reunion</h1>
         <p className="text-slate-400">Join 340+ alumni for REConverge 2001 — Dec 27–29, 2026 at Calicut</p>
+      </div>
+
+      {/* Already-registered nudge — surfaced prominently so returning alumni
+          don't accidentally start a second account. */}
+      <div className="mb-6 flex items-center justify-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/5 px-4 py-2 text-sm text-slate-300 max-w-xl mx-auto">
+        <span>Already registered?</span>
+        <Link
+          to="/login"
+          className="text-gold-400 hover:text-gold-300 font-semibold underline underline-offset-2"
+        >
+          Sign In →
+        </Link>
       </div>
 
       <p className="text-center text-xs text-slate-500 mb-8">

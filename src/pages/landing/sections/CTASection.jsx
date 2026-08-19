@@ -22,12 +22,12 @@ export default function CTASection() {
           Don't Miss the Reunion of a Lifetime
         </h2>
         <p className="text-lg text-slate-300 mb-8 max-w-xl mx-auto">
-          RSVP now to secure your spot for REConverge 2001.
-          Registration closes {EVENT_CONFIG.registrationDeadline}.
+          Early Bird pricing is on until 30 September — grab your tickets before
+          the window closes. Registration overall closes {EVENT_CONFIG.registrationDeadline}.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link to="/rsvp">
-            <Button size="lg" className="animate-pulse-glow">RSVP Now - {formatCurrency(EVENT_CONFIG.registrationFee)}</Button>
+            <Button size="lg" className="animate-pulse-glow">RSVP — {formatCurrency(EVENT_CONFIG.registrationFee)}</Button>
           </Link>
           <Link to="/store">
             <Button size="lg" variant="outline">Browse Merchandise</Button>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { EVENT_CONFIG, BRANCH_SHORT, FAMILY_OPTIONS, DIETARY_OPTIONS, RSVP_INCLUSIONS } from '../../data/constants';
+import { EVENT_CONFIG, BRANCH_SHORT, FAMILY_OPTIONS, DIETARY_OPTIONS } from '../../data/constants';
 import { rsvpApi } from '../../services/api';
 import { pageTransition } from '../../utils/animationVariants';
 import SectionHeading from '../../components/shared/SectionHeading';
@@ -8,9 +8,6 @@ import GlassCard from '../../components/ui/GlassCard';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
-import Badge from '../../components/ui/Badge';
-
-const inclusionIcons = ['🍽️', '🎁', '🍃'];
 
 export default function RSVPPage() {
   const [form, setForm] = useState({
@@ -76,12 +73,11 @@ export default function RSVPPage() {
   };
 
   return (
-    <motion.div {...pageTransition} className="max-w-6xl mx-auto px-4 py-12">
+    <motion.div {...pageTransition} className="max-w-3xl mx-auto px-4 py-12">
       <SectionHeading title="RSVP" subtitle="Join the grand homecoming" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left side - Form (2/3 width on desktop) */}
-        <div className="lg:col-span-2">
+      <div>
+        <div>
           <GlassCard hover={false}>
             {!submitted ? (
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -206,65 +202,6 @@ export default function RSVPPage() {
                 </button>
               </motion.div>
             )}
-          </GlassCard>
-        </div>
-
-        {/* Right sidebar - Event Access Info (1/3 width on desktop) */}
-        <div className="lg:col-span-1">
-          <GlassCard hover={false} className="sticky top-24">
-            <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
-              <span className="text-gold-400">✦</span> Event Access
-            </h3>
-
-            {/* Fee Information */}
-            <div className="space-y-4 mb-6">
-              <div className="flex justify-between items-center py-3 border-b border-white/5">
-                <span className="text-slate-400 text-sm">Registration Fee</span>
-                <span className="text-white font-bold text-lg">
-                  ₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')}
-                  <span className="text-slate-400 text-xs font-normal ml-1">/ person</span>
-                </span>
-              </div>
-              <div className="flex justify-between items-center py-3 border-b border-white/5">
-                <span className="text-slate-400 text-sm">Additional Family</span>
-                <span className="text-white font-semibold">
-                  ₹{EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')}
-                  <span className="text-slate-400 text-xs font-normal ml-1">/ member</span>
-                </span>
-              </div>
-              <div className="flex justify-between items-center py-3 border-b border-white/5">
-                <span className="text-slate-400 text-sm">Registration Deadline</span>
-                <Badge variant="gold" size="sm">
-                  {EVENT_CONFIG.registrationDeadline}
-                </Badge>
-              </div>
-            </div>
-
-            {/* Inclusions */}
-            <div className="mb-6">
-              <h4 className="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-4">
-                Inclusions
-              </h4>
-              <div className="space-y-3">
-                {RSVP_INCLUSIONS.map((item, index) => (
-                  <div key={item.title} className="flex items-start gap-3">
-                    <span className="text-lg mt-0.5 shrink-0">{inclusionIcons[index]}</span>
-                    <div>
-                      <p className="text-white text-sm font-medium">{item.title}</p>
-                      <p className="text-slate-400 text-xs">{item.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Excludes */}
-            <div className="bg-white/5 rounded-xl p-4 border border-white/5">
-              <p className="text-xs text-slate-400">
-                <span className="text-slate-300 font-medium">Excludes:</span>{' '}
-                Accommodation and travel
-              </p>
-            </div>
           </GlassCard>
         </div>
       </div>

@@ -22,6 +22,7 @@ const BASE_ADMIN_NAV = [
 
 // Super-admin-only extras. Rendered only when `isSuperAdmin`.
 const SUPER_ADMIN_NAV = [
+  { label: 'Reminders', path: '/admin/reminders', icon: '📣' },
   { label: 'Users', path: '/admin/users', icon: '🔑' },
 ];
 

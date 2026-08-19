@@ -69,12 +69,13 @@ const CartPage = lazyWithReload(() => import('./pages/merchandise/CartPage'));
 const NewsPage = lazyWithReload(() => import('./pages/news/NewsPage'));
 const TownhallsPage = lazyWithReload(() => import('./pages/townhalls/TownhallsPage'));
 const MyPaymentsPage = lazyWithReload(() => import('./pages/payments/MyPaymentsPage'));
+const RSVPPage = lazyWithReload(() => import('./pages/rsvp/RSVPPage'));
+const EarlyBirdPage = lazyWithReload(() => import('./pages/portal/EarlyBirdPage'));
 
 // New pages from real event
 const WhenWherePage = lazyWithReload(() => import('./pages/whenwhere/WhenWherePage'));
 const FAQPage = lazyWithReload(() => import('./pages/faq/FAQPage'));
 const CommitteesPage = lazyWithReload(() => import('./pages/committees/CommitteesPage'));
-const RSVPPage = lazyWithReload(() => import('./pages/rsvp/RSVPPage'));
 const OurJourneyPage = lazyWithReload(() => import('./pages/journey/OurJourneyPage'));
 const StayPage = lazyWithReload(() => import('./pages/stay/StayPage'));
 
@@ -88,6 +89,7 @@ const EventDashboardPage = lazyWithReload(() => import('./pages/admin/EventDashb
 const RoomingPage = lazyWithReload(() => import('./pages/admin/RoomingPage'));
 const MeetingsPage = lazyWithReload(() => import('./pages/admin/MeetingsPage'));
 const UsersPage = lazyWithReload(() => import('./pages/admin/UsersPage'));
+const RemindersPage = lazyWithReload(() => import('./pages/admin/RemindersPage'));
 
 function PageLoader() {
   return (
@@ -116,8 +118,8 @@ export const router = createBrowserRouter([
       { path: 'when-where', element: <SuspenseWrapper><WhenWherePage /></SuspenseWrapper> },
       { path: 'faq', element: <SuspenseWrapper><FAQPage /></SuspenseWrapper> },
       { path: 'committees', element: <SuspenseWrapper><CommitteesPage /></SuspenseWrapper> },
-      { path: 'rsvp', element: <SuspenseWrapper><RSVPPage /></SuspenseWrapper> },
       { path: 'our-journey', element: <SuspenseWrapper><OurJourneyPage /></SuspenseWrapper> },
+      { path: 'rsvp', element: <SuspenseWrapper><RSVPPage /></SuspenseWrapper> },
     ],
   },
 
@@ -149,6 +151,7 @@ export const router = createBrowserRouter([
           { path: 'news', element: <SuspenseWrapper><NewsPage /></SuspenseWrapper> },
           { path: 'townhalls', element: <SuspenseWrapper><TownhallsPage /></SuspenseWrapper> },
           { path: 'payments', element: <SuspenseWrapper><MyPaymentsPage /></SuspenseWrapper> },
+          { path: 'early-bird', element: <SuspenseWrapper><EarlyBirdPage /></SuspenseWrapper> },
         ],
       },
     ],
@@ -182,6 +185,7 @@ export const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { path: 'admin/users', element: <SuspenseWrapper><UsersPage /></SuspenseWrapper> },
+          { path: 'admin/reminders', element: <SuspenseWrapper><RemindersPage /></SuspenseWrapper> },
         ],
       },
     ],

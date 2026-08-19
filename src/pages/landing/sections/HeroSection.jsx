@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import CountdownTimer from '../../../components/shared/CountdownTimer';
 import AnimatedCounter from '../../../components/shared/AnimatedCounter';
 import Button from '../../../components/ui/Button';
-import { EVENT_CONFIG, STATS } from '../../../data/constants';
+import { EVENT_CONFIG, STATS, EARLY_BIRD_DEADLINE } from '../../../data/constants';
 import { staggerContainer, staggerItem } from '../../../utils/animationVariants';
 
 const HERO_BG_IMAGES = [
@@ -23,6 +23,12 @@ export default function HeroSection() {
     }, 5000);
     return () => clearInterval(interval);
   }, []);
+
+  const daysLeft = Math.max(
+    0,
+    Math.ceil((EARLY_BIRD_DEADLINE - Date.now()) / (1000 * 60 * 60 * 24))
+  );
+  const earlyBirdOver = daysLeft === 0;
 
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
@@ -102,10 +108,29 @@ export default function HeroSection() {
             <CountdownTimer targetDate={EVENT_CONFIG.eventDate} />
           </motion.div>
 
+          {/* Early-bird teaser — details live behind login on /early-bird.
+              Public copy is pure hook + urgency, no price / bank details. */}
+          {!earlyBirdOver && (
+            <motion.div variants={staggerItem} className="mb-6 flex justify-center">
+              <Link
+                to="/rsvp"
+                className="group inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs sm:text-sm font-bold text-black bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 shadow-lg shadow-gold-500/40 hover:shadow-gold-500/70 hover:scale-105 transition-all animate-pulse-glow"
+                style={{ textShadow: 'none' }}
+              >
+                <span className="text-base">🎟</span>
+                <span>Early Bird discount ends 30 Sept — {daysLeft} day{daysLeft === 1 ? '' : 's'} left</span>
+                <span className="opacity-90 group-hover:translate-x-0.5 transition-transform">→ Buy Tickets now</span>
+              </Link>
+            </motion.div>
+          )}
+
           {/* CTA Buttons */}
           <motion.div variants={staggerItem} className="flex flex-wrap items-center justify-center gap-4 mb-14">
+            <Link to="/register">
+              <Button size="lg">Register</Button>
+            </Link>
             <Link to="/rsvp">
-              <Button size="lg" className="animate-pulse-glow">RSVP Now</Button>
+              <Button size="lg" variant="outline">RSVP</Button>
             </Link>
             <Link to="/yearbook">
               <Button size="lg" variant="outline">Yearbook</Button>

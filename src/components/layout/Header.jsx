@@ -103,8 +103,8 @@ export default function Header() {
                 </div>
               ) : (
                 <div className="hidden sm:flex items-center gap-2">
-                  <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>Sign In</Button>
-                  <Button size="sm" onClick={() => navigate('/register')}>Register</Button>
+                  <Button variant="ghost" size="md" onClick={() => navigate('/login')}>Sign In</Button>
+                  <Button size="md" onClick={() => navigate('/register')}>Register</Button>
                 </div>
               )}
 
