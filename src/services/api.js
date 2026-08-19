@@ -109,11 +109,13 @@ export const rsvpApi = {
 };
 
 // --- Admin: reminder / update email blast ---
+// Forwards the WHOLE payload verbatim — do NOT destructure known fields
+// here or new fields (senderName, attachment, …) get silently dropped.
 export const adminApi = {
-  sendReminder: ({ recipients, subject, body, linkUrl, linkLabel }) =>
+  sendReminder: (payload) =>
     request('/admin/send-reminder', {
       method: 'POST',
-      body: JSON.stringify({ recipients, subject, body, linkUrl, linkLabel }),
+      body: JSON.stringify(payload),
     }),
 };
 
