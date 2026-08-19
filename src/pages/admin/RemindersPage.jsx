@@ -35,7 +35,7 @@ const DEFAULT_BODY = [
   '',
   'Quick update on the upcoming reunion — please take a moment to check the site for the latest details.',
   '',
-  'If you have any questions, hit reply and we\'ll help sort it out.',
+  'Please do not reply to this message. For questions, use the general or branch-specific WhatsApp group we\'ve set up for the reunion — that\'s where the whole team can jump in.',
 ].join('\n');
 
 const FILTER_OPTIONS = [
