@@ -25,8 +25,8 @@ export default function PortalLayout() {
               so it is effectively hidden for unauthenticated users. */}
           <div className="bg-primary-500/5 border-b border-primary-400/20 backdrop-blur-sm">
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
-              <div className="flex items-center gap-1 py-2 overflow-x-auto scrollbar-hide">
-                <span className="text-gold-400 text-xs font-semibold uppercase tracking-wider mr-3 flex-shrink-0">
+              <div className="flex flex-wrap items-center gap-x-1 gap-y-1.5 py-2">
+                <span className="text-gold-400 text-xs font-semibold uppercase tracking-wider mr-3">
                   My Portal
                 </span>
                 {NAV_LINKS_PROTECTED.map((link) => {
@@ -35,7 +35,7 @@ export default function PortalLayout() {
                     <Link
                       key={link.path}
                       to={link.path}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex-shrink-0 ${
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                         isActive
                           ? 'bg-gold-500 text-navy-950'
                           : 'text-slate-400 hover:text-white hover:bg-white/5'

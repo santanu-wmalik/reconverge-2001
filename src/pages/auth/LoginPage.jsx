@@ -51,7 +51,7 @@ export default function LoginPage() {
         clearSavedCredentials();
       }
       showToast(`Welcome back, ${result.user.name}!`, 'success');
-      navigate('/profile');
+      navigate('/early-bird');
     } else {
       showToast(result.error || 'Login failed', 'error');
     }
