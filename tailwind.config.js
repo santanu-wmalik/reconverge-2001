@@ -51,8 +51,13 @@ export default {
         'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
         'spin-slow': 'spin 8s linear infinite',
         'film-scroll': 'filmScroll 120s linear infinite',
+        'poem-drift': 'poemDrift 80s linear infinite',
       },
       keyframes: {
+        poemDrift: {
+          '0%':   { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(-50%)' },
+        },
         float: {
           '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
           '50%': { transform: 'translateY(-20px) rotate(2deg)' },
