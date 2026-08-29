@@ -174,7 +174,7 @@ export default function FAQPage() {
           We are happy to help. Reach out to us and we will get back to you as soon as possible.
         </p>
         <a
-          href="mailto:reconverge2001@gmail.com"
+          href="mailto:crec2001reunion@gmail.com"
           style={{
             display: 'inline-block',
             padding: '0.75rem 2rem',
@@ -197,7 +197,7 @@ export default function FAQPage() {
             e.currentTarget.style.boxShadow = '0 4px 15px rgba(212, 168, 67, 0.3)';
           }}
         >
-          reconverge2001@gmail.com
+          crec2001reunion@gmail.com
         </a>
       </motion.div>
     </motion.div>

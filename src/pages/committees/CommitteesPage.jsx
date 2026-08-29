@@ -161,7 +161,7 @@ export default function CommitteesPage() {
               who hasn&apos;t joined their branch WhatsApp group yet, please help us reconnect!
             </p>
             <p className="text-xs text-slate-500">
-              Check with your branch representatives or contact us at reconverge2001@gmail.com
+              Check with your branch representatives or contact us at crec2001reunion@gmail.com
             </p>
           </div>
         </GlassCard>
@@ -188,7 +188,7 @@ export default function CommitteesPage() {
               from every branch. Whether you&apos;re in India, US, Europe, or Australia — there&apos;s a role for you!
             </p>
             <a
-              href="mailto:reconverge2001@gmail.com"
+              href="mailto:crec2001reunion@gmail.com"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gold-500 hover:bg-gold-400 text-navy-950 font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-gold-500/25"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

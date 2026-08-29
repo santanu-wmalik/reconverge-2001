@@ -8,7 +8,7 @@
 export const accommodationContact = {
   name: 'Accommodation & Food Committee',
   shortName: 'AFC',
-  email: 'reconverge2001@gmail.com',
+  email: 'crec2001reunion@gmail.com',
   whatsapp: 'https://chat.whatsapp.com/JXcd7Dh4qKtJbrV6x3yw1Z',
   quoteRef: 'REConverge 2001 - Silver Jubilee Block',
   note: 'Always quote "REConverge 2001" when calling the hotel to access the negotiated rate.',

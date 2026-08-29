@@ -57,7 +57,7 @@ export default function NostalgiaPage() {
               This space is for your memories — a corridor anecdote, a hostel story, a professor you still quote. We&apos;re holding it empty until the first real submissions come in.
             </p>
             <p className="text-xs text-slate-500">
-              Want to share one? Email it to <a href="mailto:reconverge2001@gmail.com" className="text-gold-400 hover:text-gold-300">reconverge2001@gmail.com</a> and we&apos;ll feature it here.
+              Want to share one? Email it to <a href="mailto:crec2001reunion@gmail.com" className="text-gold-400 hover:text-gold-300">crec2001reunion@gmail.com</a> and we&apos;ll feature it here.
             </p>
           </GlassCard>
         )}

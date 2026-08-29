@@ -105,7 +105,7 @@ export default function OutreachPage() {
         <GlassCard className="border-gold-500/20 text-center">
           <p className="text-slate-400 text-sm">
             🔍 If you know how to reach any missing batchmate, please contact the branch representatives
-            or email <a href="mailto:reconverge2001@gmail.com" className="text-gold-400 hover:text-gold-300">reconverge2001@gmail.com</a>.
+            or email <a href="mailto:crec2001reunion@gmail.com" className="text-gold-400 hover:text-gold-300">crec2001reunion@gmail.com</a>.
           </p>
         </GlassCard>
       </motion.div>

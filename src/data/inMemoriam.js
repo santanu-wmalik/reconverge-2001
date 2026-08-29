@@ -13,4 +13,4 @@ export const inMemoriam = [
   { name: 'Savin', branch: 'Production Engineering', year: 2023 },
 ];
 
-export const remembranceNote = 'During the Day-2 auditorium function at NIT Calicut, we will pause to honour the batchmates who are no longer with us. If you can help us find a photograph or reach a family member for any of the names below, please write to reconverge2001@gmail.com.';
+export const remembranceNote = 'During the Day-2 auditorium function at NIT Calicut, we will pause to honour the batchmates who are no longer with us. If you can help us find a photograph or reach a family member for any of the names below, please write to crec2001reunion@gmail.com.';

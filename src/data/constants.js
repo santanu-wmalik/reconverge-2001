@@ -39,7 +39,7 @@ export const EVENT_CONFIG = {
   batchYear: 2001,
   yearsAgo: 25,
   contact: {
-    email: 'reconverge2001@gmail.com',
+    email: 'crec2001reunion@gmail.com',
   },
   logoUrl: 'https://storage.googleapis.com/reconverge-2001-uat-bucket/landing_page_pictures/Reconverge_2001_Logo.png',
   storageBaseUrl: 'https://storage.googleapis.com/reconverge-2001-uat-bucket/landing_page_pictures/',
@@ -117,7 +117,7 @@ export const FAQ_DATA = [
   { id: 'f-reg-4', question: 'Can I attend only one of the days?', category: 'Registration', answer: 'Yes. If you can only make Day 1 (27 Dec — Check-in & Ice-Breaker), Day 2 (28 Dec — Campus & Gala) or only part of Day 3, please still register and note the specifics in the "Special Requests" field. The single registration fee stays the same regardless of day count — the batch common costs are the same either way.' },
 
   // === Stay & Accommodation ===
-  { id: 'f-stay-1', question: 'How do I book my hotel room?', category: 'Stay', answer: 'All bookings for the REConverge block go through the Stay & Food Committee (AFC). Email reconverge2001@gmail.com (subject: "REConverge 2001 — Silver Jubilee Block") with your preferred room type, sharing pattern, arrival/departure dates, and family count. The AFC will hold the room with Gokulam Grand; payment goes directly to the hotel (SWIFT / bank transfer / card at check-out). Always quote "REConverge 2001" — the group rates are not accessible on public booking sites.' },
+  { id: 'f-stay-1', question: 'How do I book my hotel room?', category: 'Stay', answer: 'All bookings for the REConverge block go through the Stay & Food Committee (AFC). Email crec2001reunion@gmail.com (subject: "REConverge 2001 — Silver Jubilee Block") with your preferred room type, sharing pattern, arrival/departure dates, and family count. The AFC will hold the room with Gokulam Grand; payment goes directly to the hotel (SWIFT / bank transfer / card at check-out). Always quote "REConverge 2001" — the group rates are not accessible on public booking sites.' },
   { id: 'f-stay-2', question: 'What are the room rates and what\u2019s included?', category: 'Stay', answer: 'At Gokulam Grand Calicut: Deluxe ₹6,000 single / ₹7,000 double · Superior ₹9,000 / ₹10,000 · Suite ₹12,000 · Grand Suite ₹13,000 — all + GST, per night. Every rate includes welcome drink, buffet breakfast, Wi-Fi, pool, gym, doctor on call and 24-hour room service. The full rate card and inventory (39 Deluxe + 4 Superior + 4 Suite + 5 Grand Suite = 52 rooms held for the batch) sits on the Stay page.' },
   { id: 'f-stay-3', question: 'What is the cancellation policy?', category: 'Stay', answer: 'Gokulam Grand allows free cancellation up to 2 days before arrival. Cancel later — or no-show — and 100% of the reservation amount is retained. For the Gala banquet itself: 30% deposit is non-refundable; 50% fee if cancelled within 30 days of the event; 100% fee within 7 days.' },
   { id: 'f-stay-4', question: 'Is accommodation included in the registration fee?', category: 'Stay', answer: 'No. Accommodation is paid directly to the hotel, separate from the reunion fund. This was a deliberate decision so alumni can pick the room type that matches their budget (₹6k/night Deluxe to ₹13k/night Grand Suite). The reunion registration fee covers the campus day, Sadhya lunch, Gala dinner, souvenir kit and shared event costs.' },
@@ -140,7 +140,7 @@ export const FAQ_DATA = [
 
   // === Communications & Engagement ===
   { id: 'f-comms-1', question: 'What are the townhalls — and do I have to attend?', category: 'Comms', answer: 'Townhalls are batch-wide calls where the volunteer team shares progress and takes questions live. The first pair is scheduled for 25 Apr (Sat 8–9 PM IST) and 26 Apr (Sun 10–11 AM IST) — split across time zones so everyone has a friendly slot. Attendance is not required; every session is auto-recorded and the recording + transcript get posted to the Townhalls page (visible once you log in).' },
-  { id: 'f-comms-2', question: 'How do I volunteer for a committee?', category: 'Comms', answer: 'Head to the Committees page and email reconverge2001@gmail.com with your branch, the committee(s) you\u2019d like to help with, and a line on how much time you can give. Open slots: Stay & Food (AFC), Entertainment (EC) and Sponsorship (SC) all need leads; Architecture and ECE still need branch reps.' },
+  { id: 'f-comms-2', question: 'How do I volunteer for a committee?', category: 'Comms', answer: 'Head to the Committees page and email crec2001reunion@gmail.com with your branch, the committee(s) you\u2019d like to help with, and a line on how much time you can give. Open slots: Stay & Food (AFC), Entertainment (EC) and Sponsorship (SC) all need leads; Architecture and ECE still need branch reps.' },
 
   // === Post-event ===
   { id: 'f-post-1', question: 'Can I book a post-event Kerala tour?', category: 'Travel', answer: 'Yes. Vetted travel-agent contacts will be listed on the Travel page closer to the event once the volunteer team finalises them. Popular extensions include Wayanad, Munnar, and the Alleppey backwaters.' },
