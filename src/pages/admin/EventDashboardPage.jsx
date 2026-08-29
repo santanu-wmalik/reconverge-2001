@@ -10,6 +10,7 @@ import { EVENT_CONFIG } from '../../data/constants';
 import GlassCard from '../../components/ui/GlassCard';
 import Badge from '../../components/ui/Badge';
 import ProgressBar from '../../components/ui/ProgressBar';
+import { isDemoUser } from '../../utils/isDemoUser';
 
 const BATCH_STRENGTH = 350;
 const TIER_VALUES = { platinum: 500000, gold: 250000, silver: 100000 };
@@ -44,9 +45,14 @@ export default function EventDashboardPage() {
 
   // --- Computed metrics ---
 
-  const registeredCount = alumni.length;
-  const rsvpCount = rsvps.length;
-  const volunteerCount = rsvps.filter((r) => r.volunteer).length;
+  // Real alumni only — demo seed accounts (admin@/alumni@/superuser@email.com)
+  // must not inflate registration or revenue projections.
+  const realAlumni = useMemo(() => alumni.filter((a) => !isDemoUser(a)), [alumni]);
+  const realRsvps = useMemo(() => rsvps.filter((r) => !isDemoUser(r)), [rsvps]);
+
+  const registeredCount = realAlumni.length;
+  const rsvpCount = realRsvps.length;
+  const volunteerCount = realRsvps.filter((r) => r.volunteer).length;
 
   const orderTotal = orders.reduce((sum, o) => sum + (o.total || 0), 0);
   const orderCount = orders.length;

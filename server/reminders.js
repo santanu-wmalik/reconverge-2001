@@ -14,6 +14,7 @@
 // mass-spam mistakes without external infra.
 
 import { sendEmail } from './mailer.js';
+import { sessionCan } from './auth.js';
 
 const WINDOW_MS = 15 * 60 * 1000;
 const MAX_PER_WINDOW = 500;
@@ -106,9 +107,8 @@ export function mountReminders(app) {
   app.post('/api/admin/send-reminder', async (req, res) => {
     const session = req.auth;
     if (!session) return res.status(401).json({ error: 'Authentication required' });
-    const role = String(session.role || '');
-    if (role !== 'super-admin') {
-      return res.status(403).json({ error: 'Super-admin access required' });
+    if (!sessionCan(session, 'marketing')) {
+      return res.status(403).json({ error: 'Marketing permission required' });
     }
 
     const { recipients, subject, body, linkUrl, linkLabel, senderName, attachment } = req.body || {};

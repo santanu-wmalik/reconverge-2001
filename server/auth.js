@@ -47,6 +47,23 @@ async function findUserByEmail(email) {
   const r = await query(`SELECT * FROM users WHERE LOWER(email) = LOWER($1)`, [email]);
   return r.rows[0] || null;
 }
+
+// Normalise the JSONB `permissions` column into a plain object. Falls back
+// to an empty object so callers can always do `perms.finance`. Super-admins
+// implicitly hold every permission — check role FIRST before consulting this.
+function permsOf(userRow) {
+  const raw = userRow?.permissions;
+  if (!raw) return {};
+  if (typeof raw === 'string') { try { return JSON.parse(raw) || {}; } catch { return {}; } }
+  return raw;
+}
+
+// Session helper — a role of super-admin trumps the permissions object.
+export function sessionCan(session, permission) {
+  if (!session) return false;
+  if (session.role === 'super-admin') return true;
+  return Boolean(session.permissions && session.permissions[permission]);
+}
 async function findAlumniByEmail(email) {
   const r = await query(`SELECT * FROM alumni WHERE LOWER(email) = LOWER($1)`, [email]);
   return r.rows[0] || null;
@@ -74,14 +91,20 @@ export function mountAuth(app) {
         return res.status(409).json({ error: 'Alumni profile missing for this account' });
       }
       const token = newToken();
+      const perms = permsOf(userRow);
       tokens.set(token, {
         userId: userRow.id,
         alumniId: alumniRow.id,
         role: userRow.role || 'alumni',
+        permissions: perms,
         email: userRow.email,
         issuedAt: Date.now(),
       });
-      const user = { ...rowToJson('alumni', alumniRow), role: userRow.role || 'alumni' };
+      const user = {
+        ...rowToJson('alumni', alumniRow),
+        role: userRow.role || 'alumni',
+        permissions: perms,
+      };
       res.json({ user, token });
     } catch (err) { next(err); }
   });
@@ -158,9 +181,9 @@ export function mountAuth(app) {
       }
 
       const token = newToken();
-      tokens.set(token, { userId, alumniId, role: 'alumni', email, issuedAt: Date.now() });
+      tokens.set(token, { userId, alumniId, role: 'alumni', permissions: {}, email, issuedAt: Date.now() });
       res.status(201).json({
-        user: { ...rowToJson('alumni', createdAlumni), role: 'alumni' },
+        user: { ...rowToJson('alumni', createdAlumni), role: 'alumni', permissions: {} },
         token,
       });
     } catch (err) {
@@ -212,10 +235,12 @@ export function mountAuth(app) {
       if (!targetAlumni) return res.status(404).json({ error: 'Target alumni profile missing' });
 
       const token = newToken();
+      const targetPerms = permsOf(targetUser);
       tokens.set(token, {
         userId: targetUser.id,
         alumniId: targetAlumni.id,
         role: targetUser.role || 'alumni',
+        permissions: targetPerms,
         email: targetUser.email,
         issuedAt: Date.now(),
         // Snapshot enough to switch back without a password.
@@ -223,6 +248,7 @@ export function mountAuth(app) {
           userId: caller.userId,
           alumniId: caller.alumniId,
           role: caller.role,
+          permissions: caller.permissions,
           email: caller.email,
         },
       });
@@ -231,7 +257,11 @@ export function mountAuth(app) {
       // impersonating" call below also re-issues a fresh super-admin token,
       // so cleanup is automatic from either side.
       res.json({
-        user: { ...rowToJson('alumni', targetAlumni), role: targetUser.role || 'alumni' },
+        user: {
+          ...rowToJson('alumni', targetAlumni),
+          role: targetUser.role || 'alumni',
+          permissions: targetPerms,
+        },
         token,
         impersonating: true,
       });
@@ -257,11 +287,16 @@ export function mountAuth(app) {
         userId: orig.userId,
         alumniId: orig.alumniId,
         role: orig.role,
+        permissions: orig.permissions || {},
         email: orig.email,
         issuedAt: Date.now(),
       });
       res.json({
-        user: { ...rowToJson('alumni', alumniRow), role: orig.role },
+        user: {
+          ...rowToJson('alumni', alumniRow),
+          role: orig.role,
+          permissions: orig.permissions || {},
+        },
         token: newT,
       });
     } catch (err) { next(err); }
@@ -400,11 +435,57 @@ export function mountAuth(app) {
       const alumniRow = await findAlumniById(session.alumniId);
       if (!alumniRow) return res.status(401).json({ error: 'Account no longer exists' });
       res.json({
-        user: { ...rowToJson('alumni', alumniRow), role: session.role },
+        user: {
+          ...rowToJson('alumni', alumniRow),
+          role: session.role,
+          permissions: session.permissions || {},
+        },
         impersonating: Boolean(session.impersonatedBy),
         impersonatedBy: session.impersonatedBy
           ? { name: session.impersonatedBy.email, role: session.impersonatedBy.role }
           : null,
+      });
+    } catch (err) { next(err); }
+  });
+
+  // ── PATCH /api/users/:id/permissions ────────────────────────────────────
+  // Super-admin only. Body: { permissions: { finance?: bool, marketing?: bool } }
+  // Unknown keys are silently dropped so the JSON blob stays clean. Every live
+  // session for that user has its cached `permissions` refreshed in place so
+  // the grant takes effect immediately without forcing a re-login.
+  const KNOWN_PERMISSIONS = new Set(['finance', 'marketing']);
+  app.patch('/api/users/:id/permissions', async (req, res, next) => {
+    try {
+      const callerToken = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
+      const caller = callerToken && tokens.get(callerToken);
+      if (!caller || caller.role !== 'super-admin') {
+        return res.status(403).json({ error: 'Super-admin access required' });
+      }
+      const raw = (req.body || {}).permissions;
+      if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+        return res.status(400).json({ error: 'permissions must be an object' });
+      }
+      const clean = {};
+      for (const [k, v] of Object.entries(raw)) {
+        if (KNOWN_PERMISSIONS.has(k)) clean[k] = Boolean(v);
+      }
+      const ur = await query(`SELECT * FROM users WHERE id = $1`, [req.params.id]);
+      if (!ur.rows.length) return res.status(404).json({ error: 'User not found' });
+
+      const updated = await query(
+        `UPDATE users SET permissions = $2 WHERE id = $1 RETURNING *`,
+        [req.params.id, JSON.stringify(clean)]
+      );
+
+      // Refresh permissions on every live token for this user so the grant
+      // takes effect immediately.
+      const nextPerms = permsOf(updated.rows[0]);
+      for (const [, sess] of tokens.entries()) {
+        if (sess.userId === req.params.id) sess.permissions = nextPerms;
+      }
+
+      res.json({
+        user: { ...rowToJson('users', updated.rows[0]) },
       });
     } catch (err) { next(err); }
   });

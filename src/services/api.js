@@ -117,6 +117,12 @@ export const adminApi = {
       method: 'POST',
       body: JSON.stringify(payload),
     }),
+  // Payment verification — admin OR super-admin. See server/paymentVerification.js.
+  verifyPayment: (payload) =>
+    request('/admin/verify-payment', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+    }),
 };
 
 // --- Orders ---
@@ -132,6 +138,12 @@ export const orderApi = {
 
 // --- Users (auth) ---
 export const userApi = {
+  // Super-admin only. permissions is { finance?: bool, marketing?: bool }.
+  updatePermissions: (id, permissions) =>
+    request(`/users/${encodeURIComponent(id)}/permissions`, {
+      method: 'PATCH',
+      body: JSON.stringify({ permissions }),
+    }),
   getAll: () => request('/users'),
   getByEmail: (email) => request(`/users?email=${encodeURIComponent(email)}`),
   create: (data) =>

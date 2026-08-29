@@ -10,6 +10,7 @@ import Input from '../../components/ui/Input';
 import Modal from '../../components/ui/Modal';
 import Badge from '../../components/ui/Badge';
 import SectionHeading from '../../components/shared/SectionHeading';
+import { DEMO_EMAILS } from '../../utils/isDemoUser';
 
 // Combined "who can we message" list.
 // - Registered alumni (users who have created an account, from `alumni` table)
@@ -21,11 +22,6 @@ import SectionHeading from '../../components/shared/SectionHeading';
 // The list is a snapshot on load — refresh the page to re-fetch. That's fine
 // for a Reminders workflow that runs a few times per month.
 
-const DEMO_EMAILS = new Set([
-  'alumni@email.com',
-  'admin@email.com',
-  'superuser@email.com',
-]);
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

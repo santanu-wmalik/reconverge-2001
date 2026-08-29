@@ -42,6 +42,10 @@ export const tables = {
     notes:             { col: 'notes',              type: 'text' },
     paymentUid:        { col: 'payment_uid',        type: 'text' },
     paymentStatus:     { col: 'payment_status',     type: 'text' },
+    paymentAmount:     { col: 'payment_amount',     type: 'numeric' },
+    paymentNotes:      { col: 'payment_notes',      type: 'text' },
+    paymentVerifiedAt: { col: 'payment_verified_at', type: 'timestamptz' },
+    paymentVerifiedBy: { col: 'payment_verified_by', type: 'text' },
     registrationFee:   { col: 'registration_fee',   type: 'numeric' },
     idType:            { col: 'id_type',            type: 'text' },
     idNumber:          { col: 'id_number',          type: 'text' },
@@ -52,12 +56,13 @@ export const tables = {
   },
 
   users: {
-    id:        { col: 'id',         type: 'text' },
-    email:     { col: 'email',      type: 'text' },
-    password:  { col: 'password',   type: 'text' },
-    alumniId:  { col: 'alumni_id',  type: 'text' },
-    role:      { col: 'role',       type: 'text' },
-    createdAt: { col: 'created_at', type: 'timestamptz' },
+    id:          { col: 'id',          type: 'text' },
+    email:       { col: 'email',       type: 'text' },
+    password:    { col: 'password',    type: 'text' },
+    alumniId:    { col: 'alumni_id',   type: 'text' },
+    role:        { col: 'role',        type: 'text' },
+    permissions: { col: 'permissions', type: 'jsonb' },
+    createdAt:   { col: 'created_at',  type: 'timestamptz' },
   },
 
   announcements: {

@@ -8,12 +8,41 @@ import { useToast } from '../../context/ToastContext';
 import GlassCard from '../../components/ui/GlassCard';
 import Badge from '../../components/ui/Badge';
 import Avatar from '../../components/ui/Avatar';
+import { isDemoUser } from '../../utils/isDemoUser';
 
 const roleConfig = {
   'super-admin': { label: 'Super Admin', variant: 'gold' },
   'admin':       { label: 'Admin',       variant: 'gold' },
   'alumni':      { label: 'Alumni',      variant: 'default' },
 };
+
+// Small pill for a named permission. Click to toggle on/off. Super-admin
+// rows show it as locked-on (they hold every permission implicitly and the
+// backend enforces that too).
+function PermChip({ label, name, row, busy, onToggle }) {
+  const isSuper = row.role === 'super-admin';
+  const on = isSuper || Boolean(row.permissions && row.permissions[name]);
+  const disabled = isSuper || busy;
+  return (
+    <button
+      type="button"
+      onClick={() => !disabled && onToggle(row, name)}
+      disabled={disabled}
+      title={
+        isSuper ? `Super-admin implicitly has ${label}`
+        : on ? `Revoke ${label} permission`
+        : `Grant ${label} permission`
+      }
+      className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full border transition ${
+        on
+          ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-200'
+          : 'bg-white/5 border-white/15 text-slate-400 hover:border-white/30 hover:text-white'
+      } ${disabled ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
+    >
+      {on ? '✓ ' : ''}{label}
+    </button>
+  );
+}
 
 function Toggle({ on, disabled, onChange, label }) {
   return (
@@ -64,9 +93,14 @@ export default function UsersPage() {
   }, []);
 
   const stats = useMemo(() => {
-    const total = users.length;
-    const admins = users.filter((u) => u.role === 'admin').length;
-    const supers = users.filter((u) => u.role === 'super-admin').length;
+    // Demo seed accounts are excluded from headline counts — they'd inflate
+    // the "how many alumni have signed up" number the committee looks at.
+    // They're still rendered in the table below so a super-admin can find
+    // and impersonate them.
+    const real = users.filter((u) => !isDemoUser(u));
+    const total = real.length;
+    const admins = real.filter((u) => u.role === 'admin').length;
+    const supers = real.filter((u) => u.role === 'super-admin').length;
     return { total, admins, supers, alumni: total - admins - supers };
   }, [users]);
 
@@ -88,6 +122,32 @@ export default function UsersPage() {
     // Send them where the target user actually lives. Admins/super-admins go
     // to the admin dashboard; regular alumni land on their profile.
     navigate(row.role === 'alumni' ? '/profile' : '/admin');
+  };
+
+  // Toggle a single permission (finance / marketing) on a user. Only
+  // meaningful for admin / super-admin rows — the pill is disabled otherwise.
+  // The server refreshes the user's live session too, so the grant takes
+  // effect without them re-logging.
+  const handlePermToggle = async (row, permName) => {
+    if (row.role === 'super-admin') { showToast('Super-admin holds every permission implicitly', 'info'); return; }
+    if (row.role !== 'admin') { showToast('Grant admin access first, then toggle permissions', 'info'); return; }
+    const current = (row.permissions && row.permissions[permName]) || false;
+    const nextPerms = { ...(row.permissions || {}), [permName]: !current };
+    setBusyId(row.id);
+    setUsers((prev) => prev.map((u) => (u.id === row.id ? { ...u, permissions: nextPerms } : u)));
+    try {
+      await userApi.updatePermissions(row.id, nextPerms);
+      showToast(
+        `${row.email}: ${permName} ${!current ? 'granted' : 'revoked'}`,
+        'success'
+      );
+    } catch (e) {
+      console.error(e);
+      setUsers((prev) => prev.map((u) => (u.id === row.id ? { ...u, permissions: row.permissions || {} } : u)));
+      showToast('Update failed — try again', 'error');
+    } finally {
+      setBusyId(null);
+    }
   };
 
   const handleToggle = async (row, nextOn) => {
@@ -188,7 +248,7 @@ export default function UsersPage() {
                         {busyId === u.id ? 'Switching…' : 'Impersonate'}
                       </button>
                     )}
-                    <div className="flex flex-col items-end gap-1">
+                    <div className="flex flex-col items-end gap-2">
                       <Toggle
                         on={on}
                         disabled={disabled}
@@ -198,6 +258,27 @@ export default function UsersPage() {
                       <p className="text-[10px] uppercase tracking-wider text-slate-500">
                         Admin portal {on ? 'on' : 'off'}
                       </p>
+                      {/* Permission chips — only meaningful once someone is
+                          an admin. Super-admin implicitly has both, shown
+                          as locked-on. */}
+                      {(u.role === 'admin' || u.role === 'super-admin') && (
+                        <div className="flex items-center gap-1.5">
+                          <PermChip
+                            label="Finance"
+                            name="finance"
+                            row={u}
+                            busy={busyId === u.id}
+                            onToggle={handlePermToggle}
+                          />
+                          <PermChip
+                            label="Marketing"
+                            name="marketing"
+                            row={u}
+                            busy={busyId === u.id}
+                            onToggle={handlePermToggle}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.li>

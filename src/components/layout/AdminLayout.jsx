@@ -20,16 +20,27 @@ const BASE_ADMIN_NAV = [
   { label: 'Meetings', path: '/admin/meetings', icon: '📝' },
 ];
 
+// Permission-gated tabs. Rendered when the signed-in admin holds the named
+// permission (super-admin implicitly holds all).
+const PERMISSION_NAV = [
+  { label: 'Payments',  path: '/admin/payments',  icon: '🧾', permission: 'finance'   },
+  { label: 'Reminders', path: '/admin/reminders', icon: '📣', permission: 'marketing' },
+];
+
 // Super-admin-only extras. Rendered only when `isSuperAdmin`.
 const SUPER_ADMIN_NAV = [
-  { label: 'Reminders', path: '/admin/reminders', icon: '📣' },
   { label: 'Users', path: '/admin/users', icon: '🔑' },
 ];
 
 export default function AdminLayout() {
   const location = useLocation();
-  const { isSuperAdmin } = useAuth();
-  const adminNavLinks = isSuperAdmin ? [...BASE_ADMIN_NAV, ...SUPER_ADMIN_NAV] : BASE_ADMIN_NAV;
+  const { isSuperAdmin, hasPermission } = useAuth();
+  const permissionNav = PERMISSION_NAV.filter((n) => hasPermission(n.permission));
+  const adminNavLinks = [
+    ...BASE_ADMIN_NAV,
+    ...permissionNav,
+    ...(isSuperAdmin ? SUPER_ADMIN_NAV : []),
+  ];
 
   return (
     <div className="min-h-screen flex flex-col">

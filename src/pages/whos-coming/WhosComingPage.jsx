@@ -6,6 +6,7 @@ import { BRANCHES } from '../../data/constants';
 import GlassCard from '../../components/ui/GlassCard';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
+import { DEMO_EMAILS } from '../../utils/isDemoUser';
 
 // "Who's Registered" — alumni-facing roster of everyone signalling intent to
 // attend REConverge 2001. Two sources are merged into a single browsable
@@ -20,12 +21,6 @@ import Select from '../../components/ui/Select';
 // once with the richer "Registered" card.
 //
 // What we share / hide is unchanged from before — see field comments below.
-
-const DEMO_EMAILS = new Set([
-  'admin@email.com',
-  'alumni@email.com',
-  'superuser@email.com',
-]);
 
 const looksLikeDemo = (a) => {
   if (!a) return true;
@@ -182,10 +177,9 @@ export default function WhosComingPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
         <StatPill label="Registered" value={stats.reg} />
         <StatPill label="RSVPed" value={stats.rsv} />
-        <StatPill label="Branches" value={stats.branches} />
         <StatPill label="Total headcount (incl. family)" value={stats.headcount} />
       </div>
 

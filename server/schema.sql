@@ -59,6 +59,18 @@ CREATE UNIQUE INDEX IF NOT EXISTS alumni_email_lower_uk
 CREATE INDEX IF NOT EXISTS alumni_registered_idx
   ON alumni (is_registered);
 
+-- Payment verification fields (added post-launch — idempotent for existing DBs).
+-- - payment_amount:      what the Finance Committee actually saw credited
+-- - payment_notes:       free text; SHOWN to the alumnus on My Payments if set,
+--                        so a rejection reason ("wrong amount", "wrong UTR")
+--                        reaches them without a separate email.
+-- - payment_verified_at: audit timestamp
+-- - payment_verified_by: admin user id who marked it — audit trail
+ALTER TABLE alumni ADD COLUMN IF NOT EXISTS payment_amount NUMERIC;
+ALTER TABLE alumni ADD COLUMN IF NOT EXISTS payment_notes TEXT;
+ALTER TABLE alumni ADD COLUMN IF NOT EXISTS payment_verified_at TIMESTAMPTZ;
+ALTER TABLE alumni ADD COLUMN IF NOT EXISTS payment_verified_by TEXT;
+
 -- ─── users (auth) ────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS users (
   id         TEXT PRIMARY KEY,
@@ -71,6 +83,13 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE UNIQUE INDEX IF NOT EXISTS users_email_lower_uk
   ON users (LOWER(email));
 CREATE INDEX IF NOT EXISTS users_alumni_id_idx ON users (alumni_id);
+
+-- Fine-grained permissions on top of `role`. `role='admin'` alone grants
+-- read-only admin portal; individual capabilities (finance, marketing…) are
+-- toggled per user via /admin/users by a super-admin. `role='super-admin'`
+-- implicitly has every permission — we never check this JSON for them.
+--   { "finance": true, "marketing": true }
+ALTER TABLE users ADD COLUMN IF NOT EXISTS permissions JSONB DEFAULT '{}'::jsonb;
 
 -- ─── announcements (public banner) ───────────────────────────────────────
 CREATE TABLE IF NOT EXISTS announcements (

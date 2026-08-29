@@ -41,6 +41,7 @@ import PortalLayout from './components/layout/PortalLayout';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import AdminRoute from './components/layout/AdminRoute';
 import SuperAdminRoute from './components/layout/SuperAdminRoute';
+import PermissionRoute from './components/layout/PermissionRoute';
 import AdminLayout from './components/layout/AdminLayout';
 
 // Lazy load all pages
@@ -70,6 +71,7 @@ const NewsPage = lazyWithReload(() => import('./pages/news/NewsPage'));
 const TownhallsPage = lazyWithReload(() => import('./pages/townhalls/TownhallsPage'));
 const MyPaymentsPage = lazyWithReload(() => import('./pages/payments/MyPaymentsPage'));
 const RSVPPage = lazyWithReload(() => import('./pages/rsvp/RSVPPage'));
+const PaymentVerificationPage = lazyWithReload(() => import('./pages/admin/PaymentVerificationPage'));
 const EarlyBirdPage = lazyWithReload(() => import('./pages/portal/EarlyBirdPage'));
 
 // New pages from real event
@@ -172,6 +174,18 @@ export const router = createBrowserRouter([
           { path: 'admin/event-dashboard', element: <SuspenseWrapper><EventDashboardPage /></SuspenseWrapper> },
           { path: 'admin/rooming', element: <SuspenseWrapper><RoomingPage /></SuspenseWrapper> },
           { path: 'admin/meetings', element: <SuspenseWrapper><MeetingsPage /></SuspenseWrapper> },
+          {
+            element: <PermissionRoute permission="finance" />,
+            children: [
+              { path: 'admin/payments', element: <SuspenseWrapper><PaymentVerificationPage /></SuspenseWrapper> },
+            ],
+          },
+          {
+            element: <PermissionRoute permission="marketing" />,
+            children: [
+              { path: 'admin/reminders', element: <SuspenseWrapper><RemindersPage /></SuspenseWrapper> },
+            ],
+          },
         ],
       },
     ],
@@ -185,7 +199,6 @@ export const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { path: 'admin/users', element: <SuspenseWrapper><UsersPage /></SuspenseWrapper> },
-          { path: 'admin/reminders', element: <SuspenseWrapper><RemindersPage /></SuspenseWrapper> },
         ],
       },
     ],

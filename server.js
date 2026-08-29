@@ -22,6 +22,7 @@ import { existsSync } from 'fs';
 import { ensureDatabase, ensureSchema, dbInfo, query } from './server/db.js';
 import { mountAuth, authMiddleware } from './server/auth.js';
 import { mountResource } from './server/resources.js';
+import { mountPaymentVerification } from './server/paymentVerification.js';
 import { mountReminders } from './server/reminders.js';
 import { seedData } from './server/seed-data.mjs';
 import { tables, coerce } from './server/columns.js';
@@ -128,6 +129,7 @@ async function main() {
   // Admin reminder / update-blast endpoint. Gated inside the handler on
   // role === 'admin' | 'super-admin'.
   mountReminders(app);
+  mountPaymentVerification(app);
 
   // Fallback error handler — keeps stack traces out of the response while
   // still surfacing them in Render logs.

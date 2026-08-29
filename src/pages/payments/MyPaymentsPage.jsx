@@ -73,6 +73,7 @@ export default function MyPaymentsPage() {
   const status = useMemo(() => {
     const paid = user?.paymentStatus === 'confirmed' || user?.paymentStatus === 'paid';
     if (paid) return { key: 'paid', label: 'Paid & Verified', tone: 'success', step: 5 };
+    if (user?.paymentStatus === 'rejected') return { key: 'rejected', label: 'Verification Failed', tone: 'danger', step: 4 };
     if (user?.paymentUid) return { key: 'pending', label: 'Under Verification', tone: 'gold', step: 4 };
     if (user?.isRegistered) return { key: 'awaiting', label: 'Awaiting Payment', tone: 'warning', step: 2 };
     return { key: 'not_started', label: 'Not Registered', tone: 'default', step: 1 };
@@ -137,10 +138,40 @@ export default function MyPaymentsPage() {
               once matched.
             </p>
           )}
+          {status.key === 'rejected' && (
+            <p className="text-xs text-red-300">
+              ✕ Finance Committee couldn't match your last transfer. See the note below and update
+              your Payment UID in Step 4.
+            </p>
+          )}
           {status.key === 'paid' && (
             <p className="text-xs text-emerald-300">
               ✓ Registration fee received and verified. You're all set.
             </p>
+          )}
+
+          {/* Verifier note — surfaced whenever the Finance Committee attached
+              one. Rejection reasons live here; occasional context notes on a
+              confirmed payment (partial credit, excess routed to Give Back)
+              live here too. */}
+          {user?.paymentNotes && (
+            <div className={`mt-3 rounded-lg border px-3 py-2 text-xs ${
+              status.key === 'rejected'
+                ? 'border-red-500/30 bg-red-500/5 text-red-200'
+                : status.key === 'paid'
+                  ? 'border-emerald-500/25 bg-emerald-500/5 text-emerald-100'
+                  : 'border-white/10 bg-white/5 text-slate-300'
+            }`}>
+              <p className="text-[10px] uppercase tracking-wider opacity-70 mb-1">
+                Note from Finance Committee
+              </p>
+              <p className="leading-relaxed">{user.paymentNotes}</p>
+              {user.paymentAmount != null && (
+                <p className="text-[10px] opacity-70 mt-1">
+                  Amount recorded: ₹{Number(user.paymentAmount).toLocaleString('en-IN')}
+                </p>
+              )}
+            </div>
           )}
         </GlassCard>
 

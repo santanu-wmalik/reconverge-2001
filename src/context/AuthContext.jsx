@@ -204,8 +204,17 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Fine-grained capability check. Super-admin trumps everything; otherwise
+  // the truth is `user.permissions[name]`. Keeps callers from repeating the
+  // `role === 'super-admin' || …` incantation everywhere.
+  const hasPermission = (name) => {
+    if (!state.user) return false;
+    if (state.isSuperAdmin) return true;
+    return Boolean(state.user.permissions && state.user.permissions[name]);
+  };
+
   return (
-    <AuthContext.Provider value={{ ...state, login, logout, updateProfile, impersonate, stopImpersonating }}>
+    <AuthContext.Provider value={{ ...state, login, logout, updateProfile, impersonate, stopImpersonating, hasPermission }}>
       {children}
     </AuthContext.Provider>
   );
