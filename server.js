@@ -16,6 +16,7 @@
 //   5. Mount API routes.
 
 import express from 'express';
+import compression from 'compression';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { existsSync } from 'fs';
@@ -63,6 +64,13 @@ async function seedIfEmpty() {
 
 async function main() {
   const app = express();
+  // gzip/br compression for every response Render sends. Cuts JSON + HTML
+  // payloads roughly in half, no client-side changes needed. `filter` opts
+  // out of anything the client already marked as no-transform (rare in our
+  // stack). Compression is skipped automatically for already-compressed
+  // formats (PNG/JPG/PDF).
+  app.use(compression());
+
   app.use(express.json({ limit: '12mb' }));
   app.use(express.urlencoded({ extended: false, limit: '12mb' }));
 
@@ -142,10 +150,33 @@ async function main() {
   // Static frontend + SPA fallback.
   const distPath = join(__dirname, 'dist');
   const indexPath = join(distPath, 'index.html');
-  app.use(express.static(distPath));
+  // Aggressive long-cache for hashed asset bundles (Vite emits
+  // /assets/foo-<hash>.{js,css}). Content-hashed filenames make this safe —
+  // any real change ships under a new URL, so `immutable` is truthful and
+  // repeat visitors stop re-downloading the bundle. index.html itself is
+  // deliberately NOT long-cached (default no-cache below) so a new deploy
+  // rolls out to existing tabs on next navigation.
+  app.use('/assets', express.static(join(distPath, 'assets'), {
+    maxAge: '1y',
+    immutable: true,
+  }));
+  app.use(express.static(distPath, {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('index.html')) {
+        res.setHeader('Cache-Control', 'no-cache');
+      }
+    },
+  }));
   app.get('*', (req, res) => {
-    if (existsSync(indexPath)) res.sendFile(indexPath);
-    else res.status(404).json({ error: 'Build not found. Run: npm run build' });
+    if (existsSync(indexPath)) {
+      // Never long-cache the HTML shell — the chunk map inside it changes
+      // every deploy. Assets it references are content-hashed and cached
+      // for a year (above).
+      res.setHeader('Cache-Control', 'no-cache');
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).json({ error: 'Build not found. Run: npm run build' });
+    }
   });
 
   ready = true;

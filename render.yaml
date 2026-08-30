@@ -35,7 +35,7 @@ services:
       - key: MAIL_FROM
         value: REConverge 2001 <noreply@reconverge.downstream-solutions.com>
       - key: MAIL_REPLY_TO
-        value: santanu.kumar.malik@gmail.com
+        value: crec2001reunion@gmail.com
       # SECRET — set from the Render dashboard, do NOT commit the value.
       - key: RESEND_API_KEY
         sync: false
