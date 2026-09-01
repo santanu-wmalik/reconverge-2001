@@ -96,6 +96,7 @@ export default function GiveBackPreview() {
             &ldquo;You never really leave NITC — you carry it forward.&rdquo;<br />
             <span className="text-slate-400 not-italic text-sm">Every rupee we give here will be sitting in a bed, a ward, a quiet consultation room that will matter to someone we&apos;ll never meet. That&apos;s the kind of legacy worth 25 years.</span>
           </p>
+
           <div className="flex flex-wrap gap-3 justify-center">
             <Link to="/give-back">
               <Button size="lg">See how to contribute →</Button>

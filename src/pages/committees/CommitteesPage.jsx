@@ -120,9 +120,9 @@ export default function CommitteesPage() {
         ))}
       </motion.div>
 
-      {/* State Champions */}
+      {/* Regional Champions */}
       <SectionHeading
-        title="State Champions"
+        title="Regional Champions"
         subtitle="On-the-ground volunteers per region — help us fill these seats"
       />
 

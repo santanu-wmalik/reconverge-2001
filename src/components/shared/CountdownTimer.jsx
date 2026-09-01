@@ -8,13 +8,13 @@ function TimeUnit({ value, label }) {
         key={value}
         initial={{ y: -10, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="glass px-4 py-3 min-w-[70px] md:min-w-[90px]"
+        className="glass px-2.5 py-2 min-w-[52px] sm:px-4 sm:py-3 sm:min-w-[70px] md:min-w-[90px]"
       >
-        <span className="text-2xl md:text-4xl font-bold gradient-text font-heading">
+        <span className="text-xl sm:text-2xl md:text-4xl font-bold gradient-text font-heading">
           {String(value).padStart(2, '0')}
         </span>
       </motion.div>
-      <span className="text-xs md:text-sm text-slate-400 mt-2 uppercase tracking-wider">{label}</span>
+      <span className="text-[10px] sm:text-xs md:text-sm text-slate-400 mt-2 uppercase tracking-wider">{label}</span>
     </div>
   );
 }
@@ -33,13 +33,13 @@ export default function CountdownTimer({ targetDate }) {
   }
 
   return (
-    <div className="flex items-center gap-3 md:gap-4">
+    <div className="flex items-center gap-1.5 sm:gap-3 md:gap-4">
       <TimeUnit value={days} label="Days" />
-      <span className="text-2xl text-gold-400 font-bold mt-[-20px]">:</span>
+      <span className="text-lg sm:text-2xl text-gold-400 font-bold mt-[-16px] sm:mt-[-20px]">:</span>
       <TimeUnit value={hours} label="Hours" />
-      <span className="text-2xl text-gold-400 font-bold mt-[-20px]">:</span>
+      <span className="text-lg sm:text-2xl text-gold-400 font-bold mt-[-16px] sm:mt-[-20px]">:</span>
       <TimeUnit value={minutes} label="Min" />
-      <span className="text-2xl text-gold-400 font-bold mt-[-20px]">:</span>
+      <span className="text-lg sm:text-2xl text-gold-400 font-bold mt-[-16px] sm:mt-[-20px]">:</span>
       <TimeUnit value={seconds} label="Sec" />
     </div>
   );

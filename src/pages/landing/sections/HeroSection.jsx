@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import CountdownTimer from '../../../components/shared/CountdownTimer';
@@ -7,22 +7,37 @@ import Button from '../../../components/ui/Button';
 import { EVENT_CONFIG, STATS, EARLY_BIRD_DEADLINE } from '../../../data/constants';
 import { staggerContainer, staggerItem } from '../../../utils/animationVariants';
 
+// Hero backdrop shares the same campus set as BackgroundSlideshow (see
+// /public/images/campus). Shuffled per page load so the opener is different
+// each visit.
 const HERO_BG_IMAGES = [
-  'https://storage.googleapis.com/reconverge-2001-uat-bucket/landing_page_pictures/NITC-Rajpath1.jpg',
-  'https://storage.googleapis.com/reconverge-2001-uat-bucket/landing_page_pictures/calicut%20mini%20canteen.avif',
-  'https://storage.googleapis.com/reconverge-2001-uat-bucket/landing_page_pictures/calicut%20railway%20station.jpg',
-  'https://storage.googleapis.com/reconverge-2001-uat-bucket/landing_page_pictures/nitc-mainblock-1.jpeg',
+  '/images/campus/Admin-building.png',
+  '/images/campus/Drone-view-1.png',
+  '/images/campus/Drone-view.png',
+  '/images/campus/Front-gate.png',
+  '/images/campus/Front-view.png',
+  '/images/campus/Rajpath.png',
 ];
 
+function shuffled(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function HeroSection() {
+  const heroImages = useMemo(() => shuffled(HERO_BG_IMAGES), []);
   const [currentBg, setCurrentBg] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentBg((prev) => (prev + 1) % HERO_BG_IMAGES.length);
+      setCurrentBg((prev) => (prev + 1) % heroImages.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [heroImages.length]);
 
   const daysLeft = Math.max(
     0,
@@ -34,22 +49,23 @@ export default function HeroSection() {
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       {/* Background slideshow */}
       <div className="absolute inset-0 z-0 overflow-hidden">
-        {HERO_BG_IMAGES.map((url, i) => (
+        {heroImages.map((url, i) => (
           <div
             key={url}
             className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              i === currentBg ? 'opacity-50' : 'opacity-0'
+              i === currentBg ? 'opacity-95' : 'opacity-0'
             }`}
           >
             <img
               src={url}
-              alt={`Campus ${i}`}
-              className="w-full h-full object-cover grayscale"
+              alt=""
+              className="w-full h-full object-cover"
             />
           </div>
         ))}
-        {/* Dark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80" />
+        {/* Lighter gradient overlay so campus photos read clearly, still
+            dark enough at top / bottom to keep header + CTA text legible. */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-black/70" />
       </div>
 
       {/* Background gradient orbs */}
@@ -77,7 +93,7 @@ export default function HeroSection() {
           {/* Heading */}
           <motion.h1
             variants={staggerItem}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-white mb-4 leading-tight"
+            className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-white mb-4 leading-tight break-words"
           >
             <span className="block"><span className="text-red-500">REC</span>onverge</span>
             <span className="block gradient-text">2001</span>
@@ -111,15 +127,16 @@ export default function HeroSection() {
           {/* Early-bird teaser — details live behind login on /early-bird.
               Public copy is pure hook + urgency, no price / bank details. */}
           {!earlyBirdOver && (
-            <motion.div variants={staggerItem} className="mb-6 flex justify-center">
+            <motion.div variants={staggerItem} className="mb-6 flex justify-center px-4">
               <Link
                 to="/register"
-                className="group inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs sm:text-sm font-bold text-black bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 shadow-lg shadow-gold-500/40 hover:shadow-gold-500/70 hover:scale-105 transition-all animate-pulse-glow"
+                className="group inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-2xl sm:rounded-full px-4 py-2 text-xs sm:text-sm font-bold text-black text-center bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 shadow-lg shadow-gold-500/40 hover:shadow-gold-500/70 hover:scale-105 transition-all animate-pulse-glow max-w-full"
                 style={{ textShadow: 'none' }}
               >
                 <span className="text-base">🎟</span>
-                <span>Early Bird discount ends 30 Sept — {daysLeft} day{daysLeft === 1 ? '' : 's'} left</span>
-                <span className="opacity-90 group-hover:translate-x-0.5 transition-transform">→ Buy Tickets now</span>
+                <span className="hidden sm:inline">Early Bird discount ends 30 Sept — {daysLeft} day{daysLeft === 1 ? '' : 's'} left</span>
+                <span className="sm:hidden">Early Bird ends 30 Sept · {daysLeft}d left</span>
+                <span className="opacity-90 group-hover:translate-x-0.5 transition-transform">→ Buy Tickets</span>
               </Link>
             </motion.div>
           )}

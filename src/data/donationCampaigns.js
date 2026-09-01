@@ -178,6 +178,7 @@ export const giveBackInitiatives = [
   },
 ];
 
+
 // Impact stories / volunteer slots — will be populated from real commitments.
 export const impactStories = [];
 export const volunteerOpportunities = [];
