@@ -54,11 +54,28 @@ export default function CommitteesPage() {
                       <span className="text-slate-400 text-xs">{committee.coLead}</span>
                     </div>
                   )}
+                  {committee.members && committee.members.length > 0 && (
+                    <div className="flex items-start gap-2 mt-1">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-gold-400/70 flex-shrink-0">Members</span>
+                      <span className="text-slate-400 text-xs">
+                        {committee.members.join(' · ')}
+                      </span>
+                    </div>
+                  )}
                 </>
               )}
 
               <p className="text-xs text-slate-500 mt-3">
-                Minimum 5 members needed per committee
+                {(() => {
+                  const filled =
+                    (committee.lead && !String(committee.lead).toLowerCase().includes('tbd') ? 1 : 0) +
+                    (committee.coLead ? String(committee.coLead).split('·').length : 0) +
+                    (committee.members ? committee.members.length : 0);
+                  const gap = Math.max(0, 5 - filled);
+                  return gap === 0
+                    ? 'Committee at strength — welcome aboard the rest of the batch anytime.'
+                    : `${gap} more volunteer${gap === 1 ? '' : 's'} needed to reach the 5-member minimum.`;
+                })()}
               </p>
             </GlassCard>
           </motion.div>

@@ -74,7 +74,7 @@ export const committees = [
     shortName: 'GBC',
     emoji: '🎁',
     lead: 'Asif ETV',
-    coLead: 'Prithwiraj Barman · Dheeraj Buduru',
+    coLead: 'Prith Barman · Dheeraj Buduru',
     members: ['Santanu Malik', 'Anuratha Kalai Chelvain'],
     description: 'NITC liaison, giving-back project selection and execution. Current focus: rallying the batch behind NITCAA\u2019s flagship Health Centre project (Susrutha Swastya Kendram).',
   },
@@ -94,7 +94,7 @@ export const committees = [
 export const branchRepresentatives = [
   { branch: 'Architecture', reps: [], status: 'open', whatsAppSize: null, notes: 'Volunteers needed' },
   { branch: 'Civil Engineering', reps: ['Sinu Philip', 'Suhailah'], status: 'active', whatsAppSize: null, notes: 'Group already existed before the reunion drive' },
-  { branch: 'Computer Science & Engineering', reps: ['Prithwi', 'Rajasimha'], status: 'active', whatsAppSize: '~40% added', notes: 'Group created Jan 23' },
+  { branch: 'Computer Science & Engineering', reps: ['Prith', 'Rajasimha'], status: 'active', whatsAppSize: '~40% added', notes: 'Group created Jan 23' },
   { branch: 'Electronics & Communication', reps: [], status: 'open', whatsAppSize: '~23 members', notes: 'Group active; named branch reps still needed' },
   { branch: 'Electrical & Electronics', reps: ['Rinchen', 'Anu', 'Sundar'], status: 'active', whatsAppSize: '~50 members', notes: 'Group already existed' },
   { branch: 'Mechanical Engineering', reps: ['Mathew Thomas', 'Arun V'], status: 'active', whatsAppSize: '17+ members', notes: 'Group existed; adding more members' },
