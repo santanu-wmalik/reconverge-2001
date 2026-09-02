@@ -14,9 +14,9 @@ import SectionHeading from '../../components/shared/SectionHeading';
 
 function BankDetail({ label, value, mono = false }) {
   return (
-    <div className="flex items-start justify-between gap-4 py-1.5 border-b border-white/5 last:border-b-0">
-      <span className="text-xs text-slate-500 uppercase tracking-wider flex-shrink-0">{label}</span>
-      <span className={`text-sm text-white text-right ${mono ? 'font-mono' : ''}`}>{value}</span>
+    <div className="flex items-start justify-between gap-4 py-1.5 border-b border-forest-500/15 last:border-b-0">
+      <span className="text-xs text-ink-muted uppercase tracking-wider flex-shrink-0">{label}</span>
+      <span className={`text-sm text-ink text-right ${mono ? 'font-mono' : ''}`}>{value}</span>
     </div>
   );
 }
@@ -45,43 +45,43 @@ export default function GiveBackPage() {
               <img
                 src={hc.appealPosterUrl}
                 alt="NITCAA Health Centre Appeal"
-                className="w-full rounded-xl border border-white/10 shadow-xl"
+                className="w-full rounded-xl border border-forest-500/15 shadow-xl"
                 loading="lazy"
               />
             </div>
             <div className="md:col-span-3">
               <Badge variant="gold" size="sm" className="mb-3">🏥 Flagship · NITCAA</Badge>
-              <h2 className="text-2xl md:text-3xl font-heading font-bold text-white leading-tight mb-2">
+              <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink leading-tight mb-2">
                 {hc.name}
               </h2>
-              <p className="text-gold-400 font-medium mb-4">{hc.subtitle}</p>
+              <p className="text-gold-700 font-medium mb-4">{hc.subtitle}</p>
 
-              <p className="text-slate-300 leading-relaxed mb-4">
-                When we walked those corridors in 2001, the campus clinic barely kept up. Today <span className="text-white font-medium">10,000 people</span> — students, faculty, staff and their families — depend on it, and under NEP that number is set to nearly <span className="text-white font-medium">double</span>. The REC-era health centre simply can&apos;t carry that load.
+              <p className="text-ink-soft leading-relaxed mb-4">
+                When we walked those corridors in 2001, the campus clinic barely kept up. Today <span className="text-ink font-medium">10,000 people</span> — students, faculty, staff and their families — depend on it, and under NEP that number is set to nearly <span className="text-ink font-medium">double</span>. The REC-era health centre simply can&apos;t carry that load.
               </p>
-              <p className="text-slate-300 leading-relaxed">
-                <span className="text-white font-medium">Susrutha Swastya Kendram</span> — the new Health Centre — is NIT Calicut and NITCAA&apos;s answer. <span className="text-gold-400 font-medium">This is where our batch&apos;s Give Back goes.</span>
+              <p className="text-ink-soft leading-relaxed">
+                <span className="text-ink font-medium">Susrutha Swastya Kendram</span> — the new Health Centre — is NIT Calicut and NITCAA&apos;s answer. <span className="text-gold-700 font-medium">This is where our batch&apos;s Give Back goes.</span>
               </p>
             </div>
           </div>
 
           {/* Impact bar */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8 pt-6 border-t border-white/10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8 pt-6 border-t border-forest-500/15">
             <div className="text-center">
               <p className="text-2xl md:text-3xl font-heading font-bold gradient-text">₹{hc.totalCostCrore} cr</p>
-              <p className="text-xs text-slate-400 mt-1">Total flagship project</p>
+              <p className="text-xs text-ink-soft mt-1">Total flagship project</p>
             </div>
             <div className="text-center">
               <p className="text-2xl md:text-3xl font-heading font-bold gradient-text">₹{hc.alreadyPledgedLakh} L</p>
-              <p className="text-xs text-slate-400 mt-1">Already pledged by {hc.alreadyPledgedBy}</p>
+              <p className="text-xs text-ink-soft mt-1">Already pledged by {hc.alreadyPledgedBy}</p>
             </div>
             <div className="text-center">
               <p className="text-2xl md:text-3xl font-heading font-bold gradient-text">{hc.timelineMonths} mo</p>
-              <p className="text-xs text-slate-400 mt-1">From fund to finish</p>
+              <p className="text-xs text-ink-soft mt-1">From fund to finish</p>
             </div>
             <div className="text-center">
               <p className="text-2xl md:text-3xl font-heading font-bold gradient-text">₹{hc.wallOfHonorThresholdLakh} L+</p>
-              <p className="text-xs text-slate-400 mt-1">Earns a Wall of Honor spot</p>
+              <p className="text-xs text-ink-soft mt-1">Earns a Wall of Honor spot</p>
             </div>
           </div>
         </GlassCard>
@@ -89,7 +89,7 @@ export default function GiveBackPage() {
 
       {/* Why it matters */}
       <div className="mb-12">
-        <h3 className="text-xl font-heading font-bold text-white mb-4">Why this, why now</h3>
+        <h3 className="text-xl font-heading font-bold text-ink mb-4">Why this, why now</h3>
         <motion.ul
           variants={staggerContainer}
           initial="hidden"
@@ -101,8 +101,8 @@ export default function GiveBackPage() {
             <motion.li key={i} variants={staggerItem}>
               <GlassCard className="h-full">
                 <div className="flex items-start gap-3">
-                  <span className="text-gold-400 text-lg flex-shrink-0 mt-0.5">›</span>
-                  <p className="text-slate-300 text-sm leading-relaxed">{r}</p>
+                  <span className="text-gold-700 text-lg flex-shrink-0 mt-0.5">›</span>
+                  <p className="text-ink-soft text-sm leading-relaxed">{r}</p>
                 </div>
               </GlassCard>
             </motion.li>
@@ -112,48 +112,48 @@ export default function GiveBackPage() {
 
       {/* Why give */}
       <div className="mb-12">
-        <h3 className="text-xl font-heading font-bold text-white mb-4">What your contribution earns</h3>
+        <h3 className="text-xl font-heading font-bold text-ink mb-4">What your contribution earns</h3>
         <div className="grid md:grid-cols-3 gap-4">
           <GlassCard className="text-center">
             <div className="text-3xl mb-2">🏛️</div>
-            <h4 className="text-white font-heading font-semibold mb-1">Wall of Honor</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">Individual contributions of ₹1 lakh and above are permanently etched on the campus Wall of Honor.</p>
+            <h4 className="text-ink font-heading font-semibold mb-1">Wall of Honor</h4>
+            <p className="text-xs text-ink-soft leading-relaxed">Individual contributions of ₹1 lakh and above are permanently etched on the campus Wall of Honor.</p>
           </GlassCard>
           <GlassCard className="text-center">
             <div className="text-3xl mb-2">🧾</div>
-            <h4 className="text-white font-heading font-semibold mb-1">80G tax exemption</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">Every Indian-route contribution qualifies for Section 80G deduction. Share your PAN to receive the certificate.</p>
+            <h4 className="text-ink font-heading font-semibold mb-1">80G tax exemption</h4>
+            <p className="text-xs text-ink-soft leading-relaxed">Every Indian-route contribution qualifies for Section 80G deduction. Share your PAN to receive the certificate.</p>
           </GlassCard>
           <GlassCard className="text-center">
             <div className="text-3xl mb-2">🌏</div>
-            <h4 className="text-white font-heading font-semibold mb-1">Global route (FCRA)</h4>
-            <p className="text-xs text-slate-400 leading-relaxed">Foreign passport holders and entities can give through the dedicated FCRA account at SBI New Delhi.</p>
+            <h4 className="text-ink font-heading font-semibold mb-1">Global route (FCRA)</h4>
+            <p className="text-xs text-ink-soft leading-relaxed">Foreign passport holders and entities can give through the dedicated FCRA account at SBI New Delhi.</p>
           </GlassCard>
         </div>
       </div>
 
       {/* How to contribute */}
       <div className="mb-12">
-        <h3 className="text-xl font-heading font-bold text-white mb-2">How to contribute</h3>
-        <p className="text-slate-400 text-sm mb-6">All channels below route to the official NIT Calicut Alumni Association (NITCAA) account — the only legitimate recipient for this project. Always quote <span className="text-gold-400">&quot;REC 2001 Batch — Health Centre&quot;</span> as the purpose so NITCAA can reconcile per-batch.</p>
+        <h3 className="text-xl font-heading font-bold text-ink mb-2">How to contribute</h3>
+        <p className="text-ink-soft text-sm mb-6">All channels below route to the official NIT Calicut Alumni Association (NITCAA) account — the only legitimate recipient for this project. Always quote <span className="text-gold-700">&quot;REC 2001 Batch — Health Centre&quot;</span> as the purpose so NITCAA can reconcile per-batch.</p>
 
         <div className="grid lg:grid-cols-3 gap-5">
           {/* UPI */}
           <GlassCard className="border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-transparent">
             <Badge variant="success" size="sm" className="mb-3">⚡ Fastest</Badge>
-            <h4 className="text-white font-heading font-semibold mb-3">{paymentChannels.upi.label}</h4>
+            <h4 className="text-ink font-heading font-semibold mb-3">{paymentChannels.upi.label}</h4>
             <div className="flex items-center justify-center mb-3 bg-white rounded-xl p-3">
               <img src={paymentChannels.upi.qrImage} alt="NITCAA UPI QR code" className="w-full max-w-[220px]" loading="lazy" />
             </div>
-            <p className="text-xs uppercase tracking-wider text-slate-500 mb-1">UPI ID</p>
-            <p className="font-mono text-gold-400 text-sm break-all mb-3">{paymentChannels.upi.upiId}</p>
-            <p className="text-xs text-slate-400 leading-relaxed">{paymentChannels.upi.note}</p>
+            <p className="text-xs uppercase tracking-wider text-ink-muted mb-1">UPI ID</p>
+            <p className="font-mono text-gold-700 text-sm break-all mb-3">{paymentChannels.upi.upiId}</p>
+            <p className="text-xs text-ink-soft leading-relaxed">{paymentChannels.upi.note}</p>
           </GlassCard>
 
           {/* Domestic */}
           <GlassCard>
             <Badge size="sm" className="mb-3">🇮🇳 Indian route</Badge>
-            <h4 className="text-white font-heading font-semibold mb-3">{paymentChannels.domestic.label}</h4>
+            <h4 className="text-ink font-heading font-semibold mb-3">{paymentChannels.domestic.label}</h4>
             <div className="space-y-0.5">
               <BankDetail label="Beneficiary" value={paymentChannels.domestic.beneficiary} />
               <BankDetail label="Account No" value={paymentChannels.domestic.accountNumber} mono />
@@ -162,13 +162,13 @@ export default function GiveBackPage() {
               <BankDetail label="Branch code" value={paymentChannels.domestic.branchCode} mono />
               <BankDetail label="Type" value={paymentChannels.domestic.accountType} />
             </div>
-            <p className="text-xs text-slate-500 mt-3 leading-relaxed">{paymentChannels.domestic.bankBranch}</p>
+            <p className="text-xs text-ink-muted mt-3 leading-relaxed">{paymentChannels.domestic.bankBranch}</p>
           </GlassCard>
 
           {/* FCRA */}
           <GlassCard>
             <Badge size="sm" className="mb-3">🌍 International (FCRA)</Badge>
-            <h4 className="text-white font-heading font-semibold mb-3">{paymentChannels.fcra.label}</h4>
+            <h4 className="text-ink font-heading font-semibold mb-3">{paymentChannels.fcra.label}</h4>
             <div className="space-y-0.5">
               <BankDetail label="Beneficiary" value={paymentChannels.fcra.beneficiary} />
               <BankDetail label="Account No" value={paymentChannels.fcra.accountNumber} mono />
@@ -177,7 +177,7 @@ export default function GiveBackPage() {
               <BankDetail label="Branch code" value={paymentChannels.fcra.branchCode} mono />
               <BankDetail label="Type" value={paymentChannels.fcra.accountType} />
             </div>
-            <p className="text-xs text-slate-500 mt-3 leading-relaxed">{paymentChannels.fcra.bankBranch}</p>
+            <p className="text-xs text-ink-muted mt-3 leading-relaxed">{paymentChannels.fcra.bankBranch}</p>
           </GlassCard>
         </div>
       </div>
@@ -188,9 +188,9 @@ export default function GiveBackPage() {
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-2xl flex-shrink-0">📋</div>
             <div className="flex-1">
-              <h4 className="text-white font-heading font-semibold mb-2">After you pay — send these to NITCAA</h4>
-              <p className="text-slate-400 text-sm mb-3">NITCAA needs the following with every transfer so your contribution is credited correctly and (if eligible) your 80G certificate is issued:</p>
-              <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1 text-sm text-slate-300">
+              <h4 className="text-ink font-heading font-semibold mb-2">After you pay — send these to NITCAA</h4>
+              <p className="text-ink-soft text-sm mb-3">NITCAA needs the following with every transfer so your contribution is credited correctly and (if eligible) your 80G certificate is issued:</p>
+              <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1 text-sm text-ink-soft">
                 {paymentRequiredInfo.map((info, i) => (
                   <li key={i} className="flex items-start gap-2">
                     <span className="text-amber-400 mt-0.5">✓</span>
@@ -198,8 +198,8 @@ export default function GiveBackPage() {
                   </li>
                 ))}
               </ul>
-              <p className="text-xs text-slate-500 mt-4">
-                Email everything to <a href={`mailto:${hc.contactEmail}?subject=${encodeURIComponent('REC 2001 Batch - Health Centre contribution')}`} className="text-gold-400 hover:text-gold-300 underline">{hc.contactEmail}</a>
+              <p className="text-xs text-ink-muted mt-4">
+                Email everything to <a href={`mailto:${hc.contactEmail}?subject=${encodeURIComponent('REC 2001 Batch - Health Centre contribution')}`} className="text-gold-700 hover:text-gold-300 underline">{hc.contactEmail}</a>
               </p>
             </div>
           </div>
@@ -208,8 +208,8 @@ export default function GiveBackPage() {
 
       {/* NITCAA contribution process */}
       <div className="mb-12">
-        <h3 className="text-xl font-heading font-bold text-white mb-2">How NITCAA handles your contribution</h3>
-        <p className="text-slate-400 text-sm mb-6">
+        <h3 className="text-xl font-heading font-bold text-ink mb-2">How NITCAA handles your contribution</h3>
+        <p className="text-ink-soft text-sm mb-6">
           The process was formally shared by the NITCAA Office (Uma N., 6 Aug 2026). Six steps
           from your transfer to the Wall of Honor.
         </p>
@@ -217,12 +217,12 @@ export default function GiveBackPage() {
           {nitcaaContributionProcess.map((step, i) => (
             <GlassCard key={step.step}>
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-sm font-semibold text-gold-300 flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-sm font-semibold text-gold-700 flex-shrink-0">
                   {i + 1}
                 </div>
                 <div>
-                  <h4 className="text-white font-semibold text-sm mb-1">{step.step}</h4>
-                  <p className="text-slate-400 text-sm leading-relaxed">{step.detail}</p>
+                  <h4 className="text-ink font-semibold text-sm mb-1">{step.step}</h4>
+                  <p className="text-ink-soft text-sm leading-relaxed">{step.detail}</p>
                 </div>
               </div>
             </GlassCard>
@@ -236,23 +236,23 @@ export default function GiveBackPage() {
       {/* Secondary initiatives */}
       {secondary.length > 0 && (
         <div className="mb-12">
-          <h3 className="text-xl font-heading font-bold text-white mb-4">Alongside the flagship</h3>
+          <h3 className="text-xl font-heading font-bold text-ink mb-4">Alongside the flagship</h3>
           <div className="grid md:grid-cols-2 gap-5">
             {secondary.map((init) => (
               <GlassCard key={init.id}>
                 <div className="flex items-start gap-3 mb-3">
                   <div className="w-11 h-11 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-xl flex-shrink-0">{init.icon}</div>
                   <div>
-                    <h4 className="text-white font-semibold">{init.title}</h4>
+                    <h4 className="text-ink font-semibold">{init.title}</h4>
                     <Badge size="sm" variant="default" className="mt-1">Under discussion</Badge>
                   </div>
                 </div>
-                <p className="text-slate-400 text-sm leading-relaxed mb-3">{init.description}</p>
+                <p className="text-ink-soft text-sm leading-relaxed mb-3">{init.description}</p>
                 {init.details && (
                   <ul className="space-y-1">
                     {init.details.map((d, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs text-slate-500">
-                        <span className="text-gold-400 mt-0.5">•</span>
+                      <li key={i} className="flex items-start gap-2 text-xs text-ink-muted">
+                        <span className="text-gold-700 mt-0.5">•</span>
                         <span>{d}</span>
                       </li>
                     ))}
@@ -270,15 +270,15 @@ export default function GiveBackPage() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <GlassCard className="border-primary-400/30 bg-gradient-to-br from-primary-900/30 to-navy-950/40">
+        <GlassCard className="border-forest-500/20 bg-gradient-to-br from-primary-900/30 to-forest-900/40">
           <div className="grid md:grid-cols-3 gap-6 items-center">
             <div>
-              <img src="/give-back/worldnitcaa.jpg" alt="World NITCAA network" className="w-full rounded-xl border border-white/10" loading="lazy" />
+              <img src="/give-back/worldnitcaa.jpg" alt="World NITCAA network" className="w-full rounded-xl border border-forest-500/15" loading="lazy" />
             </div>
             <div className="md:col-span-2">
               <Badge size="sm" className="mb-2">💙 Alumni Network</Badge>
-              <h3 className="text-xl md:text-2xl font-heading font-bold text-white mb-2">While you&apos;re at it — register with NITCAA</h3>
-              <p className="text-slate-300 leading-relaxed mb-4">
+              <h3 className="text-xl md:text-2xl font-heading font-bold text-ink mb-2">While you&apos;re at it — register with NITCAA</h3>
+              <p className="text-ink-soft leading-relaxed mb-4">
                 NIT Calicut&apos;s official alumni network has 20+ chapters worldwide. Mentorship, lifelong connections, impact projects — it&apos;s how we keep carrying NITC forward after we leave. &quot;You never really leave NITC.&quot;
               </p>
               <a

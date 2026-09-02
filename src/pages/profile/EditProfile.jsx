@@ -35,8 +35,8 @@ function dicebearUrl(seed) {
 // delete), and reset text selection. Keep it out here.
 function Section({ title, children }) {
   return (
-    <div className="pt-6 mt-6 border-t border-white/5 first:pt-0 first:mt-0 first:border-0">
-      <p className="text-xs text-gold-400 uppercase tracking-wider font-semibold mb-4">{title}</p>
+    <div className="pt-6 mt-6 border-t border-forest-500/15 first:pt-0 first:mt-0 first:border-0">
+      <p className="text-xs text-gold-700 uppercase tracking-wider font-semibold mb-4">{title}</p>
       <div className="space-y-4">{children}</div>
     </div>
   );
@@ -116,7 +116,7 @@ export default function EditProfile() {
 
   return (
     <motion.div {...pageTransition} className="max-w-3xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-heading font-bold text-white mb-8">Edit Profile</h1>
+      <h1 className="text-3xl font-heading font-bold text-ink mb-8">Edit Profile</h1>
 
       <GlassCard hover={false}>
         {/* Avatar */}
@@ -125,7 +125,7 @@ export default function EditProfile() {
             <img
               src={form.avatar || dicebearUrl(form.name || user?.email)}
               alt="avatar preview"
-              className="w-24 h-24 rounded-full border border-white/10 bg-white/5 object-cover"
+              className="w-24 h-24 rounded-full border border-forest-500/15 bg-white object-cover"
               onError={(e) => {
                 e.currentTarget.src = dicebearUrl(form.name || user?.email);
               }}
@@ -302,23 +302,23 @@ export default function EditProfile() {
             />
           </div>
           <label className="block">
-            <span className="text-sm text-slate-300 mb-1 block">Special Requests</span>
+            <span className="text-sm text-ink-soft mb-1 block">Special Requests</span>
             <textarea
               value={form.specialRequests}
               onChange={(e) => update('specialRequests', e.target.value)}
               rows={3}
               placeholder="Accessibility needs, allergies, a roommate ask…"
-              className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-gold-400/40 resize-y"
+              className="w-full rounded-xl bg-white border border-forest-500/15 px-4 py-2.5 text-sm text-ink placeholder-ink-muted focus:outline-none focus:border-gold-400/40 resize-y"
             />
           </label>
           <label className="block">
-            <span className="text-sm text-slate-300 mb-1 block">Notes</span>
+            <span className="text-sm text-ink-soft mb-1 block">Notes</span>
             <textarea
               value={form.notes}
               onChange={(e) => update('notes', e.target.value)}
               rows={2}
               placeholder="Anything you want the organising team to note"
-              className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-gold-400/40 resize-y"
+              className="w-full rounded-xl bg-white border border-forest-500/15 px-4 py-2.5 text-sm text-ink placeholder-ink-muted focus:outline-none focus:border-gold-400/40 resize-y"
             />
           </label>
         </Section>
@@ -349,7 +349,7 @@ export default function EditProfile() {
           </div>
         </Section>
 
-        <div className="flex gap-3 mt-8 pt-4 border-t border-white/10">
+        <div className="flex gap-3 mt-8 pt-4 border-t border-forest-500/15">
           <Button onClick={handleSave} loading={saving}>Save Changes</Button>
           <Button variant="ghost" onClick={() => navigate('/profile')}>Cancel</Button>
         </div>

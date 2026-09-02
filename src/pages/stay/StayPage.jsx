@@ -18,27 +18,27 @@ function RoomRateCard({ room }) {
     <GlassCard className="h-full border-gold-500/10 hover:border-gold-500/30">
       <div className="flex items-start justify-between mb-3">
         <div>
-          <h4 className="text-white font-heading font-semibold">{room.name}</h4>
-          <p className="text-xs text-slate-500 mt-1">{room.inventory} room{room.inventory === 1 ? '' : 's'} in block</p>
+          <h4 className="text-ink font-heading font-semibold">{room.name}</h4>
+          <p className="text-xs text-ink-muted mt-1">{room.inventory} room{room.inventory === 1 ? '' : 's'} in block</p>
         </div>
-        <span className="text-xs text-slate-500 line-through">₹{room.actualRate.toLocaleString('en-IN')}</span>
+        <span className="text-xs text-ink-muted line-through">₹{room.actualRate.toLocaleString('en-IN')}</span>
       </div>
 
       <div className="grid grid-cols-2 gap-3 mb-3">
-        <div className="bg-white/5 rounded-xl p-3 border border-white/5">
-          <p className="text-[10px] uppercase tracking-wider text-slate-500">Single</p>
-          <p className="text-gold-400 font-bold text-lg">₹{room.singleRate.toLocaleString('en-IN')}</p>
-          <p className="text-[10px] text-slate-500">+ GST / night</p>
+        <div className="bg-white rounded-xl p-3 border border-forest-500/15">
+          <p className="text-[10px] uppercase tracking-wider text-ink-muted">Single</p>
+          <p className="text-gold-700 font-bold text-lg">₹{room.singleRate.toLocaleString('en-IN')}</p>
+          <p className="text-[10px] text-ink-muted">+ GST / night</p>
         </div>
-        <div className="bg-white/5 rounded-xl p-3 border border-white/5">
-          <p className="text-[10px] uppercase tracking-wider text-slate-500">Double</p>
-          <p className="text-gold-400 font-bold text-lg">₹{room.doubleRate.toLocaleString('en-IN')}</p>
-          <p className="text-[10px] text-slate-500">+ GST / night</p>
+        <div className="bg-white rounded-xl p-3 border border-forest-500/15">
+          <p className="text-[10px] uppercase tracking-wider text-ink-muted">Double</p>
+          <p className="text-gold-700 font-bold text-lg">₹{room.doubleRate.toLocaleString('en-IN')}</p>
+          <p className="text-[10px] text-ink-muted">+ GST / night</p>
         </div>
       </div>
 
-      <p className="text-xs text-slate-400">Extra person (10+ yrs): ₹{room.extraPerson.toLocaleString('en-IN')} + GST</p>
-      <p className="text-xs text-slate-500 mt-2 italic">{room.note}</p>
+      <p className="text-xs text-ink-soft">Extra person (10+ yrs): ₹{room.extraPerson.toLocaleString('en-IN')} + GST</p>
+      <p className="text-xs text-ink-muted mt-2 italic">{room.note}</p>
     </GlassCard>
   );
 }
@@ -48,16 +48,16 @@ function GalaMenuCard({ menu }) {
   return (
     <GlassCard className="h-full">
       <div className="flex items-start justify-between mb-2">
-        <h4 className="text-white font-heading font-semibold">{menu.name}</h4>
+        <h4 className="text-ink font-heading font-semibold">{menu.name}</h4>
         <Badge variant="gold" size="sm">Our Rate</Badge>
       </div>
       <div className="flex items-baseline gap-2 mb-2">
-        <span className="text-2xl font-bold text-gold-400">₹{menu.specialRate.toLocaleString('en-IN')}</span>
-        <span className="text-xs text-slate-500 line-through">₹{menu.actualRate.toLocaleString('en-IN')}</span>
-        <span className="text-xs text-slate-500">+ {menu.taxPercent}%</span>
+        <span className="text-2xl font-bold text-gold-700">₹{menu.specialRate.toLocaleString('en-IN')}</span>
+        <span className="text-xs text-ink-muted line-through">₹{menu.actualRate.toLocaleString('en-IN')}</span>
+        <span className="text-xs text-ink-muted">+ {menu.taxPercent}%</span>
       </div>
-      <p className="text-xs text-slate-500 mb-3">≈ ₹{specialWithTax.toLocaleString('en-IN')} per person inclusive</p>
-      <p className="text-sm text-slate-400 leading-relaxed">{menu.includes}</p>
+      <p className="text-xs text-ink-muted mb-3">≈ ₹{specialWithTax.toLocaleString('en-IN')} per person inclusive</p>
+      <p className="text-sm text-ink-soft leading-relaxed">{menu.includes}</p>
     </GlassCard>
   );
 }
@@ -78,23 +78,23 @@ export default function StayPage() {
               <div className="flex items-start justify-between flex-wrap gap-3 mb-4">
                 <div>
                   <Badge variant="gold" size="sm" className="mb-2">{primary.badge}</Badge>
-                  <h2 className="text-2xl md:text-3xl font-heading font-bold text-white">{primary.name}</h2>
+                  <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink">{primary.name}</h2>
                   <p className="text-sm text-emerald-400 mt-1">{primary.status}</p>
-                  {primary.tagline && <p className="text-xs text-slate-400 mt-1 italic">{primary.tagline}</p>}
+                  {primary.tagline && <p className="text-xs text-ink-soft mt-1 italic">{primary.tagline}</p>}
                   {primary.website && (
                     <a
                       href={primary.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 mt-2 text-xs text-gold-400 hover:text-gold-300 underline"
+                      className="inline-flex items-center gap-1 mt-2 text-xs text-gold-700 hover:text-gold-300 underline"
                     >
                       🔗 gokulamhotels.com →
                     </a>
                   )}
                 </div>
                 <div className="text-right">
-                  <p className="text-xs text-slate-400">Inventory used</p>
-                  <p className="text-white font-semibold">{primary.roomsReserved} / {totalInventory}</p>
+                  <p className="text-xs text-ink-soft">Inventory used</p>
+                  <p className="text-ink font-semibold">{primary.roomsReserved} / {totalInventory}</p>
                   <div className="w-36 mt-1">
                     <ProgressBar value={primary.roomsReserved} max={totalInventory} />
                   </div>
@@ -102,34 +102,34 @@ export default function StayPage() {
               </div>
 
               <div className="grid md:grid-cols-3 gap-3 mb-5 text-sm">
-                {primary.distanceFromStation && <div className="flex items-center gap-2 text-slate-300"><span>🚆</span>{primary.distanceFromStation}</div>}
-                {primary.distanceFromAirport && <div className="flex items-center gap-2 text-slate-300"><span>✈️</span>{primary.distanceFromAirport}</div>}
-                {primary.starClass && <div className="flex items-center gap-2 text-slate-300"><span>🏨</span>{primary.starClass}</div>}
-                {primary.checkIn && primary.checkOut && <div className="flex items-center gap-2 text-slate-300"><span>🕑</span>Check-in {primary.checkIn} · Check-out {primary.checkOut}</div>}
-                {primary.blockSize && <div className="flex items-center gap-2 text-slate-300"><span>🛏️</span>{primary.blockSize}-room block held</div>}
+                {primary.distanceFromStation && <div className="flex items-center gap-2 text-ink-soft"><span>🚆</span>{primary.distanceFromStation}</div>}
+                {primary.distanceFromAirport && <div className="flex items-center gap-2 text-ink-soft"><span>✈️</span>{primary.distanceFromAirport}</div>}
+                {primary.starClass && <div className="flex items-center gap-2 text-ink-soft"><span>🏨</span>{primary.starClass}</div>}
+                {primary.checkIn && primary.checkOut && <div className="flex items-center gap-2 text-ink-soft"><span>🕑</span>Check-in {primary.checkIn} · Check-out {primary.checkOut}</div>}
+                {primary.blockSize && <div className="flex items-center gap-2 text-ink-soft"><span>🛏️</span>{primary.blockSize}-room block held</div>}
               </div>
 
               <div className="flex flex-wrap gap-1.5 mb-5">
                 {primary.amenities.map((a) => <Badge key={a} size="sm">{a}</Badge>)}
               </div>
 
-              <h3 className="text-sm uppercase tracking-wider text-gold-400 font-semibold mb-3">Room Types & Rates</h3>
+              <h3 className="text-sm uppercase tracking-wider text-gold-700 font-semibold mb-3">Room Types & Rates</h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                 {primary.roomTypes.map((r) => <RoomRateCard key={r.id} room={r} />)}
               </div>
 
-              <h3 className="text-sm uppercase tracking-wider text-gold-400 font-semibold mb-3">Hotel Policies</h3>
-              <ul className="grid md:grid-cols-2 gap-x-6 gap-y-2 text-sm text-slate-400 mb-5">
-                <li className="flex gap-2"><span className="text-gold-400">›</span>{primary.policies.extraPerson}</li>
-                <li className="flex gap-2"><span className="text-gold-400">›</span>{primary.policies.cancellation}</li>
-                <li className="flex gap-2"><span className="text-gold-400">›</span>{primary.policies.payment}</li>
-                <li className="flex gap-2"><span className="text-gold-400">›</span>{primary.policies.id}</li>
+              <h3 className="text-sm uppercase tracking-wider text-gold-700 font-semibold mb-3">Hotel Policies</h3>
+              <ul className="grid md:grid-cols-2 gap-x-6 gap-y-2 text-sm text-ink-soft mb-5">
+                <li className="flex gap-2"><span className="text-gold-700">›</span>{primary.policies.extraPerson}</li>
+                <li className="flex gap-2"><span className="text-gold-700">›</span>{primary.policies.cancellation}</li>
+                <li className="flex gap-2"><span className="text-gold-700">›</span>{primary.policies.payment}</li>
+                <li className="flex gap-2"><span className="text-gold-700">›</span>{primary.policies.id}</li>
               </ul>
 
-              <div className="bg-primary-900/30 rounded-xl p-4 border border-gold-500/20">
-                <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold mb-2">How to book</p>
-                <p className="text-sm text-slate-300 mb-3">{primary.bookingMethod}</p>
-                <p className="text-xs text-slate-500 italic mb-4">{accommodationContact.note}</p>
+              <div className="bg-white rounded-xl p-4 border border-gold-500/20">
+                <p className="text-xs uppercase tracking-wider text-gold-700 font-semibold mb-2">How to book</p>
+                <p className="text-sm text-ink-soft mb-3">{primary.bookingMethod}</p>
+                <p className="text-xs text-ink-muted italic mb-4">{accommodationContact.note}</p>
                 <div className="flex flex-wrap gap-2">
                   <a href={`mailto:${accommodationContact.email}?subject=${encodeURIComponent(accommodationContact.quoteRef)}`}>
                     <Button size="sm">📧 Email AFC</Button>
@@ -153,21 +153,21 @@ export default function StayPage() {
         <motion.div variants={staggerContainer} initial="hidden" animate="visible">
           <motion.div variants={staggerItem}>
             <GlassCard className="mb-5">
-              <div className="grid md:grid-cols-2 gap-4 text-sm text-slate-300">
-                <div><span className="text-slate-500">Venue:</span> {galaDinner.venue}</div>
-                <div><span className="text-slate-500">Dates:</span> Dec 27 & 28, 2026</div>
-                <div><span className="text-slate-500">Time:</span> {galaDinner.time}</div>
-                <div><span className="text-slate-500">Seating:</span> {galaDinner.seatingPlan}</div>
-                <div><span className="text-slate-500">Expected:</span> {galaDinner.guaranteedPax} guests</div>
-                <div><span className="text-slate-500">Music till:</span> {galaDinner.musicCutoff}</div>
+              <div className="grid md:grid-cols-2 gap-4 text-sm text-ink-soft">
+                <div><span className="text-ink-muted">Venue:</span> {galaDinner.venue}</div>
+                <div><span className="text-ink-muted">Dates:</span> Dec 27 & 28, 2026</div>
+                <div><span className="text-ink-muted">Time:</span> {galaDinner.time}</div>
+                <div><span className="text-ink-muted">Seating:</span> {galaDinner.seatingPlan}</div>
+                <div><span className="text-ink-muted">Expected:</span> {galaDinner.guaranteedPax} guests</div>
+                <div><span className="text-ink-muted">Music till:</span> {galaDinner.musicCutoff}</div>
               </div>
-              <div className="mt-4 pt-4 border-t border-white/5">
-                <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold mb-2">What's included</p>
+              <div className="mt-4 pt-4 border-t border-forest-500/15">
+                <p className="text-xs uppercase tracking-wider text-gold-700 font-semibold mb-2">What's included</p>
                 <div className="flex flex-wrap gap-1.5">
                   {galaDinner.includes.map((i) => <Badge key={i} size="sm">{i}</Badge>)}
                 </div>
               </div>
-              <ul className="mt-4 text-xs text-slate-500 space-y-1">
+              <ul className="mt-4 text-xs text-ink-muted space-y-1">
                 {galaDinner.notes.map((n) => <li key={n}>• {n}</li>)}
               </ul>
             </GlassCard>
@@ -190,10 +190,10 @@ export default function StayPage() {
           {backups.map((h) => (
             <GlassCard key={h.id}>
               <Badge size="sm" className="mb-2">{h.badge}</Badge>
-              <h3 className="text-white font-heading font-semibold">{h.name}</h3>
-              {h.tagline && <p className="text-xs text-slate-400 mt-1 italic">{h.tagline}</p>}
+              <h3 className="text-ink font-heading font-semibold">{h.name}</h3>
+              {h.tagline && <p className="text-xs text-ink-soft mt-1 italic">{h.tagline}</p>}
               <p className="text-xs text-amber-400 mt-2">{h.status}</p>
-              <p className="text-xs text-slate-500 italic mt-3">{h.bookingMethod}</p>
+              <p className="text-xs text-ink-muted italic mt-3">{h.bookingMethod}</p>
             </GlassCard>
           ))}
         </div>
@@ -205,10 +205,10 @@ export default function StayPage() {
           <SectionHeading title="Optional Resort Evening" subtitle="Extend your stay after Dec 29" />
           <GlassCard>
             <Badge size="sm" className="mb-2">{resort.badge}</Badge>
-            <h3 className="text-white font-heading font-semibold">{resort.name}</h3>
-            {resort.tagline && <p className="text-xs text-slate-400 mt-1 italic">{resort.tagline}</p>}
-            <p className="text-xs text-slate-400 mt-2">{resort.status}</p>
-            <p className="text-xs text-slate-500 italic mt-3">{resort.bookingMethod}</p>
+            <h3 className="text-ink font-heading font-semibold">{resort.name}</h3>
+            {resort.tagline && <p className="text-xs text-ink-soft mt-1 italic">{resort.tagline}</p>}
+            <p className="text-xs text-ink-soft mt-2">{resort.status}</p>
+            <p className="text-xs text-ink-muted italic mt-3">{resort.bookingMethod}</p>
           </GlassCard>
         </div>
       )}

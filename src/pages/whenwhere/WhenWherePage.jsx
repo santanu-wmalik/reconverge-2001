@@ -14,11 +14,11 @@ const CalendarIcon = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect x="3" y="4" width="18" height="18" rx="2" stroke="#d4a843" strokeWidth="2" />
-    <path d="M16 2V6" stroke="#d4a843" strokeWidth="2" strokeLinecap="round" />
-    <path d="M8 2V6" stroke="#d4a843" strokeWidth="2" strokeLinecap="round" />
-    <path d="M3 10H21" stroke="#d4a843" strokeWidth="2" />
-    <rect x="7" y="14" width="4" height="4" rx="0.5" fill="#d4a843" opacity="0.6" />
+    <rect x="3" y="4" width="18" height="18" rx="2" stroke="#b8922a" strokeWidth="2" />
+    <path d="M16 2V6" stroke="#b8922a" strokeWidth="2" strokeLinecap="round" />
+    <path d="M8 2V6" stroke="#b8922a" strokeWidth="2" strokeLinecap="round" />
+    <path d="M3 10H21" stroke="#b8922a" strokeWidth="2" />
+    <rect x="7" y="14" width="4" height="4" rx="0.5" fill="#b8922a" opacity="0.6" />
   </svg>
 );
 
@@ -32,10 +32,10 @@ const MapPinIcon = () => (
   >
     <path
       d="M12 2C8.13 2 5 5.13 5 9C5 14.25 12 22 12 22C12 22 19 14.25 19 9C19 5.13 15.87 2 12 2Z"
-      stroke="#d4a843"
+      stroke="#b8922a"
       strokeWidth="2"
     />
-    <circle cx="12" cy="9" r="3" fill="#d4a843" opacity="0.6" />
+    <circle cx="12" cy="9" r="3" fill="#b8922a" opacity="0.6" />
   </svg>
 );
 
@@ -47,9 +47,9 @@ const HotelIcon = () => (
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <path d="M3 21V7L12 2L21 7V21" stroke="#d4a843" strokeWidth="2" strokeLinejoin="round" />
-    <path d="M9 21V13H15V21" stroke="#d4a843" strokeWidth="2" strokeLinejoin="round" />
-    <rect x="10" y="8" width="4" height="3" rx="0.5" fill="#d4a843" opacity="0.6" />
+    <path d="M3 21V7L12 2L21 7V21" stroke="#b8922a" strokeWidth="2" strokeLinejoin="round" />
+    <path d="M9 21V13H15V21" stroke="#b8922a" strokeWidth="2" strokeLinejoin="round" />
+    <rect x="10" y="8" width="4" height="3" rx="0.5" fill="#b8922a" opacity="0.6" />
   </svg>
 );
 /* Styles */
@@ -59,7 +59,7 @@ const styles = {
     minHeight: '100vh',
     paddingTop: '7rem',
     paddingBottom: '4rem',
-    background: 'linear-gradient(180deg, #0a0e1a 0%, #101629 40%, #0d1220 100%)',
+    background: 'linear-gradient(180deg, #faf7f0 0%, #f5f1e6 40%, #faf7f0 100%)',
   },
   container: {
     maxWidth: '1100px',
@@ -93,18 +93,18 @@ const styles = {
   cardTitle: {
     fontSize: '1.35rem',
     fontWeight: 700,
-    color: '#d4a843',
+    color: '#8f7020',
     letterSpacing: '0.02em',
   },
   cardPrimary: {
     fontSize: '1.1rem',
     fontWeight: 600,
-    color: '#e2e8f0',
+    color: '#1f1f1f',
     lineHeight: 1.5,
   },
   cardSecondary: {
     fontSize: '0.95rem',
-    color: '#94a3b8',
+    color: '#7a7a7a',
     lineHeight: 1.6,
   },
   badge: {
@@ -113,7 +113,7 @@ const styles = {
     borderRadius: '9999px',
     background: 'rgba(212, 168, 67, 0.12)',
     border: '1px solid rgba(212, 168, 67, 0.25)',
-    color: '#d4a843',
+    color: '#8f7020',
     fontSize: '0.85rem',
     fontWeight: 600,
     letterSpacing: '0.04em',
@@ -122,7 +122,7 @@ const styles = {
     width: '100%',
     height: '220px',
     borderRadius: '12px',
-    border: '1px solid rgba(255,255,255,0.08)',
+    border: '1px solid rgba(31,31,31,0.08)',
     marginTop: '0.75rem',
   },
   photoGrid: {
@@ -178,7 +178,6 @@ export default function WhenWherePage() {
         <SectionHeading
           title="When & Where"
           subtitle="The reunion of a lifetime at the heart of Kozhikode."
-          light
         />
 
         {/* Info cards */}
@@ -253,7 +252,6 @@ export default function WhenWherePage() {
         <SectionHeading
           title="Echoes of Calicut"
           subtitle="A visual journey back to REC Calicut"
-          light
         />
 
         <motion.div

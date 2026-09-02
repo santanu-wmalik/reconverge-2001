@@ -30,17 +30,17 @@ function MoMSection() {
               <div className="flex items-start justify-between flex-wrap gap-3 mb-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <time className="text-xs uppercase tracking-wider text-gold-400 font-semibold">
+                    <time className="text-xs uppercase tracking-wider text-gold-700 font-semibold">
                       {formatDate(m.date)}
                     </time>
                     <Badge variant={status.variant} size="sm">{status.label}</Badge>
                   </div>
-                  <h3 className="text-white font-heading font-semibold">
+                  <h3 className="text-ink font-heading font-semibold">
                     Bi-Weekly Volunteers Syncup
                   </h3>
                   {m.attendees && m.attendees.length > 0 ? (
-                    <p className="text-xs text-slate-500 mt-1">
-                      Attendees: <span className="text-slate-300">{m.attendees.join(', ')}</span>
+                    <p className="text-xs text-ink-muted mt-1">
+                      Attendees: <span className="text-ink-soft">{m.attendees.join(', ')}</span>
                     </p>
                   ) : (
                     <p className="text-xs text-amber-400/80 italic mt-1">Draft — attendees to be confirmed</p>
@@ -50,21 +50,21 @@ function MoMSection() {
 
               <ol className="space-y-3">
                 {m.items.map((item, i) => (
-                  <li key={i} className="bg-white/3 rounded-xl p-3 border border-white/5">
+                  <li key={i} className="bg-white rounded-xl p-3 border border-forest-500/15">
                     <div className="flex gap-3">
-                      <span className="text-gold-400 font-semibold text-xs uppercase tracking-wider flex-shrink-0">#{i + 1}</span>
+                      <span className="text-gold-700 font-semibold text-xs uppercase tracking-wider flex-shrink-0">#{i + 1}</span>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-slate-200 leading-relaxed">{item.text}</p>
+                        <p className="text-sm text-ink leading-relaxed">{item.text}</p>
                         {(item.owner || item.followUp) && (
-                          <div className="mt-2 pt-2 border-t border-white/5 text-xs">
+                          <div className="mt-2 pt-2 border-t border-forest-500/15 text-xs">
                             {item.owner && (
-                              <p className="text-slate-500">
-                                <span className="uppercase tracking-wider text-gold-400/70 mr-2">Owner</span>
-                                <span className="text-slate-300">{item.owner}</span>
+                              <p className="text-ink-muted">
+                                <span className="uppercase tracking-wider text-gold-700/70 mr-2">Owner</span>
+                                <span className="text-ink-soft">{item.owner}</span>
                               </p>
                             )}
                             {item.followUp && (
-                              <p className="text-slate-400 italic mt-1">{item.followUp}</p>
+                              <p className="text-ink-soft italic mt-1">{item.followUp}</p>
                             )}
                           </div>
                         )}
@@ -84,12 +84,12 @@ function MoMSection() {
 function ICARSection() {
   return (
     <>
-      <GlassCard className="border-primary-400/30 bg-gradient-to-br from-primary-900/20 to-transparent mb-6">
+      <GlassCard className="border-forest-500/20 bg-gradient-to-br from-primary-900/20 to-transparent mb-6">
         <div className="flex items-start gap-3">
           <div className="text-2xl">📝</div>
           <div>
-            <h3 className="text-white font-heading font-semibold mb-1">Pre-meeting Q&A with NITC ICAR</h3>
-            <p className="text-sm text-slate-400 leading-relaxed">
+            <h3 className="text-ink font-heading font-semibold mb-1">Pre-meeting Q&A with NITC ICAR</h3>
+            <p className="text-sm text-ink-soft leading-relaxed">
               Eight topic buckets drafted ahead of the ICAR (International, Alumni &amp; Corporate Relations) meeting at NIT Calicut. The SPOC captures the institute's responses alongside each question as the meeting unfolds.
             </p>
           </div>
@@ -101,15 +101,15 @@ function ICARSection() {
           <motion.div key={bucket.id} variants={staggerItem}>
             <GlassCard>
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-9 h-9 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-sm font-heading font-bold text-gold-400">
+                <div className="w-9 h-9 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-sm font-heading font-bold text-gold-700">
                   {idx + 1}
                 </div>
-                <h3 className="text-white font-heading font-semibold text-base">{bucket.title}</h3>
+                <h3 className="text-ink font-heading font-semibold text-base">{bucket.title}</h3>
               </div>
               <ul className="space-y-2">
                 {bucket.questions.map((q, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-slate-300">
-                    <span className="text-gold-400 mt-0.5 flex-shrink-0">›</span>
+                  <li key={i} className="flex items-start gap-2 text-sm text-ink-soft">
+                    <span className="text-gold-700 mt-0.5 flex-shrink-0">›</span>
                     <span className="leading-relaxed">{q}</span>
                   </li>
                 ))}
@@ -133,8 +133,8 @@ export default function MeetingsPage() {
   return (
     <motion.div {...pageTransition}>
       <div className="mb-8">
-        <h1 className="text-3xl font-heading font-bold text-white">Meetings</h1>
-        <p className="text-slate-400 mt-1">Minutes of bi-weekly volunteer syncs and pre-meeting agenda for the NITC ICAR engagement.</p>
+        <h1 className="text-3xl font-heading font-bold text-ink">Meetings</h1>
+        <p className="text-ink-soft mt-1">Minutes of bi-weekly volunteer syncs and pre-meeting agenda for the NITC ICAR engagement.</p>
       </div>
 
       <Tabs tabs={tabs} activeTab={tab} onChange={setTab} className="mb-6" />

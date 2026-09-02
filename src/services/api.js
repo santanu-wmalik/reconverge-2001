@@ -108,6 +108,12 @@ export const rsvpApi = {
     }),
 };
 
+// --- Public (no auth): PII-free landing-page aggregates ---
+export const publicApi = {
+  rollOfHonour: () => request('/public/roll-of-honour'),
+  thenAndNow: () => request('/public/then-and-now'),
+};
+
 // --- Admin: reminder / update email blast ---
 // Forwards the WHOLE payload verbatim — do NOT destructure known fields
 // here or new fields (senderName, attachment, …) get silently dropped.
@@ -266,6 +272,11 @@ export const travelItemApi = {
 // --- Photos (alumni-uploaded gallery) ---
 export const photoApi = {
   getAll: () => request('/photos?_sort=createdAt&_order=desc'),
+  update: (id, data) =>
+    request(`/photos/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    }),
   create: (data) =>
     request('/photos', {
       method: 'POST',

@@ -1,16 +1,13 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import Button from '../../../components/ui/Button';
 import { EVENT_CONFIG } from '../../../data/constants';
 import { fadeInUp } from '../../../utils/animationVariants';
 import { formatCurrency } from '../../../utils/formatters';
 
 export default function CTASection() {
   return (
-    <section className="py-20 md:py-28 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary-800 via-primary-700 to-primary-800" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,168,67,0.15),transparent_70%)]" />
-
+    <section className="py-20 md:py-24 relative overflow-hidden bg-forest-panel text-cream-50">
+      <div className="absolute inset-0 opacity-20 [background-image:radial-gradient(rgba(255,255,255,0.35)_1px,transparent_1px)] [background-size:26px_26px]" />
       <motion.div
         variants={fadeInUp}
         initial="hidden"
@@ -18,19 +15,14 @@ export default function CTASection() {
         viewport={{ once: true }}
         className="relative z-10 max-w-3xl mx-auto px-4 text-center"
       >
-        <h2 className="text-3xl md:text-5xl font-heading font-bold text-white mb-4">
-          Don't Miss the Reunion of a Lifetime
-        </h2>
-        <p className="text-lg text-slate-300 mb-8 max-w-xl mx-auto">
-          Early Bird pricing is on until 30 September — grab your tickets before
-          the window closes. Registration overall closes {EVENT_CONFIG.registrationDeadline}.
+        <span className="eyebrow !text-gold-300">Rewind · Relive · Replay</span>
+        <h2 className="mt-3 text-4xl md:text-5xl font-heading font-medium italic mb-4">Don't Miss the Reunion of a Lifetime</h2>
+        <p className="font-serif text-lg text-cream-200/90 mb-8 max-w-xl mx-auto">
+          Early Bird pricing runs until 30 September. Registration closes {EVENT_CONFIG.registrationDeadline}.
         </p>
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          <Link to="/rsvp">
-            <Button size="lg" className="animate-pulse-glow">RSVP — {formatCurrency(EVENT_CONFIG.registrationFee)}</Button>
-          </Link>
-          <Link to="/store">
-            <Button size="lg" variant="outline">Browse Merchandise</Button>
+        <div className="flex justify-center">
+          <Link to="/register" className="btn-silver-glitter nav-caps px-7 py-3.5">
+            Buy Tickets — {formatCurrency(EVENT_CONFIG.registrationFee)}
           </Link>
         </div>
       </motion.div>

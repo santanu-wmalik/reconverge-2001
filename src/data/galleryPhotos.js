@@ -101,5 +101,4 @@ export const galleryCategories = [
   { id: 'hostel', label: 'Hostel Life' },
   { id: 'events', label: 'Events' },
   { id: 'campus', label: 'Campus' },
-  { id: 'archive', label: 'Archive Scans' },
 ];

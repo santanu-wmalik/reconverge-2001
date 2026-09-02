@@ -13,7 +13,7 @@ const priorityConfig = {
 
 const statusConfig = {
   in_progress: { color: 'text-blue-400', label: 'In Progress' },
-  open: { color: 'text-slate-400', label: 'Open' },
+  open: { color: 'text-ink-soft', label: 'Open' },
   blocked: { color: 'text-red-400', label: 'Blocked' },
   completed: { color: 'text-emerald-400', label: 'Completed' },
 };
@@ -35,8 +35,8 @@ export default function AdminDashboardPage() {
   return (
     <motion.div {...pageTransition}>
       <div className="mb-8">
-        <h1 className="text-3xl font-heading font-bold text-white">Admin Dashboard</h1>
-        <p className="text-slate-400 mt-1">REConverge 2001 Planning Overview</p>
+        <h1 className="text-3xl font-heading font-bold text-ink">Admin Dashboard</h1>
+        <p className="text-ink-soft mt-1">REConverge 2001 Planning Overview</p>
       </div>
 
       {/* Quick Stats */}
@@ -50,8 +50,8 @@ export default function AdminDashboardPage() {
           <motion.div key={stat.label} variants={staggerItem}>
             <GlassCard>
               <div className="text-2xl mb-2">{stat.icon}</div>
-              <p className="text-2xl font-heading font-bold text-white">{stat.value}</p>
-              <p className="text-xs text-slate-400 mt-1">{stat.label}</p>
+              <p className="text-2xl font-heading font-bold text-ink">{stat.value}</p>
+              <p className="text-xs text-ink-soft mt-1">{stat.label}</p>
             </GlassCard>
           </motion.div>
         ))}
@@ -61,7 +61,7 @@ export default function AdminDashboardPage() {
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Action Items */}
         <div>
-          <h2 className="text-lg font-heading font-bold text-white mb-4">
+          <h2 className="text-lg font-heading font-bold text-ink mb-4">
             Action Items
             <Badge variant="warning" size="sm" className="ml-2">{openActions} open</Badge>
             {criticalActions > 0 && <Badge variant="warning" size="sm" className="ml-1">{criticalActions} critical</Badge>}
@@ -74,13 +74,13 @@ export default function AdminDashboardPage() {
                 <GlassCard key={item.id} className="py-3">
                   <div className="flex items-start gap-3">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-white font-medium">{item.task}</p>
+                      <p className="text-sm text-ink font-medium">{item.task}</p>
                       <div className="flex items-center gap-2 mt-1.5">
                         <Badge variant={priority.variant} size="sm">{priority.label}</Badge>
                         <span className={`text-xs ${status.color}`}>{status.label}</span>
                         {item.blockedBy && <span className="text-xs text-red-400">⚠ Blocked by: {item.blockedBy}</span>}
                       </div>
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="text-xs text-ink-muted mt-1">
                         Assignee: {item.assignee} {item.dueDate && `• Due: ${item.dueDate}`}
                       </p>
                     </div>
@@ -93,20 +93,20 @@ export default function AdminDashboardPage() {
 
         {/* Banking & Branch Overview */}
         <div>
-          <h2 className="text-lg font-heading font-bold text-white mb-4">Banking Status</h2>
+          <h2 className="text-lg font-heading font-bold text-ink mb-4">Banking Status</h2>
           <GlassCard className="mb-6">
             <div className="flex items-center gap-2 mb-3">
               <span className="text-xl">🏦</span>
               <Badge variant="gold" size="sm">{bankingStatus.status === 'in_progress' ? 'In Progress' : 'Ready'}</Badge>
             </div>
-            <p className="text-sm text-slate-300 mb-3">Account Type: {bankingStatus.type}</p>
+            <p className="text-sm text-ink-soft mb-3">Account Type: {bankingStatus.type}</p>
             <div className="space-y-2">
               {bankingStatus.attempts.map((attempt) => (
                 <div key={attempt.bank} className="flex items-center justify-between text-xs">
-                  <span className="text-slate-300">{attempt.bank}</span>
+                  <span className="text-ink-soft">{attempt.bank}</span>
                   <span className={
                     attempt.status === 'in_progress' ? 'text-blue-400' :
-                    attempt.status === 'responded' ? 'text-emerald-400' : 'text-slate-500'
+                    attempt.status === 'responded' ? 'text-emerald-400' : 'text-ink-muted'
                   }>
                     {attempt.status === 'in_progress' ? '🔄 In Progress' :
                      attempt.status === 'responded' ? '✅ Responded' : '⏳ No Response'}
@@ -114,20 +114,20 @@ export default function AdminDashboardPage() {
                 </div>
               ))}
             </div>
-            <div className="mt-3 pt-3 border-t border-white/5 text-xs text-slate-500">
+            <div className="mt-3 pt-3 border-t border-forest-500/15 text-xs text-ink-muted">
               <p>Account Holders: {bankingStatus.accountHolders.join(', ')}</p>
               <p>Proposed Finance Head: {bankingStatus.financeHead}</p>
             </div>
           </GlassCard>
 
-          <h2 className="text-lg font-heading font-bold text-white mb-4">Branch Outreach</h2>
+          <h2 className="text-lg font-heading font-bold text-ink mb-4">Branch Outreach</h2>
           <div className="space-y-2">
             {outreachStats.map((branch) => (
               <GlassCard key={branch.branch} className="py-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-white font-medium">{branch.branch}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">
+                    <p className="text-sm text-ink font-medium">{branch.branch}</p>
+                    <p className="text-xs text-ink-muted mt-0.5">
                       {branch.inGroup || 'Group size not reported'}
                       {branch.reps.length > 0 && ` • Reps: ${branch.reps.join(', ')}`}
                     </p>

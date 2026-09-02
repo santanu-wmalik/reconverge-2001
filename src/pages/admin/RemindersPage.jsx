@@ -34,12 +34,18 @@ const DEFAULT_BODY = [
   'Please do not reply to this message. For questions, use the general or branch-specific WhatsApp group we\'ve set up for the reunion — that\'s where the whole team can jump in.',
 ].join('\n');
 
+// Filter chips mirror the 3-tier engagement model (utils/interestState.js):
+//   Shown Interest   → rsvp_only  (dropped a name+email, no account)
+//   Signed Up        → registered (account exists, no verified payment yet)
+//   Paid & Attending → paid       (Finance confirmed)
+// The extra "Signed Up · Unpaid" chip is a synonym of "Signed Up" (kept
+// distinct only if you want to nag people specifically about payment) — I
+// left it out to keep the row clean; add back if you want that split.
 const FILTER_OPTIONS = [
   { key: 'all', label: 'All' },
-  { key: 'registered', label: 'Registered' },
-  { key: 'rsvp_only', label: 'RSVP only' },
-  { key: 'unpaid', label: 'Registered · Unpaid' },
-  { key: 'paid', label: 'Paid' },
+  { key: 'rsvp_only', label: 'Shown Interest' },
+  { key: 'unpaid', label: 'Signed Up (Not Paid)' },
+  { key: 'paid', label: 'Paid & Attending' },
 ];
 
 const DEFAULT_WEBSITE = 'https://reconverge-2001.onrender.com/';
@@ -327,16 +333,15 @@ export default function RemindersPage() {
 
       {/* Stats strip */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-        <StatCard label="Total contacts" value={stats.total} />
-        <StatCard label="Registered" value={stats.registered} />
-        <StatCard label="RSVP only" value={stats.rsvpOnly} />
-        <StatCard label="Paid" value={stats.paid} tone="success" />
-        <StatCard label="Registered · Unpaid" value={stats.unpaid} tone="warn" />
+        <StatCard label="Total contacts" value={stats.total} active={filter === 'all'} onClick={() => setFilter('all')} />
+        <StatCard label="Shown Interest" value={stats.rsvpOnly} active={filter === 'rsvp_only'} onClick={() => setFilter('rsvp_only')} />
+        <StatCard label="Signed Up (Not Paid)" value={stats.unpaid} tone="warn" active={filter === 'unpaid'} onClick={() => setFilter('unpaid')} />
+        <StatCard label="Paid & Attending" value={stats.paid} tone="success" active={filter === 'paid'} onClick={() => setFilter('paid')} />
       </div>
 
       {/* Compose bar (sticky at top of page content) */}
       <GlassCard className="mb-6 border-gold-500/30" hover={false}>
-        <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+        <h3 className="text-ink font-semibold mb-3 flex items-center gap-2">
           <span>✉️</span> Compose message
         </h3>
         <div className="grid gap-3">
@@ -347,17 +352,17 @@ export default function RemindersPage() {
             placeholder="REConverge 2001 — Update"
           />
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">Message</label>
+            <label className="block text-sm font-medium text-ink-soft mb-1.5">Message</label>
             <textarea
               value={body}
               onChange={(e) => setBody(e.target.value)}
               rows={6}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-gold-400/50 focus:ring-2 focus:ring-gold-400/20 focus:bg-white/10"
+              className="w-full bg-white border border-forest-500/15 rounded-xl px-4 py-2.5 text-sm text-ink placeholder-ink-muted outline-none focus:border-gold-400/50 focus:ring-2 focus:ring-gold-400/20 focus:bg-white"
               placeholder="Hi {{firstName}}, ..."
             />
-            <p className="text-[11px] text-slate-500 mt-1">
-              Placeholders <span className="font-mono text-slate-300">{'{{name}}'}</span> and{' '}
-              <span className="font-mono text-slate-300">{'{{firstName}}'}</span> are replaced per recipient.
+            <p className="text-[11px] text-ink-muted mt-1">
+              Placeholders <span className="font-mono text-ink-soft">{'{{name}}'}</span> and{' '}
+              <span className="font-mono text-ink-soft">{'{{firstName}}'}</span> are replaced per recipient.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-3">
@@ -378,11 +383,11 @@ export default function RemindersPage() {
           </div>
           {/* Optional attachment */}
           <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">
-              Attachment (optional) <span className="text-slate-500 text-xs">— max 5 MB</span>
+            <label className="block text-sm font-medium text-ink-soft mb-1.5">
+              Attachment (optional) <span className="text-ink-muted text-xs">— max 5 MB</span>
             </label>
             {!attachment ? (
-              <label className="inline-flex items-center gap-2 cursor-pointer text-xs px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:border-gold-400/40 hover:text-white transition">
+              <label className="inline-flex items-center gap-2 cursor-pointer text-xs px-3 py-2 rounded-lg border border-forest-500/15 bg-white text-ink-soft hover:border-gold-400/40 hover:text-ink transition">
                 📎 Choose file…
                 <input
                   type="file"
@@ -391,10 +396,10 @@ export default function RemindersPage() {
                 />
               </label>
             ) : (
-              <div className="flex flex-wrap items-center gap-3 text-xs bg-white/5 border border-white/10 rounded-lg px-3 py-2">
+              <div className="flex flex-wrap items-center gap-3 text-xs bg-white border border-forest-500/15 rounded-lg px-3 py-2">
                 <span>📎</span>
-                <span className="text-white font-medium break-all">{attachment.filename}</span>
-                <span className="text-slate-500">
+                <span className="text-ink font-medium break-all">{attachment.filename}</span>
+                <span className="text-ink-muted">
                   {(attachment.size / 1024).toFixed(0)} KB
                   {attachment.contentType ? ` · ${attachment.contentType}` : ''}
                 </span>
@@ -410,7 +415,7 @@ export default function RemindersPage() {
             {attachmentError && (
               <p className="text-xs text-red-300 mt-1">{attachmentError}</p>
             )}
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-[11px] text-ink-muted mt-1">
               Attached to every recipient's email. Common formats work: PDF, PNG, JPG, DOCX, XLSX.
             </p>
           </div>
@@ -422,9 +427,9 @@ export default function RemindersPage() {
             <Button variant="outline" size="sm" onClick={() => setTestOpen(true)}>
               🧪 Send test email
             </Button>
-            <span className="text-[11px] text-slate-500">
+            <span className="text-[11px] text-ink-muted">
               (The link also renders as a gold button at the bottom of the email.
-              Sign-off will read <span className="text-slate-300">{senderName}</span>.)
+              Sign-off will read <span className="text-ink-soft">{senderName}</span>.)
             </span>
           </div>
         </div>
@@ -432,7 +437,7 @@ export default function RemindersPage() {
 
       {/* Filter + search */}
       <div className="flex flex-wrap items-center gap-3 mb-4">
-        <div className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 p-1">
+        <div className="flex items-center gap-1 rounded-lg border border-forest-500/15 bg-white p-1">
           {FILTER_OPTIONS.map((f) => (
             <button
               key={f.key}
@@ -441,7 +446,7 @@ export default function RemindersPage() {
               className={`px-3 py-1.5 text-xs rounded-md transition ${
                 filter === f.key
                   ? 'bg-gold-500 text-navy-950 font-semibold'
-                  : 'text-slate-400 hover:text-white'
+                  : 'text-ink-soft hover:text-ink'
               }`}
             >
               {f.label}
@@ -459,23 +464,23 @@ export default function RemindersPage() {
 
       {/* Selection + send bar */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
-        <div className="flex items-center gap-3 text-sm text-slate-300">
+        <div className="flex items-center gap-3 text-sm text-ink-soft">
           <label className="inline-flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={allFilteredSelected}
               onChange={toggleAllFiltered}
-              className="rounded bg-white/10 border-white/20 text-gold-500 focus:ring-gold-400/30"
+              className="rounded bg-cream-200 border-forest-500/15 text-gold-700 focus:ring-gold-400/30"
             />
             <span>Select all filtered ({filtered.length})</span>
           </label>
-          <span className="text-slate-500">·</span>
+          <span className="text-ink-muted">·</span>
           <span>{selected.size} selected</span>
           {selected.size > 0 && (
             <button
               type="button"
               onClick={clearSelection}
-              className="text-xs text-slate-400 hover:text-white underline underline-offset-2"
+              className="text-xs text-ink-soft hover:text-ink underline underline-offset-2"
             >
               clear
             </button>
@@ -493,9 +498,9 @@ export default function RemindersPage() {
       {/* Recipient list */}
       <GlassCard hover={false} padding="p-0">
         {loading ? (
-          <p className="p-8 text-center text-slate-400 text-sm">Loading contacts…</p>
+          <p className="p-8 text-center text-ink-soft text-sm">Loading contacts…</p>
         ) : filtered.length === 0 ? (
-          <p className="p-8 text-center text-slate-400 text-sm">No contacts match this filter.</p>
+          <p className="p-8 text-center text-ink-soft text-sm">No contacts match this filter.</p>
         ) : (
           <div className="divide-y divide-white/5">
             {filtered.map((r) => {
@@ -504,18 +509,18 @@ export default function RemindersPage() {
                 <label
                   key={r.email}
                   className={`flex items-center gap-3 px-4 py-3 cursor-pointer transition ${
-                    checked ? 'bg-gold-500/5' : 'hover:bg-white/[0.02]'
+                    checked ? 'bg-gold-500/5' : 'hover:bg-forest-600/5'
                   }`}
                 >
                   <input
                     type="checkbox"
                     checked={checked}
                     onChange={() => toggleOne(r.email)}
-                    className="rounded bg-white/10 border-white/20 text-gold-500 focus:ring-gold-400/30 flex-shrink-0"
+                    className="rounded bg-cream-200 border-forest-500/15 text-gold-700 focus:ring-gold-400/30 flex-shrink-0"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-white font-medium truncate">{r.name || '(no name)'}</span>
+                      <span className="text-ink font-medium truncate">{r.name || '(no name)'}</span>
                       {r.source === 'registered' && <Badge size="sm">Registered</Badge>}
                       {r.source === 'rsvp_only' && <Badge variant="gold" size="sm">RSVP only</Badge>}
                       {r.hasRsvped && r.source === 'registered' && (
@@ -523,7 +528,7 @@ export default function RemindersPage() {
                       )}
                       <PaymentPill status={r.paymentStatus} isRegistered={r.isRegistered} />
                     </div>
-                    <div className="text-xs text-slate-400 truncate">
+                    <div className="text-xs text-ink-soft truncate">
                       {r.email}
                       {r.branch && <> · {r.branch}</>}
                       {r.city && <> · {r.city}</>}
@@ -544,9 +549,9 @@ export default function RemindersPage() {
         size="sm"
       >
         <div className="space-y-4">
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-ink-soft">
             Sends one copy of the current subject / message / link to any address you like.
-            Subject will be prefixed with <span className="text-slate-300">[TEST]</span> so it's
+            Subject will be prefixed with <span className="text-ink-soft">[TEST]</span> so it's
             easy to spot in the inbox.
           </p>
           <Input
@@ -575,11 +580,11 @@ export default function RemindersPage() {
 
       {/* Last send result */}
       {lastResult && (
-        <GlassCard className="mt-6 border-white/10" hover={false}>
-          <h4 className="text-white font-semibold mb-2">Last send</h4>
-          <p className="text-sm text-slate-300">
-            Requested <span className="text-white">{lastResult.requested}</span>,
-            deduped to <span className="text-white">{lastResult.dedupedTo}</span>,
+        <GlassCard className="mt-6 border-forest-500/15" hover={false}>
+          <h4 className="text-ink font-semibold mb-2">Last send</h4>
+          <p className="text-sm text-ink-soft">
+            Requested <span className="text-ink">{lastResult.requested}</span>,
+            deduped to <span className="text-ink">{lastResult.dedupedTo}</span>,
             sent <span className="text-emerald-300">{lastResult.sentCount}</span>
             {lastResult.failedCount > 0 && (
               <>
@@ -601,27 +606,41 @@ export default function RemindersPage() {
 }
 
 // ── local sub-components ────────────────────────────────────────────
-function StatCard({ label, value, tone }) {
+// Clickable: selecting a card applies the matching recipient filter below.
+function StatCard({ label, value, tone, active = false, onClick }) {
   const toneCls = tone === 'success'
-    ? 'text-emerald-300'
+    ? 'text-emerald-700'
     : tone === 'warn'
-      ? 'text-amber-300'
-      : 'text-gold-400';
+      ? 'text-amber-700'
+      : 'text-gold-700';
   return (
-    <GlassCard padding="p-4">
-      <p className="text-[11px] uppercase tracking-wider text-slate-400">{label}</p>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`text-left rounded-2xl border p-4 transition-colors ${
+        active
+          ? 'bg-[#fbf7ea] border-gold-500/70 ring-1 ring-gold-500/40'
+          : 'bg-white border-forest-500/15 hover:border-forest-500/40'
+      }`}
+    >
+      <p className="text-[11px] uppercase tracking-wider text-ink-soft">{label}</p>
       <p className={`text-2xl font-heading font-bold ${toneCls}`}>{value}</p>
-    </GlassCard>
+    </button>
   );
 }
 
+// Row-level engagement pill — mirrors the 3-tier language used in Stats +
+// Filter chips + the public Who's Registered page.
 function PaymentPill({ status, isRegistered }) {
-  if (!isRegistered) return null;
   if (status === 'paid' || status === 'confirmed') {
-    return <Badge variant="success" size="sm">Paid</Badge>;
+    return <Badge variant="success" size="sm">Paid & Attending</Badge>;
   }
-  if (status === 'pending') {
-    return <Badge variant="gold" size="sm">Under verification</Badge>;
+  if (isRegistered) {
+    if (status === 'pending') {
+      return <Badge variant="gold" size="sm">Under verification</Badge>;
+    }
+    return <Badge variant="warning" size="sm">Signed Up (Not Paid)</Badge>;
   }
-  return <Badge variant="warning" size="sm">Awaiting payment</Badge>;
+  return <Badge size="sm">Shown Interest</Badge>;
 }

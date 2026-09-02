@@ -40,11 +40,11 @@ export default function StorePage() {
                 </div>
               </Link>
               <Link to={`/store/${product.id}`}>
-                <h3 className="text-white font-semibold hover:text-gold-400 transition-colors">{product.name}</h3>
+                <h3 className="text-ink font-semibold hover:text-gold-700 transition-colors">{product.name}</h3>
               </Link>
-              <p className="text-slate-400 text-sm mt-1 line-clamp-2">{product.description}</p>
+              <p className="text-ink-soft text-sm mt-1 line-clamp-2">{product.description}</p>
               <div className="flex items-center justify-between mt-4">
-                <span className="text-gold-400 font-bold text-lg">{formatCurrency(product.price)}</span>
+                <span className="text-gold-700 font-bold text-lg">{formatCurrency(product.price)}</span>
                 <Button size="sm" onClick={() => handleQuickAdd(product)}>Add to Cart</Button>
               </div>
             </GlassCard>

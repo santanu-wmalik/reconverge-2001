@@ -12,9 +12,13 @@ function gridKey(photos) {
   return `${photos.length}-${photos[0].id}-${photos[photos.length - 1].id}`;
 }
 
-export default function PhotoGrid({ photos, columns = 3, canDelete, onDelete }) {
+// Optional props:
+//   canEditEra(photo) → bool   show the Then/Now switch in the lightbox
+//   onSetEra(photo, era)       persist a change ('then' | 'now')
+export default function PhotoGrid({ photos, columns = 3, canDelete, onDelete, canEditEra, onSetEra }) {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [savingEra, setSavingEra] = useState(false);
 
   const handleDelete = async () => {
     if (!selectedPhoto || !onDelete) return;
@@ -28,10 +32,21 @@ export default function PhotoGrid({ photos, columns = 3, canDelete, onDelete }) 
     }
   };
 
+  const handleSetEra = async (era) => {
+    if (!selectedPhoto || !onSetEra || selectedPhoto.era === era) return;
+    setSavingEra(true);
+    try {
+      await onSetEra(selectedPhoto, era);
+      setSelectedPhoto((p) => (p ? { ...p, era } : p));
+    } finally {
+      setSavingEra(false);
+    }
+  };
+
   const columnClass = {
-    2: 'grid-cols-2',
-    3: 'grid-cols-2 md:grid-cols-3',
-    4: 'grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
+    2: 'grid-cols-1 sm:grid-cols-2',
+    3: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3',
+    4: 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
   };
 
   return (
@@ -56,6 +71,18 @@ export default function PhotoGrid({ photos, columns = 3, canDelete, onDelete }) 
               alt={photo.caption}
               imgClassName="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
+            {/* Era badge — only alumni uploads carry `era`; curated entries don't. */}
+            {photo.era && (
+              <span
+                className={`absolute top-2 left-2 px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider ${
+                  photo.era === 'now'
+                    ? 'bg-emerald-500/90 text-white'
+                    : 'bg-black/60 text-gold-300 border border-gold-400/40'
+                }`}
+              >
+                {photo.era === 'now' ? 'Now' : 'Then'}
+              </span>
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
               <p className="absolute bottom-3 left-3 right-3 text-sm text-white font-medium">
                 {photo.caption}
@@ -88,6 +115,31 @@ export default function PhotoGrid({ photos, columns = 3, canDelete, onDelete }) 
                 imgClassName="max-w-full max-h-[70vh] object-contain rounded-xl"
               />
               <p className="text-center text-white mt-3 text-sm">{selectedPhoto.caption}</p>
+
+              {canEditEra?.(selectedPhoto) && (
+                <div className="flex items-center justify-center gap-2 mt-3">
+                  <span className="text-[11px] uppercase tracking-wider text-slate-400 mr-1">Shown as</span>
+                  {[
+                    { v: 'then', l: 'Then' },
+                    { v: 'now', l: 'Now' },
+                  ].map((o) => (
+                    <button
+                      key={o.v}
+                      type="button"
+                      disabled={savingEra}
+                      onClick={() => handleSetEra(o.v)}
+                      className={`px-3 py-1.5 text-xs rounded-lg border transition disabled:opacity-50 ${
+                        (selectedPhoto.era || 'then') === o.v
+                          ? 'bg-gold-500 text-primary-900 border-gold-500'
+                          : 'bg-white/10 text-slate-200 border-white/20 hover:bg-white/20'
+                      }`}
+                    >
+                      {o.l}
+                    </button>
+                  ))}
+                </div>
+              )}
+
               {canDelete?.(selectedPhoto) && (
                 <div className="text-center mt-3">
                   <button
@@ -102,6 +154,7 @@ export default function PhotoGrid({ photos, columns = 3, canDelete, onDelete }) 
               <button
                 onClick={() => setSelectedPhoto(null)}
                 className="absolute -top-3 -right-3 w-8 h-8 bg-white/10 backdrop-blur rounded-full flex items-center justify-center text-white hover:bg-white/20"
+                aria-label="Close"
               >
                 ✕
               </button>

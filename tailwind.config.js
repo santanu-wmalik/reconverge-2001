@@ -1,9 +1,48 @@
 /** @type {import('tailwindcss').Config} */
+//
+// Theme note (Aug 2026 redesign, modelled on rect1an.com):
+//   Public pages  → cream paper background, forest-green display type, gold
+//                   accents. Light theme is the DEFAULT.
+//   Portal/Admin  → still the original dark navy/gold UI. Those layouts add a
+//                   `dark` class on their root so every `dark:` variant below
+//                   kicks in and the hundreds of existing components render
+//                   exactly as before.
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
+        // Cream paper — page background for the public site.
+        cream: {
+          50: '#fdfcf9',
+          100: '#faf7f0',
+          200: '#f5f1e6',
+          300: '#ede7d8',
+          400: '#e2d9c3',
+          500: '#d4c8a8',
+        },
+        // Forest / olive green — display headings, hero panel, primary UI.
+        forest: {
+          50: '#eef2ec',
+          100: '#d6e0d1',
+          200: '#adc2a4',
+          300: '#83a378',
+          400: '#5e8352',
+          500: '#3f6238',
+          600: '#34512e',
+          700: '#2a4125',
+          800: '#1f301b',
+          900: '#141f12',
+        },
+        // Charcoal ink for body text on cream.
+        ink: {
+          DEFAULT: '#1f1f1f',
+          soft: '#4a4a4a',
+          muted: '#7a7a7a',
+        },
+        // `primary` kept as the legacy navy so dark-mode portal/admin styling
+        // (which references primary-*) is untouched.
         primary: {
           50: '#e8eef5',
           100: '#c5d5e8',
@@ -36,11 +75,17 @@ export default {
       },
       fontFamily: {
         heading: ['"Playfair Display"', 'serif'],
+        serif: ['"Inter"', 'sans-serif'], // reverted to the original Inter body font
         body: ['"Inter"', 'sans-serif'],
+      },
+      letterSpacing: {
+        caps: '0.18em',
+        wide2: '0.25em',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'hero-gradient': 'linear-gradient(135deg, #0b1a2c 0%, #1e3a5f 50%, #2d5a8e 100%)',
+        'forest-panel': 'linear-gradient(160deg, #2a4125 0%, #3f6238 55%, #34512e 100%)',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',

@@ -16,8 +16,8 @@ export default function Stepper({ steps, currentStep, onStepClick }) {
                 index < currentStep
                   ? 'bg-gold-500 border-gold-500 text-primary-900'
                   : index === currentStep
-                  ? 'border-gold-400 text-gold-400 bg-gold-400/10'
-                  : 'border-slate-600 text-slate-500 bg-transparent'
+                  ? 'border-gold-400 text-gold-700 dark:text-gold-400 bg-gold-400/10'
+                  : 'border-slate-600 text-ink-muted dark:text-slate-500 bg-transparent'
               )}
             >
               {index < currentStep ? (
@@ -31,7 +31,7 @@ export default function Stepper({ steps, currentStep, onStepClick }) {
             <span
               className={cn(
                 'text-sm font-medium hidden sm:block',
-                index <= currentStep ? 'text-white' : 'text-slate-500'
+                index <= currentStep ? 'text-ink dark:text-white' : 'text-ink-muted dark:text-slate-500'
               )}
             >
               {step}

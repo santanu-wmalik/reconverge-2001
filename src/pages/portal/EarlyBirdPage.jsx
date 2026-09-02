@@ -47,7 +47,7 @@ function CopyChip({ value, label }) {
       type="button"
       onClick={copy}
       title={`Copy ${label}`}
-      className="ml-2 text-[11px] px-2 py-0.5 rounded border border-white/10 text-slate-400 hover:text-white hover:border-white/30 transition"
+      className="ml-2 text-[11px] px-2 py-0.5 rounded border border-forest-500/15 text-ink-soft hover:text-ink hover:border-forest-500/40 transition"
     >
       {copied ? '✓ copied' : 'copy'}
     </button>
@@ -56,9 +56,9 @@ function CopyChip({ value, label }) {
 
 function Row({ label, value, mono, copyable }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 py-2 border-b border-white/5 last:border-b-0">
-      <span className="text-xs text-slate-400 uppercase tracking-wider">{label}</span>
-      <span className={`text-sm text-white text-right break-all ${mono ? 'font-mono' : ''}`}>
+    <div className="flex flex-wrap items-center justify-between gap-2 py-2 border-b border-forest-500/15 last:border-b-0">
+      <span className="text-xs text-ink-soft uppercase tracking-wider">{label}</span>
+      <span className={`text-sm text-ink text-right break-all ${mono ? 'font-mono' : ''}`}>
         {value}
         {copyable && <CopyChip value={value} label={label} />}
       </span>
@@ -96,14 +96,14 @@ export default function EarlyBirdPage() {
       {!over ? (
         <GlassCard className="mb-8 border-gold-500/40 bg-gradient-to-br from-gold-500/[0.06] to-gold-500/[0.02]">
           <div className="text-center">
-            <p className="text-[11px] uppercase tracking-[0.3em] text-gold-300 font-semibold mb-2">
+            <p className="text-[11px] uppercase tracking-[0.3em] text-gold-700 font-semibold mb-2">
               Offer ends 30 September
             </p>
-            <p className="text-4xl md:text-5xl font-heading font-bold text-white">
+            <p className="text-4xl md:text-5xl font-heading font-bold text-ink">
               ₹{selfFee.toLocaleString('en-IN')}{' '}
-              <span className="text-lg font-normal text-slate-400">/ alumnus</span>
+              <span className="text-lg font-normal text-ink-soft">/ alumnus</span>
             </p>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-sm text-ink-soft mt-1">
               + ₹{EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')} per additional family member
             </p>
             <div className="grid grid-cols-4 gap-3 mt-6 max-w-md mx-auto">
@@ -113,11 +113,11 @@ export default function EarlyBirdPage() {
                 { v: mins, l: 'Min' },
                 { v: secs, l: 'Sec' },
               ].map((c) => (
-                <div key={c.l} className="rounded-lg bg-white/5 border border-white/10 py-2">
-                  <p className="text-2xl md:text-3xl font-heading font-bold text-gold-400">
+                <div key={c.l} className="rounded-lg bg-white border border-forest-500/15 py-2">
+                  <p className="text-2xl md:text-3xl font-heading font-bold text-gold-700">
                     {String(c.v).padStart(2, '0')}
                   </p>
-                  <p className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">{c.l}</p>
+                  <p className="text-[10px] text-ink-soft uppercase tracking-wider mt-0.5">{c.l}</p>
                 </div>
               ))}
             </div>
@@ -138,10 +138,10 @@ export default function EarlyBirdPage() {
           </div>
         </GlassCard>
       ) : (
-        <GlassCard className="mb-8 border-white/10">
-          <p className="text-slate-300">
+        <GlassCard className="mb-8 border-forest-500/15">
+          <p className="text-ink-soft">
             The early-bird pricing window closed on 30 September. Standard rates apply — see{' '}
-            <Link to="/payments" className="text-gold-400 hover:text-gold-300 underline">
+            <Link to="/payments" className="text-gold-700 hover:text-gold-300 underline">
               My Payments
             </Link>{' '}
             for current amount and instructions.
@@ -150,16 +150,16 @@ export default function EarlyBirdPage() {
       )}
 
       {/* Your amount */}
-      <h2 className="text-xl font-heading font-bold text-white mb-1">Your amount due</h2>
-      <p className="text-slate-400 text-sm mb-4">
+      <h2 className="text-xl font-heading font-bold text-ink mb-1">Your amount due</h2>
+      <p className="text-ink-soft text-sm mb-4">
         Auto-calculated from your profile. If the family count is wrong, fix it in{' '}
-        <Link to="/profile/edit" className="text-gold-400 hover:text-gold-300 underline">
+        <Link to="/profile/edit" className="text-gold-700 hover:text-gold-300 underline">
           Edit Profile
         </Link>{' '}
         before paying so the Finance Committee reconciles correctly.
       </p>
       <GlassCard className="mb-10">
-        <div className="text-sm text-slate-300 space-y-2">
+        <div className="text-sm text-ink-soft space-y-2">
           <div className="flex justify-between">
             <span>Self ({user?.name || 'you'})</span>
             <span className="font-mono">₹{selfFee.toLocaleString('en-IN')}</span>
@@ -172,9 +172,9 @@ export default function EarlyBirdPage() {
               <span className="font-mono">₹{familyFee.toLocaleString('en-IN')}</span>
             </div>
           )}
-          <div className="flex justify-between pt-2 border-t border-white/5 text-white font-semibold">
+          <div className="flex justify-between pt-2 border-t border-forest-500/15 text-ink font-semibold">
             <span>Total due</span>
-            <span className="font-mono text-gold-400 text-lg">
+            <span className="font-mono text-gold-700 text-lg">
               ₹{totalDue.toLocaleString('en-IN')}
             </span>
           </div>
@@ -182,8 +182,8 @@ export default function EarlyBirdPage() {
       </GlassCard>
 
       {/* What's included */}
-      <h2 className="text-xl font-heading font-bold text-white mb-1">What's included</h2>
-      <p className="text-slate-400 text-sm mb-4">
+      <h2 className="text-xl font-heading font-bold text-ink mb-1">What's included</h2>
+      <p className="text-ink-soft text-sm mb-4">
         Straight from the printed brochure. Two days, three lifetimes.
       </p>
       <div className="grid md:grid-cols-2 gap-4 mb-10">
@@ -245,17 +245,17 @@ export default function EarlyBirdPage() {
       </div>
 
       {/* Not included */}
-      <GlassCard className="mb-10 border-white/10">
-        <h3 className="text-white font-semibold mb-2">Not included (billed separately)</h3>
-        <ul className="space-y-1.5 pl-4 text-sm text-slate-400">
+      <GlassCard className="mb-10 border-forest-500/15">
+        <h3 className="text-ink font-semibold mb-2">Not included (billed separately)</h3>
+        <ul className="space-y-1.5 pl-4 text-sm text-ink-soft">
           <li className="list-disc">
             Hotel accommodation — book directly with Gokulam Grand or your preferred partner hotel
-            (see <Link to="/stay" className="text-gold-400 hover:text-gold-300 underline">Stay</Link>).
+            (see <Link to="/stay" className="text-gold-700 hover:text-gold-300 underline">Stay</Link>).
           </li>
           <li className="list-disc">Travel to Calicut (flights / trains / cabs).</li>
           <li className="list-disc">
             Give Back contribution — separate voluntary channel via NITCAA (see{' '}
-            <Link to="/give-back" className="text-gold-400 hover:text-gold-300 underline">
+            <Link to="/give-back" className="text-gold-700 hover:text-gold-300 underline">
               Give Back
             </Link>
             ).
@@ -264,8 +264,8 @@ export default function EarlyBirdPage() {
       </GlassCard>
 
       {/* How to pay */}
-      <h2 className="text-xl font-heading font-bold text-white mb-1">How to pay</h2>
-      <p className="text-slate-400 text-sm mb-4">
+      <h2 className="text-xl font-heading font-bold text-ink mb-1">How to pay</h2>
+      <p className="text-ink-soft text-sm mb-4">
         Direct bank transfer to the batch account. NEFT / RTGS / IMPS / UPI all work.
       </p>
       <GlassCard className="mb-6 border-gold-500/30 bg-gold-500/[0.03]">
@@ -277,30 +277,30 @@ export default function EarlyBirdPage() {
         <Row label="Address" value={batchBankAccount.branchAddress} />
         <Row label="Supports" value={batchBankAccount.supports.join(' · ')} />
       </GlassCard>
-      <p className="text-sm text-gold-300 mb-10">
+      <p className="text-sm text-gold-700 mb-10">
         <span className="font-semibold">Important:</span>{' '}
         {batchBankAccount.paymentReferenceHint}
         {user?.registrationId && (
           <>
-            {' '}Yours is <span className="font-mono text-white">{user.registrationId}</span>
+            {' '}Yours is <span className="font-mono text-ink">{user.registrationId}</span>
             <CopyChip value={user.registrationId} label="Registration ID" />.
           </>
         )}
       </p>
 
       {/* Handoff to My Payments */}
-      <GlassCard className="border-white/10">
+      <GlassCard className="border-forest-500/15">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 justify-between">
-          <div className="text-sm">
-            <h4 className="text-white font-semibold mb-1">Next step</h4>
-            <p className="text-slate-400">
-              After you transfer, head to <span className="text-gold-300">My Payments</span> and paste
+          <div className="text-sm min-w-0">
+            <h4 className="text-ink font-semibold mb-1">Next step</h4>
+            <p className="text-ink-soft">
+              After you transfer, head to <span className="text-gold-700">My Payments</span> and paste
               the transaction reference so the Finance Committee can match it against the bank
               statement.
             </p>
           </div>
-          <Link to="/payments">
-            <Button>Go to My Payments →</Button>
+          <Link to="/payments" className="shrink-0 w-full sm:w-auto">
+            <Button className="w-full sm:w-auto whitespace-nowrap">Go to My Payments →</Button>
           </Link>
         </div>
       </GlassCard>
@@ -313,11 +313,11 @@ function IncludedCard({ badge, title, items }) {
     <GlassCard>
       <div className="flex items-center gap-2 mb-2">
         <Badge variant="gold" size="sm">{badge}</Badge>
-        <h3 className="text-white font-heading font-semibold">{title}</h3>
+        <h3 className="text-ink font-heading font-semibold">{title}</h3>
       </div>
-      <ul className="text-sm text-slate-300 space-y-1 pl-4">
+      <ul className="text-sm text-ink-soft space-y-1 pl-4">
         {items.map((it) => (
-          <li key={it} className="list-disc marker:text-gold-400">{it}</li>
+          <li key={it} className="list-disc marker:text-gold-700">{it}</li>
         ))}
       </ul>
     </GlassCard>

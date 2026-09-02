@@ -41,8 +41,8 @@ export default function ForgotPasswordPage() {
             alt="REConverge 2001"
             className="w-16 h-16 mx-auto mb-4 object-contain"
           />
-          <h1 className="text-2xl font-heading font-bold text-white">Forgot Password</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <h1 className="text-2xl font-heading font-bold text-ink dark:text-white">Forgot Password</h1>
+          <p className="text-ink-muted dark:text-slate-400 text-sm mt-1">
             We'll email you a link to set a new password.
           </p>
         </div>
@@ -54,7 +54,7 @@ export default function ForgotPasswordPage() {
               we've sent a reset link. Check your inbox (and spam folder). The link expires in
               30 minutes.
             </div>
-            <p className="text-slate-400 text-sm text-center">
+            <p className="text-ink-muted dark:text-slate-400 text-sm text-center">
               Didn't get anything after a few minutes? Double-check the email address and try
               again.
             </p>
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
               Send reset link
             </Button>
             <div className="text-center">
-              <Link to="/login" className="text-sm text-gold-400 hover:text-gold-300 font-medium">
+              <Link to="/login" className="text-sm text-gold-700 dark:text-gold-400 hover:text-gold-800 dark:hover:text-gold-300 font-medium">
                 ← Back to sign in
               </Link>
             </div>

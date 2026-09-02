@@ -67,8 +67,8 @@ export default function LoginPage() {
       <GlassCard className="w-full max-w-md" hover={false}>
         <div className="text-center mb-8">
           <img src="https://storage.googleapis.com/reconverge-2001-uat-bucket/landing_page_pictures/Reconverge_2001_Logo.png" alt="REConverge 2001" className="w-16 h-16 mx-auto mb-4 object-contain" />
-          <h1 className="text-2xl font-heading font-bold text-white">Welcome Back</h1>
-          <p className="text-slate-400 text-sm mt-1">Sign in to your alumni account</p>
+          <h1 className="text-2xl font-heading font-bold text-ink dark:text-white">Welcome Back</h1>
+          <p className="text-ink-muted dark:text-slate-400 text-sm mt-1">Sign in to your alumni account</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
@@ -98,13 +98,13 @@ export default function LoginPage() {
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="w-4 h-4 rounded border-white/20 bg-white/5 text-gold-400 focus:ring-gold-400/30 focus:ring-offset-0 cursor-pointer"
+                className="w-4 h-4 rounded border-forest-500/15 dark:border-white/20 bg-white dark:bg-white/5 text-gold-700 dark:text-gold-400 focus:ring-gold-400/30 focus:ring-offset-0 cursor-pointer"
               />
-              <span className="text-sm text-slate-400">Remember me</span>
+              <span className="text-sm text-ink-muted dark:text-slate-400">Remember me</span>
             </label>
             <Link
               to="/forgot-password"
-              className="text-sm text-gold-400 hover:text-gold-300 font-medium"
+              className="text-sm text-gold-700 dark:text-gold-400 hover:text-gold-800 dark:hover:text-gold-300 font-medium"
             >
               Forgot password?
             </Link>
@@ -116,10 +116,10 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-6 text-center space-y-2">
-          <p className="text-slate-400 text-sm">
+          <p className="text-ink-muted dark:text-slate-400 text-sm">
             Don't have an account?{' '}
-            <Link to="/register" className="text-gold-400 hover:text-gold-300 font-medium">
-              Register Now
+            <Link to="/register" className="text-gold-700 dark:text-gold-400 hover:text-gold-800 dark:hover:text-gold-300 font-medium">
+              Sign Up
             </Link>
           </p>
         </div>

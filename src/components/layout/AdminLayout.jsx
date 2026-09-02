@@ -1,9 +1,8 @@
-import { Outlet, Link, useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
 import Footer from './Footer';
+import BinderTabs from './BinderTabs';
 import BackToTop from '../shared/BackToTop';
-import BackgroundSlideshow from '../shared/BackgroundSlideshow';
-import FloatingPhotos from '../shared/FloatingPhotos';
 import AnnouncementsBanner from '../shared/AnnouncementsBanner';
 import ImpersonationBanner from './ImpersonationBanner';
 import { useAuth } from '../../context/AuthContext';
@@ -32,6 +31,8 @@ const SUPER_ADMIN_NAV = [
   { label: 'Users', path: '/admin/users', icon: '🔑' },
 ];
 
+// Admin shell — same cream / forest / gold look as the public site, with a
+// binder-tab strip for the admin sections.
 export default function AdminLayout() {
   const location = useLocation();
   const { isSuperAdmin, hasPermission } = useAuth();
@@ -41,45 +42,17 @@ export default function AdminLayout() {
     ...permissionNav,
     ...(isSuperAdmin ? SUPER_ADMIN_NAV : []),
   ];
+  const isActive = (link) => location.pathname === link.path;
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <BackgroundSlideshow />
-      <FloatingPhotos />
-      <div className="flex flex-col min-h-screen lg:px-44">
+    <div className="min-h-screen flex flex-col bg-cream-100 text-ink">
+      <div className="flex flex-col min-h-screen">
         <ImpersonationBanner />
         <Header />
         <AnnouncementsBanner />
         <main className="flex-1 relative z-[1]">
-          {/* Admin Nav Bar */}
-          <div className="bg-gold-500/5 border-b border-gold-500/20 backdrop-blur-sm">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6">
-              <div className="flex flex-wrap items-center gap-x-1 gap-y-1.5 py-2">
-                <span className="text-gold-400 text-xs font-semibold uppercase tracking-wider mr-3">
-                  Admin
-                </span>
-                {adminNavLinks.map((link) => {
-                  const isActive = location.pathname === link.path;
-                  return (
-                    <Link
-                      key={link.path}
-                      to={link.path}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                        isActive
-                          ? 'bg-gold-500 text-navy-950'
-                          : 'text-slate-400 hover:text-white hover:bg-white/5'
-                      }`}
-                    >
-                      <span>{link.icon}</span>
-                      {link.label}
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
+          <BinderTabs label="Admin" links={adminNavLinks} isActive={isActive} />
 
-          {/* Page Content */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
             <Outlet />
           </div>

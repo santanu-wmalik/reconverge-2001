@@ -44,8 +44,8 @@ export default function EventSchedulePage() {
             onClick={() => setActiveCategory(cat.id)}
             className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
               activeCategory === cat.id
-                ? 'bg-gold-500/20 border-gold-400/30 text-gold-300'
-                : 'bg-white/5 border-white/10 text-slate-400 hover:text-white'
+                ? 'bg-gold-500/20 border-gold-400/30 text-gold-700'
+                : 'bg-white border-forest-500/15 text-ink-soft hover:text-ink'
             }`}
           >
             {cat.icon} {cat.label}
@@ -66,11 +66,11 @@ export default function EventSchedulePage() {
               <div className="text-3xl">{evt.icon}</div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="text-white font-semibold">{evt.title}</h3>
+                  <h3 className="text-ink font-semibold">{evt.title}</h3>
                   {evt.isFeatured && <Badge variant="gold" size="sm">Featured</Badge>}
                 </div>
-                <p className="text-slate-400 text-sm mt-1 line-clamp-2">{evt.description}</p>
-                <div className="flex flex-wrap gap-3 mt-2 text-xs text-slate-500">
+                <p className="text-ink-soft text-sm mt-1 line-clamp-2">{evt.description}</p>
+                <div className="flex flex-wrap gap-3 mt-2 text-xs text-ink-muted">
                   <span>🕐 {formatTime(evt.startTime)} – {formatTime(evt.endTime)}</span>
                   <span>📍 {evt.venue}</span>
                 </div>
@@ -86,7 +86,7 @@ export default function EventSchedulePage() {
           </motion.div>
         ))}
         {filtered.length === 0 && (
-          <div className="text-center py-12 text-slate-500">No events in this category for Day {activeDay}</div>
+          <div className="text-center py-12 text-ink-muted">No events in this category for Day {activeDay}</div>
         )}
       </motion.div>
     </motion.div>

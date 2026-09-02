@@ -58,6 +58,23 @@ export default function PhotoGalleryPage() {
     }
   };
 
+  // Then / Now era — admins can re-tag any alumni upload from the lightbox.
+  // Curated gallery entries (galleryPhotos.js) are not editable.
+  const isAdminUser = Boolean(user && (user.role === 'admin' || user.role === 'super-admin'));
+  const canEditEra = (photo) => isAdminUser && isUpload(photo);
+  const handleSetEra = async (photo, era) => {
+    const prev = uploads;
+    setUploads((list) => list.map((p) => (p.id === photo.id ? { ...p, era } : p)));
+    try {
+      await photoApi.update(photo.id, { era });
+      showToast(`Marked as ${era === 'now' ? 'Now' : 'Then'}.`, 'success');
+    } catch (err) {
+      console.error('Era update failed', err);
+      setUploads(prev);
+      showToast('Could not update. Try again.', 'error');
+    }
+  };
+
   return (
     <motion.div {...pageTransition}>
       <SectionHeading
@@ -81,6 +98,8 @@ export default function PhotoGalleryPage() {
         columns={3}
         canDelete={canDelete}
         onDelete={handleDelete}
+        canEditEra={canEditEra}
+        onSetEra={handleSetEra}
       />
 
       <UploadPhotoModal

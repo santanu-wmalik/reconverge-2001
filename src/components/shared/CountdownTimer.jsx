@@ -14,7 +14,7 @@ function TimeUnit({ value, label }) {
           {String(value).padStart(2, '0')}
         </span>
       </motion.div>
-      <span className="text-[10px] sm:text-xs md:text-sm text-slate-400 mt-2 uppercase tracking-wider">{label}</span>
+      <span className="text-[10px] sm:text-xs md:text-sm text-ink-muted dark:text-slate-400 mt-2 uppercase tracking-wider">{label}</span>
     </div>
   );
 }
@@ -35,11 +35,11 @@ export default function CountdownTimer({ targetDate }) {
   return (
     <div className="flex items-center gap-1.5 sm:gap-3 md:gap-4">
       <TimeUnit value={days} label="Days" />
-      <span className="text-lg sm:text-2xl text-gold-400 font-bold mt-[-16px] sm:mt-[-20px]">:</span>
+      <span className="text-lg sm:text-2xl text-gold-700 dark:text-gold-400 font-bold mt-[-16px] sm:mt-[-20px]">:</span>
       <TimeUnit value={hours} label="Hours" />
-      <span className="text-lg sm:text-2xl text-gold-400 font-bold mt-[-16px] sm:mt-[-20px]">:</span>
+      <span className="text-lg sm:text-2xl text-gold-700 dark:text-gold-400 font-bold mt-[-16px] sm:mt-[-20px]">:</span>
       <TimeUnit value={minutes} label="Min" />
-      <span className="text-lg sm:text-2xl text-gold-400 font-bold mt-[-16px] sm:mt-[-20px]">:</span>
+      <span className="text-lg sm:text-2xl text-gold-700 dark:text-gold-400 font-bold mt-[-16px] sm:mt-[-20px]">:</span>
       <TimeUnit value={seconds} label="Sec" />
     </div>
   );

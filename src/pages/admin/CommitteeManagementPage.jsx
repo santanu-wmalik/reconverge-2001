@@ -13,28 +13,28 @@ export default function CommitteeManagementPage() {
   return (
     <motion.div {...pageTransition}>
       <div className="mb-8">
-        <h1 className="text-3xl font-heading font-bold text-white">Committee Management</h1>
-        <p className="text-slate-400 mt-1">Track committee formation, member assignments, and branch representation</p>
+        <h1 className="text-3xl font-heading font-bold text-ink">Committee Management</h1>
+        <p className="text-ink-soft mt-1">Track committee formation, member assignments, and branch representation</p>
       </div>
 
       {/* Summary Stats */}
       <div className="grid grid-cols-3 gap-4 mb-8">
         <GlassCard className="text-center">
-          <p className="text-3xl font-heading font-bold text-gold-400">{committees.length}</p>
-          <p className="text-xs text-slate-400 mt-1">Committees</p>
+          <p className="text-3xl font-heading font-bold text-gold-700">{committees.length}</p>
+          <p className="text-xs text-ink-soft mt-1">Committees</p>
         </GlassCard>
         <GlassCard className="text-center">
-          <p className="text-3xl font-heading font-bold text-gold-400">{totalMembers}</p>
-          <p className="text-xs text-slate-400 mt-1">Members Assigned</p>
+          <p className="text-3xl font-heading font-bold text-gold-700">{totalMembers}</p>
+          <p className="text-xs text-ink-soft mt-1">Members Assigned</p>
         </GlassCard>
         <GlassCard className="text-center">
-          <p className="text-3xl font-heading font-bold text-gold-400">{filledReps}/7</p>
-          <p className="text-xs text-slate-400 mt-1">Branches with Reps</p>
+          <p className="text-3xl font-heading font-bold text-gold-700">{filledReps}/7</p>
+          <p className="text-xs text-ink-soft mt-1">Branches with Reps</p>
         </GlassCard>
       </div>
 
       {/* Committees Table */}
-      <h2 className="text-lg font-heading font-bold text-white mb-4">Committee Status</h2>
+      <h2 className="text-lg font-heading font-bold text-ink mb-4">Committee Status</h2>
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-3 mb-10">
         {committees.map((committee) => (
           <motion.div key={committee.id} variants={staggerItem}>
@@ -43,21 +43,21 @@ export default function CommitteeManagementPage() {
                 <div className="flex items-center gap-3">
                   <span className="text-xl">{committee.emoji}</span>
                   <div>
-                    <h3 className="text-sm font-semibold text-white">{committee.name}</h3>
-                    <p className="text-xs text-slate-500 mt-0.5">{committee.description.substring(0, 80)}...</p>
+                    <h3 className="text-sm font-semibold text-ink">{committee.name}</h3>
+                    <p className="text-xs text-ink-muted mt-0.5">{committee.description.substring(0, 80)}...</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 flex-shrink-0">
                   <div className="text-right">
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-ink-soft">
                       Lead: <span className={isTbdLead(committee.lead) ? 'text-amber-400' : 'text-emerald-400'}>{committee.lead || 'N/A'}</span>
                     </p>
                     {committee.coLead && (
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-ink-soft">
                         Co-lead: <span className="text-emerald-400">{committee.coLead}</span>
                       </p>
                     )}
-                    <p className="text-xs text-slate-500">{committee.members.length}/5 members</p>
+                    <p className="text-xs text-ink-muted">{committee.members.length}/5 members</p>
                   </div>
                   <Badge
                     variant={isTbdLead(committee.lead) ? 'warning' : 'success'}
@@ -73,17 +73,17 @@ export default function CommitteeManagementPage() {
       </motion.div>
 
       {/* Branch Reps Table */}
-      <h2 className="text-lg font-heading font-bold text-white mb-4">Branch Representatives</h2>
+      <h2 className="text-lg font-heading font-bold text-ink mb-4">Branch Representatives</h2>
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-3">
         {branchRepresentatives.map((br) => (
           <motion.div key={br.branch} variants={staggerItem}>
             <GlassCard className={`border-l-4 ${br.status === 'open' ? 'border-l-amber-500/60' : 'border-l-emerald-500/60'}`}>
               <div className="flex items-center justify-between">
                 <div>
-                  <h4 className="text-sm font-semibold text-white">{br.branch}</h4>
-                  <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
+                  <h4 className="text-sm font-semibold text-ink">{br.branch}</h4>
+                  <div className="flex items-center gap-3 mt-1 text-xs text-ink-muted">
                     {br.reps.length > 0 ? (
-                      <span>Reps: <span className="text-slate-300">{br.reps.join(', ')}</span></span>
+                      <span>Reps: <span className="text-ink-soft">{br.reps.join(', ')}</span></span>
                     ) : (
                       <span className="text-amber-400">No reps assigned</span>
                     )}
@@ -94,7 +94,7 @@ export default function CommitteeManagementPage() {
                   {br.status === 'open' ? 'Needs Volunteers' : 'Active'}
                 </Badge>
               </div>
-              {br.notes && <p className="text-xs text-slate-500 mt-2">{br.notes}</p>}
+              {br.notes && <p className="text-xs text-ink-muted mt-2">{br.notes}</p>}
             </GlassCard>
           </motion.div>
         ))}

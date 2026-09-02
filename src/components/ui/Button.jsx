@@ -1,12 +1,25 @@
 import { motion } from 'framer-motion';
 import { cn } from '../../utils/cn';
 
+// Light (public) defaults; `dark:` variants reproduce the original navy/gold
+// portal look so admin + portal screens render unchanged inside their dark
+// shells.
 const variants = {
-  primary: 'bg-gold-500 hover:bg-gold-600 text-primary-900 shadow-lg shadow-gold-500/20',
-  secondary: 'bg-primary-600 hover:bg-primary-500 text-white shadow-lg shadow-primary-600/20',
-  outline: 'border-2 border-gold-400/50 text-gold-400 hover:bg-gold-400/10',
-  ghost: 'text-slate-300 hover:bg-white/10 hover:text-white',
-  danger: 'bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-400/30',
+  primary:
+    'bg-gold-500 hover:bg-gold-600 text-ink shadow-md shadow-gold-500/30 ' +
+    'dark:text-primary-900 dark:shadow-lg dark:shadow-gold-500/20',
+  secondary:
+    'bg-forest-600 hover:bg-forest-500 text-white shadow-md shadow-forest-600/25 ' +
+    'dark:bg-primary-600 dark:hover:bg-primary-500 dark:shadow-primary-600/20',
+  outline:
+    'border-2 border-forest-600/60 text-forest-700 hover:bg-forest-600/8 ' +
+    'dark:border-gold-400/50 dark:text-gold-400 dark:hover:bg-gold-400/10',
+  ghost:
+    'text-ink-soft hover:bg-forest-600/8 hover:text-ink ' +
+    'dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white',
+  danger:
+    'bg-red-500/10 hover:bg-red-500/20 text-red-700 border border-red-400/40 ' +
+    'dark:bg-red-500/20 dark:hover:bg-red-500/30 dark:text-red-300 dark:border-red-400/30',
 };
 
 const sizes = {

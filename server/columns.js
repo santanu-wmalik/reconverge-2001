@@ -172,6 +172,7 @@ export const tables = {
     width:        { col: 'width',         type: 'int' },
     height:       { col: 'height',        type: 'int' },
     bytes:        { col: 'bytes',         type: 'int' },
+    era:          { col: 'era',           type: 'text' },   // 'then' | 'now'
     createdAt:    { col: 'created_at',    type: 'timestamptz' },
   },
 };

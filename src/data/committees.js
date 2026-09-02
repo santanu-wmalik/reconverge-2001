@@ -27,7 +27,7 @@ export const committees = [
     name: 'Finance Committee',
     shortName: 'FC',
     emoji: '💰',
-    lead: 'Shyam (tentative)',
+    lead: 'Shyam',
     members: [],
     description: 'Budget, bank account, payments, audit, financial reporting.',
   },

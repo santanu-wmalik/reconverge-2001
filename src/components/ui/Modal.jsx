@@ -41,16 +41,16 @@ export default function Modal({ isOpen, onClose, title, children, size = 'md' })
             animate="visible"
             exit="exit"
             className={cn(
-              'relative w-full bg-slate-900/95 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl overflow-hidden',
+              'relative w-full bg-white dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl border border-forest-500/15 dark:border-white/10 shadow-2xl overflow-hidden',
               sizes[size]
             )}
           >
             {title && (
-              <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
-                <h3 className="text-lg font-heading font-semibold text-white">{title}</h3>
+              <div className="flex items-center justify-between px-6 py-4 border-b border-forest-500/15 dark:border-white/10">
+                <h3 className="text-lg font-heading font-semibold text-ink dark:text-white">{title}</h3>
                 <button
                   onClick={onClose}
-                  className="text-slate-400 hover:text-white transition-colors p-1 rounded-lg hover:bg-white/10"
+                  className="text-ink-muted dark:text-slate-400 hover:text-ink dark:hover:text-white transition-colors p-1 rounded-lg hover:bg-forest-600/8 dark:hover:bg-white/10"
                 >
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

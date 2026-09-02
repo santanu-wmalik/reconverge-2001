@@ -81,12 +81,12 @@ export default function RSVPPage() {
           <GlassCard hover={false}>
             {!submitted ? (
               <form onSubmit={handleSubmit} className="space-y-6">
-                <h3 className="text-lg font-semibold text-white mb-2">
+                <h3 className="text-lg font-semibold text-ink dark:text-white mb-2">
                   Registration Details
                 </h3>
-                <p className="text-slate-400 text-sm mb-6">
+                <p className="text-ink-muted dark:text-slate-400 text-sm mb-6">
                   Fill in your details to confirm your attendance at{' '}
-                  <span className="text-gold-400 font-medium">{EVENT_CONFIG.eventName}</span>
+                  <span className="text-gold-700 dark:text-gold-400 font-medium">{EVENT_CONFIG.eventName}</span>
                 </p>
 
                 {/* Full Name */}
@@ -130,7 +130,7 @@ export default function RSVPPage() {
 
                 {/* Food Preference - Button Group */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-300 mb-2">
+                  <label className="block text-sm font-medium text-ink-soft dark:text-slate-300 mb-2">
                     Food Preference
                   </label>
                   <div className="flex flex-wrap gap-3">
@@ -142,7 +142,7 @@ export default function RSVPPage() {
                         className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 border ${
                           form.foodPreference === option
                             ? 'bg-gold-500 text-primary-900 border-gold-500 shadow-lg shadow-gold-500/20'
-                            : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10 hover:border-white/20'
+                            : 'bg-white dark:bg-white/5 text-ink-soft dark:text-slate-300 border-forest-500/15 dark:border-white/10 hover:bg-forest-600/8 dark:hover:bg-white/10 hover:border-forest-500/40 dark:hover:border-white/20'
                         }`}
                       >
                         {option}
@@ -152,20 +152,20 @@ export default function RSVPPage() {
                 </div>
 
                 {/* Volunteer Checkbox */}
-                <label className="flex items-start gap-3 text-sm text-slate-300 cursor-pointer group">
+                <label className="flex items-start gap-3 text-sm text-ink-soft dark:text-slate-300 cursor-pointer group">
                   <input
                     type="checkbox"
                     checked={form.volunteer}
                     onChange={(e) => update('volunteer', e.target.checked)}
-                    className="mt-0.5 rounded bg-white/10 border-white/20 text-gold-500 focus:ring-gold-400/30"
+                    className="mt-0.5 rounded bg-white dark:bg-white/10 border-forest-500/15 dark:border-white/20 text-gold-500 focus:ring-gold-400/30"
                   />
-                  <span className="group-hover:text-white transition-colors">
+                  <span className="group-hover:text-ink dark:group-hover:text-white transition-colors">
                     I&apos;m willing to volunteer for organizing sessions!
                   </span>
                 </label>
 
                 {/* Submit Button */}
-                <div className="pt-4 border-t border-white/10">
+                <div className="pt-4 border-t border-forest-500/15 dark:border-white/10">
                   <Button
                     type="submit"
                     size="lg"
@@ -185,18 +185,18 @@ export default function RSVPPage() {
                 className="text-center py-8"
               >
                 <div className="text-6xl mb-6">🎉</div>
-                <h3 className="text-2xl md:text-3xl font-heading font-bold text-white mb-4">
+                <h3 className="text-2xl md:text-3xl font-heading font-bold text-ink dark:text-white mb-4">
                   See You There!
                 </h3>
-                <p className="text-slate-300 text-base leading-relaxed max-w-md mx-auto mb-8">
+                <p className="text-ink-soft dark:text-slate-300 text-base leading-relaxed max-w-md mx-auto mb-8">
                   Your registration for{' '}
-                  <span className="text-gold-400 font-semibold">{EVENT_CONFIG.eventName}</span>{' '}
+                  <span className="text-gold-700 dark:text-gold-400 font-semibold">{EVENT_CONFIG.eventName}</span>{' '}
                   is confirmed. We&apos;ve sent a detailed itinerary to{' '}
-                  <span className="text-gold-400 font-medium">{form.email}</span>.
+                  <span className="text-gold-700 dark:text-gold-400 font-medium">{form.email}</span>.
                 </p>
                 <button
                   onClick={handleReset}
-                  className="text-gold-400 hover:text-gold-300 font-medium text-sm underline underline-offset-4 transition-colors"
+                  className="text-gold-700 dark:text-gold-400 hover:text-gold-800 dark:hover:text-gold-300 font-medium text-sm underline underline-offset-4 transition-colors"
                 >
                   Register another member
                 </button>

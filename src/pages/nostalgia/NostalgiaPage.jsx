@@ -27,8 +27,8 @@ export default function NostalgiaPage() {
             <Link to={s.path}>
               <GlassCard className="text-center py-12">
                 <div className="text-5xl mb-4">{s.icon}</div>
-                <h3 className="text-white font-heading font-bold text-xl mb-2">{s.title}</h3>
-                <p className="text-slate-400 text-sm">{s.description}</p>
+                <h3 className="text-ink font-heading font-bold text-xl mb-2">{s.title}</h3>
+                <p className="text-ink-soft text-sm">{s.description}</p>
               </GlassCard>
             </Link>
           </motion.div>
@@ -37,14 +37,14 @@ export default function NostalgiaPage() {
 
       {/* Shared Echoes */}
       <div className="max-w-3xl mx-auto">
-        <h3 className="text-xl font-heading font-bold text-white mb-6">Shared Echoes</h3>
+        <h3 className="text-xl font-heading font-bold text-ink mb-6">Shared Echoes</h3>
         {memories.length > 0 ? (
           <div className="space-y-4">
             {memories.map((m) => (
               <GlassCard key={m.id}>
-                <p className="text-slate-300 text-sm italic leading-relaxed mb-3">&ldquo;{m.text}&rdquo;</p>
-                <div className="flex items-center justify-between text-xs text-slate-500">
-                  <span className="text-gold-400 font-medium">{m.author} &middot; Class of {m.year}</span>
+                <p className="text-ink-soft text-sm italic leading-relaxed mb-3">&ldquo;{m.text}&rdquo;</p>
+                <div className="flex items-center justify-between text-xs text-ink-muted">
+                  <span className="text-gold-700 font-medium">{m.author} &middot; Class of {m.year}</span>
                   <span>{m.date}</span>
                 </div>
               </GlassCard>
@@ -53,11 +53,11 @@ export default function NostalgiaPage() {
         ) : (
           <GlassCard className="text-center border-gold-500/20">
             <div className="text-3xl mb-3">💬</div>
-            <p className="text-slate-300 text-sm leading-relaxed mb-3">
+            <p className="text-ink-soft text-sm leading-relaxed mb-3">
               This space is for your memories — a corridor anecdote, a hostel story, a professor you still quote. We&apos;re holding it empty until the first real submissions come in.
             </p>
-            <p className="text-xs text-slate-500">
-              Want to share one? Email it to <a href="mailto:crec2001reunion@gmail.com" className="text-gold-400 hover:text-gold-300">crec2001reunion@gmail.com</a> and we&apos;ll feature it here.
+            <p className="text-xs text-ink-muted">
+              Want to share one? Email it to <a href="mailto:crec2001reunion@gmail.com" className="text-gold-700 hover:text-gold-300">crec2001reunion@gmail.com</a> and we&apos;ll feature it here.
             </p>
           </GlassCard>
         )}

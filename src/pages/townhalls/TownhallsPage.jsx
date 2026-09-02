@@ -44,7 +44,7 @@ export default function TownhallsPage() {
           const upcoming = isUpcoming(th.date);
           return (
             <motion.div key={th.id} variants={staggerItem}>
-              <GlassCard className={`${upcoming ? 'border-gold-500/30 bg-gradient-to-br from-gold-500/5 to-primary-900/20' : 'border-white/5'}`}>
+              <GlassCard className={`${upcoming ? 'border-gold-500/30 bg-gradient-to-br from-gold-500/5 to-primary-900/20' : 'border-forest-500/15'}`}>
                 <div className="flex items-start justify-between flex-wrap gap-3 mb-4">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
@@ -57,31 +57,31 @@ export default function TownhallsPage() {
                         <Badge size="sm">Recording pending</Badge>
                       )}
                     </div>
-                    <h3 className="text-white font-heading font-bold text-lg">{th.title}</h3>
-                    {th.tagline && <p className="text-xs text-slate-400 mt-1 italic">{th.tagline}</p>}
+                    <h3 className="text-ink font-heading font-bold text-lg">{th.title}</h3>
+                    {th.tagline && <p className="text-xs text-ink-soft mt-1 italic">{th.tagline}</p>}
                   </div>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-3 text-sm mb-4">
-                  <div className="flex items-start gap-2 text-slate-300">
+                  <div className="flex items-start gap-2 text-ink-soft">
                     <span>📅</span>
                     <div>
-                      <p className="text-xs text-slate-500 uppercase tracking-wider">When</p>
+                      <p className="text-xs text-ink-muted uppercase tracking-wider">When</p>
                       <p>{formatDate(th.date)}</p>
                       <p className="text-xs">{formatTime(th.startTime)} – {formatTime(th.endTime)} {th.timezone}</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-2 text-slate-300">
+                  <div className="flex items-start gap-2 text-ink-soft">
                     <span>🌏</span>
                     <div>
-                      <p className="text-xs text-slate-500 uppercase tracking-wider">Region</p>
+                      <p className="text-xs text-ink-muted uppercase tracking-wider">Region</p>
                       <p className="text-xs">{th.regionHint}</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-2 text-slate-300">
+                  <div className="flex items-start gap-2 text-ink-soft">
                     <span>🎙️</span>
                     <div>
-                      <p className="text-xs text-slate-500 uppercase tracking-wider">Host</p>
+                      <p className="text-xs text-ink-muted uppercase tracking-wider">Host</p>
                       <p className="text-sm">{th.organiser}</p>
                     </div>
                   </div>
@@ -126,20 +126,20 @@ export default function TownhallsPage() {
 
                 {/* Meet details — only meaningful while upcoming */}
                 {upcoming && (
-                  <div className="bg-white/3 border border-white/5 rounded-xl p-4 mb-5 text-sm">
-                    <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold mb-2">Meet joining info</p>
+                  <div className="bg-white border border-forest-500/15 rounded-xl p-4 mb-5 text-sm">
+                    <p className="text-xs uppercase tracking-wider text-gold-700 font-semibold mb-2">Meet joining info</p>
                     <div className="grid sm:grid-cols-2 gap-x-6 gap-y-1">
                       <div>
-                        <span className="text-slate-500 text-xs">Video link: </span>
-                        <a href={th.meet.url} target="_blank" rel="noopener noreferrer" className="text-gold-400 hover:text-gold-300 break-all">{th.meet.url}</a>
+                        <span className="text-ink-muted text-xs">Video link: </span>
+                        <a href={th.meet.url} target="_blank" rel="noopener noreferrer" className="text-gold-700 hover:text-gold-300 break-all">{th.meet.url}</a>
                       </div>
                       <div>
-                        <span className="text-slate-500 text-xs">Dial ({th.meet.dialInCountry}): </span>
-                        <span className="text-white font-mono">{th.meet.dialIn}</span>
+                        <span className="text-ink-muted text-xs">Dial ({th.meet.dialInCountry}): </span>
+                        <span className="text-ink font-mono">{th.meet.dialIn}</span>
                       </div>
                       <div>
-                        <span className="text-slate-500 text-xs">PIN: </span>
-                        <span className="text-white font-mono">{th.meet.pin}</span>
+                        <span className="text-ink-muted text-xs">PIN: </span>
+                        <span className="text-ink font-mono">{th.meet.pin}</span>
                       </div>
                     </div>
                   </div>
@@ -148,11 +148,11 @@ export default function TownhallsPage() {
                 {/* Agenda */}
                 {th.agenda && th.agenda.length > 0 && (
                   <div className="mb-2">
-                    <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold mb-2">Agenda</p>
-                    <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1 text-sm text-slate-300">
+                    <p className="text-xs uppercase tracking-wider text-gold-700 font-semibold mb-2">Agenda</p>
+                    <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-1 text-sm text-ink-soft">
                       {th.agenda.map((a, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="text-gold-400 mt-0.5">›</span>
+                          <span className="text-gold-700 mt-0.5">›</span>
                           <span>{a}</span>
                         </li>
                       ))}
@@ -164,11 +164,11 @@ export default function TownhallsPage() {
                     Renders only when an explicit embed URL is provided so
                     we don't try to <iframe> arbitrary external links. */}
                 {th.recordingEmbedUrl && (
-                  <div className="mt-5 pt-4 border-t border-white/5">
-                    <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold mb-2">
+                  <div className="mt-5 pt-4 border-t border-forest-500/15">
+                    <p className="text-xs uppercase tracking-wider text-gold-700 font-semibold mb-2">
                       Recording
                     </p>
-                    <div className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-black/40" style={{ paddingTop: '56.25%' }}>
+                    <div className="relative w-full overflow-hidden rounded-xl border border-forest-500/15 bg-black/40" style={{ paddingTop: '56.25%' }}>
                       <iframe
                         src={th.recordingEmbedUrl}
                         title={`${th.title} — recording`}
@@ -178,14 +178,14 @@ export default function TownhallsPage() {
                       />
                     </div>
                     {th.recordingNotes && (
-                      <p className="text-xs text-slate-500 italic mt-2">{th.recordingNotes}</p>
+                      <p className="text-xs text-ink-muted italic mt-2">{th.recordingNotes}</p>
                     )}
                   </div>
                 )}
 
                 {/* Recording slot — note-only fallback when there's no embed yet */}
                 {!upcoming && !th.recordingEmbedUrl && !th.recordingUrl && th.recordingNotes && (
-                  <p className="text-xs text-slate-500 italic mt-4 pt-3 border-t border-white/5">
+                  <p className="text-xs text-ink-muted italic mt-4 pt-3 border-t border-forest-500/15">
                     {th.recordingNotes}
                   </p>
                 )}
@@ -201,12 +201,12 @@ export default function TownhallsPage() {
         transition={{ delay: 0.5 }}
         className="mt-10"
       >
-        <GlassCard className="border-primary-400/30 bg-gradient-to-br from-primary-900/20 to-transparent">
+        <GlassCard className="border-forest-500/20 bg-gradient-to-br from-primary-900/20 to-transparent">
           <div className="flex items-start gap-3">
             <span className="text-2xl">📣</span>
             <div>
-              <h4 className="text-white font-heading font-semibold mb-1">Missed a session?</h4>
-              <p className="text-sm text-slate-400 leading-relaxed">
+              <h4 className="text-ink font-heading font-semibold mb-1">Missed a session?</h4>
+              <p className="text-sm text-ink-soft leading-relaxed">
                 Every townhall is auto-recorded via Google Meet. Once the host finishes up, the recording + chat transcript get attached to this page — typically within 24 hours of the session.
               </p>
             </div>

@@ -9,7 +9,7 @@
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: rgba(212, 168, 67, 0.3) transparent;
+    scrollbar-color: rgba(63, 98, 56, 0.35) transparent;
   }
 
   *::-webkit-scrollbar {
@@ -21,13 +21,31 @@
   }
 
   *::-webkit-scrollbar-thumb {
-    background-color: rgba(212, 168, 67, 0.3);
+    background-color: rgba(63, 98, 56, 0.35);
     border-radius: 3px;
   }
 
   ::selection {
-    background-color: rgba(212, 168, 67, 0.3);
+    background-color: rgba(212, 168, 67, 0.35);
+    color: #1f1f1f;
+  }
+
+  .dark ::selection {
     color: #f8fafc;
+  }
+
+  /* Mobile tap targets: every INTERACTIVE small-caps control (links and
+     buttons carrying .nav-caps — filter chips, outline CTAs, drawer links,
+     "see all" links) gets a 44px hit area on phones. Non-interactive
+     .nav-caps labels are untouched. Desktop sizing is unchanged. */
+  @media (max-width: 639px) {
+    a.nav-caps,
+    button.nav-caps {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
 
   /* === Image download protection === */
@@ -41,8 +59,11 @@
 }
 
 @layer components {
+  /* Light-theme "paper" card. In dark shells (portal/admin) falls back to
+     the original glass look so nothing there changes. */
   .glass {
-    @apply bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 shadow-xl;
+    @apply bg-white/80 backdrop-blur-lg rounded-2xl border border-forest-500/15 shadow-[0_10px_30px_rgba(31,31,31,0.06)];
+    @apply dark:bg-white/10 dark:border-white/20 dark:shadow-xl;
   }
 
   .glass-dark {
@@ -50,15 +71,18 @@
   }
 
   .glass-gold {
-    @apply bg-gold-500/10 backdrop-blur-lg rounded-2xl border border-gold-400/20 shadow-xl;
+    @apply bg-gold-500/10 backdrop-blur-lg rounded-2xl border border-gold-400/30 shadow-xl;
   }
 
+  /* Display text: forest green on paper, gold gradient in dark shells. */
   .gradient-text {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-gold-400 to-gold-600;
+    @apply text-forest-600;
+    @apply dark:bg-clip-text dark:text-transparent dark:bg-gradient-to-r dark:from-gold-400 dark:to-gold-600;
   }
 
   .gradient-text-primary {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary-300 to-primary-500;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-forest-400 to-forest-600;
+    @apply dark:from-primary-300 dark:to-primary-500;
   }
 
   .text-shadow {
@@ -67,6 +91,22 @@
 
   .text-shadow-lg {
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  /* rect1an-style eyebrow: ─── SMALL CAPS ─── */
+  .eyebrow {
+    @apply inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-wide2 text-forest-600;
+    @apply dark:text-gold-400;
+  }
+  .eyebrow::before,
+  .eyebrow::after {
+    content: '';
+    @apply h-px w-10 bg-gold-500/70;
+  }
+
+  /* Small-caps sans nav links (rect1an look) */
+  .nav-caps {
+    @apply text-[11px] font-semibold uppercase tracking-caps;
   }
 
   .film-strip {
@@ -97,29 +137,99 @@
     z-index: 20;
   }
 
-  .film-strip::before {
-    left: 4px;
-  }
+  .film-strip::before { left: 4px; }
+  .film-strip::after  { right: 4px; }
 
-  .film-strip::after {
-    right: 4px;
+  /* Horizontal film strip (Then & Now / Alumni Vault) — sprocket holes on
+     top and bottom edges. */
+  .film-strip-h {
+    position: relative;
+    background: #0a0a0a;
+    overflow: hidden;
   }
+  .film-strip-h::before,
+  .film-strip-h::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background-image: repeating-linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.22) 0px,
+      rgba(255, 255, 255, 0.22) 12px,
+      transparent 12px,
+      transparent 26px
+    );
+    background-size: 26px 10px;
+    z-index: 20;
+  }
+  .film-strip-h::before { top: 4px; }
+  .film-strip-h::after  { bottom: 4px; }
 }
 
 @layer utilities {
-  .perspective-1000 {
-    perspective: 1000px;
-  }
+  .perspective-1000 { perspective: 1000px; }
+  .backface-hidden { backface-visibility: hidden; }
+  .preserve-3d { transform-style: preserve-3d; }
+  .rotate-y-180 { transform: rotateY(180deg); }
 
-  .backface-hidden {
-    backface-visibility: hidden;
+  /* Diagonal cut used between the hero's green panel and the campus photo. */
+  .clip-diagonal-right {
+    clip-path: polygon(0 0, 100% 0, 82% 100%, 0 100%);
   }
+}
 
-  .preserve-3d {
-    transform-style: preserve-3d;
-  }
 
-  .rotate-y-180 {
-    transform: rotateY(180deg);
+/* ---- Glittering silver CTA (Buy Tickets) --------------------------------
+   Bright metallic silver with a continuous sheen sweep plus a diagonal
+   specular streak. Respects reduced-motion (static silver). */
+@layer components {
+  .btn-silver-glitter {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    color: #16202b;
+    background-color: #c9d1da;
+    background-image: linear-gradient(
+      110deg,
+      #8f9aa7 0%, #d5dbe2 16%, #ffffff 30%, #aeb8c4 44%,
+      #f4f6f9 56%, #97a2ae 70%, #ffffff 84%, #9aa5b1 100%
+    );
+    background-size: 240% 100%;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.2),
+      0 0 0 1px rgba(255, 255, 255, 0.5),
+      0 6px 18px rgba(0, 0, 0, 0.3);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+    animation: silver-cta-shine 2.8s linear infinite;
+    transition: filter 0.2s ease;
   }
+  .btn-silver-glitter::after {
+    content: '';
+    position: absolute;
+    inset: -40% -60%;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+      100deg,
+      transparent 42%, rgba(255, 255, 255, 0.6) 48%,
+      rgba(255, 255, 255, 0.95) 50%, rgba(255, 255, 255, 0.6) 52%, transparent 58%
+    );
+    transform: translateX(-70%) skewX(-12deg);
+    animation: silver-cta-streak 1.9s ease-in-out infinite;
+  }
+  .btn-silver-glitter:hover { filter: brightness(1.08); }
+}
+@keyframes silver-cta-shine {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes silver-cta-streak {
+  0% { transform: translateX(-70%) skewX(-12deg); }
+  60%, 100% { transform: translateX(70%) skewX(-12deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-silver-glitter, .btn-silver-glitter::after { animation: none; }
 }

@@ -16,8 +16,8 @@ export default function PlanningLogPage() {
   return (
     <motion.div {...pageTransition}>
       <div className="mb-8">
-        <h1 className="text-3xl font-heading font-bold text-white">Planning Log</h1>
-        <p className="text-slate-400 mt-1">Detailed timeline of all planning activities, meeting outcomes, and decisions</p>
+        <h1 className="text-3xl font-heading font-bold text-ink">Planning Log</h1>
+        <p className="text-ink-soft mt-1">Detailed timeline of all planning activities, meeting outcomes, and decisions</p>
       </div>
 
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-4">
@@ -28,21 +28,21 @@ export default function PlanningLogPage() {
           return (
             <motion.div key={entry.id} variants={staggerItem}>
               <GlassCard
-                className={`cursor-pointer transition-all duration-300 ${isExpanded ? 'border-gold-500/30' : 'hover:border-white/10'}`}
+                className={`cursor-pointer transition-all duration-300 ${isExpanded ? 'border-gold-500/30' : 'hover:border-forest-500/40'}`}
                 onClick={() => setExpandedId(isExpanded ? null : entry.id)}
               >
                 {/* Header */}
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
-                      <time className="text-xs font-medium text-gold-400">{entry.date}</time>
+                      <time className="text-xs font-medium text-gold-700">{entry.date}</time>
                       <Badge variant={status.variant} size="sm">{status.label}</Badge>
                     </div>
-                    <h3 className="text-white font-semibold">{entry.title}</h3>
-                    <p className="text-slate-400 text-sm mt-1">{entry.summary}</p>
+                    <h3 className="text-ink font-semibold">{entry.title}</h3>
+                    <p className="text-ink-soft text-sm mt-1">{entry.summary}</p>
                   </div>
                   <svg
-                    className={`w-5 h-5 text-slate-500 transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-ink-muted transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`}
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -56,24 +56,24 @@ export default function PlanningLogPage() {
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
-                    className="mt-4 pt-4 border-t border-white/5"
+                    className="mt-4 pt-4 border-t border-forest-500/15"
                   >
                     {/* Internal Notes */}
                     {entry.internalNotes && (
                       <div className="mb-4">
-                        <h4 className="text-xs font-semibold uppercase tracking-wider text-gold-400 mb-2">Internal Notes</h4>
-                        <p className="text-slate-400 text-sm bg-white/3 rounded-lg p-3 border border-white/5">{entry.internalNotes}</p>
+                        <h4 className="text-xs font-semibold uppercase tracking-wider text-gold-700 mb-2">Internal Notes</h4>
+                        <p className="text-ink-soft text-sm bg-white rounded-lg p-3 border border-forest-500/15">{entry.internalNotes}</p>
                       </div>
                     )}
 
                     {/* Action Items */}
                     {entry.actionItems && entry.actionItems.length > 0 && (
                       <div>
-                        <h4 className="text-xs font-semibold uppercase tracking-wider text-gold-400 mb-2">Action Items</h4>
+                        <h4 className="text-xs font-semibold uppercase tracking-wider text-gold-700 mb-2">Action Items</h4>
                         <ul className="space-y-1.5">
                           {entry.actionItems.map((item, i) => (
-                            <li key={i} className="flex items-start gap-2 text-sm text-slate-400">
-                              <span className="text-gold-400 mt-0.5">→</span>
+                            <li key={i} className="flex items-start gap-2 text-sm text-ink-soft">
+                              <span className="text-gold-700 mt-0.5">→</span>
                               <span>{item}</span>
                             </li>
                           ))}

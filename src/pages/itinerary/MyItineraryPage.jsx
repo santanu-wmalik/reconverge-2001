@@ -19,8 +19,8 @@ export default function MyItineraryPage() {
     <motion.div {...pageTransition}>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-heading font-bold text-white">My Events</h1>
-          <p className="text-slate-400 text-sm mt-1">{myEvents.length} event{myEvents.length === 1 ? '' : 's'} planned</p>
+          <h1 className="text-3xl font-heading font-bold text-ink">My Events</h1>
+          <p className="text-ink-soft text-sm mt-1">{myEvents.length} event{myEvents.length === 1 ? '' : 's'} planned</p>
         </div>
         <Link to="/events"><Button variant="outline" size="sm">Browse Events</Button></Link>
       </div>
@@ -34,22 +34,22 @@ export default function MyItineraryPage() {
       {myEvents.length === 0 ? (
         <GlassCard hover={false} className="text-center py-16">
           <div className="text-4xl mb-4">📅</div>
-          <h3 className="text-white font-semibold mb-2">No events in your plan yet</h3>
-          <p className="text-slate-400 text-sm mb-6">Browse the event schedule and add events to your personal itinerary.</p>
+          <h3 className="text-ink font-semibold mb-2">No events in your plan yet</h3>
+          <p className="text-ink-soft text-sm mb-6">Browse the event schedule and add events to your personal itinerary.</p>
           <Link to="/events"><Button>Browse Events</Button></Link>
         </GlassCard>
       ) : (
         <div className="space-y-8">
           {byDay.filter((d) => d.events.length > 0).map(({ day, events }) => (
             <div key={day}>
-              <h2 className="text-lg font-semibold text-gold-400 mb-4">Day {day} — Dec {26 + day}, 2026</h2>
+              <h2 className="text-lg font-semibold text-gold-700 mb-4">Day {day} — Dec {26 + day}, 2026</h2>
               <div className="space-y-3">
                 {events.map((evt) => (
                   <GlassCard key={evt.id} className="flex items-center gap-4">
                     <div className="text-2xl">{evt.icon}</div>
                     <div className="flex-1">
-                      <h3 className="text-white font-medium">{evt.title}</h3>
-                      <p className="text-slate-400 text-sm">{formatTime(evt.startTime)} - {formatTime(evt.endTime)} | {evt.venue}</p>
+                      <h3 className="text-ink font-medium">{evt.title}</h3>
+                      <p className="text-ink-soft text-sm">{formatTime(evt.startTime)} - {formatTime(evt.endTime)} | {evt.venue}</p>
                     </div>
                     <button onClick={() => removeEvent(evt.id)} className="text-red-400 hover:text-red-300 text-sm">Remove</button>
                   </GlassCard>

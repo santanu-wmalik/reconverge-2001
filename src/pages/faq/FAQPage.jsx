@@ -4,6 +4,7 @@ import { FAQ_DATA } from '../../data/constants';
 import { pageTransition, staggerContainer, staggerItem } from '../../utils/animationVariants';
 import SectionHeading from '../../components/shared/SectionHeading';
 import GlassCard from '../../components/ui/GlassCard';
+import ScrollingPoem from '../../components/shared/ScrollingPoem';
 
 const ChevronIcon = ({ isOpen }) => (
   <motion.svg
@@ -42,7 +43,7 @@ const AccordionItem = ({ question, answer, isOpen, onToggle, index }) => (
           cursor: 'pointer',
           padding: '1.25rem 1.5rem',
           textAlign: 'left',
-          color: isOpen ? '#d4a843' : '#e2e8f0',
+          color: isOpen ? '#8f7020' : '#1f1f1f',
           transition: 'color 0.3s ease',
         }}
         aria-expanded={isOpen}
@@ -75,7 +76,7 @@ const AccordionItem = ({ question, answer, isOpen, onToggle, index }) => (
             <div
               style={{
                 padding: '0 1.5rem 1.25rem 1.5rem',
-                color: '#cbd5e1',
+                color: '#4a4a4a',
                 fontSize: '1rem',
                 lineHeight: 1.7,
                 borderTop: '1px solid rgba(212, 168, 67, 0.15)',
@@ -105,14 +106,11 @@ export default function FAQPage() {
       initial="initial"
       animate="animate"
       exit="exit"
-      style={{
-        minHeight: '100vh',
-        padding: '6rem 1.5rem 4rem',
-        maxWidth: '860px',
-        margin: '0 auto',
-      }}
+      className="min-h-screen pt-24 pb-16 px-4 sm:px-6 max-w-7xl mx-auto lg:grid lg:grid-cols-2 lg:gap-10"
     >
-      <SectionHeading title="FAQs" subtitle="Guidance for our shared homecoming" />
+      {/* Left column — FAQ */}
+      <div className="max-w-[860px] mx-auto lg:mx-0 lg:max-w-none">
+        <SectionHeading title="FAQs" subtitle="Guidance for our shared homecoming" />
 
       <motion.div
         variants={staggerContainer}
@@ -200,6 +198,13 @@ export default function FAQPage() {
           crec2001reunion@gmail.com
         </a>
       </motion.div>
+      </div>
+
+      {/* Right column — poem (lg+ only). Sticky inside its column so it
+          keeps drifting while the user scrolls the FAQ list. */}
+      <div className="hidden lg:block relative">
+        <ScrollingPoem inline />
+      </div>
     </motion.div>
   );
 }

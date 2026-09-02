@@ -8,7 +8,7 @@ import { journeyMilestones, journeyCategories } from '../../data/journeyMileston
 import { inMemoriam, remembranceNote } from '../../data/inMemoriam';
 
 const categoryColors = {
-  milestone: { bg: 'bg-gold-500/10', text: 'text-gold-400', border: 'border-gold-500/30', variant: 'gold' },
+  milestone: { bg: 'bg-gold-500/10', text: 'text-gold-700 dark:text-gold-400', border: 'border-gold-500/30', variant: 'gold' },
   governance: { bg: 'bg-purple-500/10', text: 'text-purple-400', border: 'border-purple-500/30', variant: 'default' },
   outreach: { bg: 'bg-emerald-500/10', text: 'text-emerald-400', border: 'border-emerald-500/30', variant: 'success' },
   planning: { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/30', variant: 'default' },
@@ -42,7 +42,7 @@ export default function OurJourneyPage() {
       >
         <GlassCard className="border-gold-500/20 bg-gradient-to-br from-gold-500/5 to-primary-900/20">
           <div className="max-w-3xl mx-auto text-center">
-            <p className="text-slate-300 leading-relaxed">
+            <p className="text-ink-soft dark:text-slate-300 leading-relaxed">
               This page serves as a formal record of the key decisions, milestones, and progress made by the
               volunteer organizing committee. It chronicles the journey of bringing together 350+ alumni
               of REC Calicut&apos;s Class of 2001 for our Silver Jubilee reunion.
@@ -51,22 +51,29 @@ export default function OurJourneyPage() {
         </GlassCard>
       </motion.div>
 
-      {/* Category Filters */}
-      <div className="flex flex-wrap gap-2 mb-10 justify-center">
-        {journeyCategories.map((cat) => (
-          <button
-            key={cat.id}
-            onClick={() => setActiveCategory(cat.id)}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-              activeCategory === cat.id
-                ? 'bg-gold-500 text-navy-950 shadow-lg shadow-gold-500/25'
-                : 'bg-white/5 text-slate-400 hover:bg-white/10 hover:text-white border border-white/10'
-            }`}
-          >
-            <span className="mr-1.5">{cat.icon}</span>
-            {cat.label}
-          </button>
-        ))}
+      {/* Category Filters — binder tabs: the active tab opens into the page
+          below (same treatment as the portal/admin BinderTabs). */}
+      <div className="border-b border-forest-500/25 mb-10">
+        <div className="flex flex-nowrap justify-center items-end gap-x-0.5 sm:gap-x-1 pt-2">
+          {journeyCategories.map((cat) => {
+            const active = activeCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                aria-pressed={active}
+                className={`relative min-w-0 flex items-center justify-center gap-1.5 px-1.5 sm:px-4 py-2 rounded-t-lg border border-b-0 text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.04em] sm:tracking-[0.08em] whitespace-nowrap transition-colors ${
+                  active
+                    ? '-mb-px z-10 bg-cream-100 border-forest-500/25 text-forest-700 pb-[11px]'
+                    : 'bg-white/70 border-forest-500/15 text-ink-soft hover:bg-white hover:text-forest-700'
+                }`}
+              >
+                <span aria-hidden="true" className="hidden sm:inline">{cat.icon}</span>
+                {cat.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Timeline */}
@@ -105,26 +112,26 @@ export default function OurJourneyPage() {
                   <GlassCard className={`${milestone.highlight ? `border-l-4 ${colors.border}` : ''}`}>
                     {/* Date */}
                     <div className="flex items-center gap-2 mb-2">
-                      <time className="text-xs font-medium text-gold-400">
+                      <time className="text-xs font-medium text-gold-700 dark:text-gold-400">
                         {formatDate(milestone.date)}
                       </time>
                       <Badge variant={colors.variant} size="sm">
                         {milestone.category.charAt(0).toUpperCase() + milestone.category.slice(1)}
                       </Badge>
                       {milestone.highlight && (
-                        <span className="text-xs text-gold-400">⭐</span>
+                        <span className="text-xs text-gold-700 dark:text-gold-400">⭐</span>
                       )}
                     </div>
 
                     {/* Title */}
                     <h3 className={`text-base font-heading font-bold mb-2 ${
-                      milestone.highlight ? 'text-white' : 'text-slate-200'
+                      milestone.highlight ? 'text-ink dark:text-white' : 'text-ink-soft dark:text-slate-200'
                     }`}>
                       {milestone.title}
                     </h3>
 
                     {/* Description */}
-                    <p className="text-slate-400 text-sm leading-relaxed">
+                    <p className="text-ink-muted dark:text-slate-400 text-sm leading-relaxed">
                       {milestone.description}
                     </p>
                   </GlassCard>
@@ -144,7 +151,7 @@ export default function OurJourneyPage() {
         className="mt-20"
       >
         <div className="text-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-heading font-semibold text-white mb-2">In Memoriam</h2>
+          <h2 className="text-2xl md:text-3xl font-heading font-semibold text-ink dark:text-white mb-2">In Memoriam</h2>
           <div className="mt-3 flex items-center justify-center gap-2">
             <div className="h-0.5 w-12 bg-gold-500/50 rounded-full" />
             <div className="h-1.5 w-1.5 bg-gold-500 rounded-full" />
@@ -153,21 +160,21 @@ export default function OurJourneyPage() {
         </div>
 
         <GlassCard className="border-gold-500/20 bg-gradient-to-br from-primary-900/40 to-navy-950/40 max-w-3xl mx-auto">
-          <p className="text-slate-300 text-sm leading-relaxed mb-6 text-center italic">
+          <p className="text-ink-soft dark:text-slate-300 text-sm leading-relaxed mb-6 text-center italic">
             {remembranceNote}
           </p>
           <div className="grid sm:grid-cols-2 gap-3">
             {inMemoriam.map((person) => (
-              <div key={person.name} className="flex items-start gap-3 bg-white/5 rounded-xl px-4 py-3 border border-white/5">
-                <span className="text-gold-400 text-lg mt-0.5 flex-shrink-0">🕯️</span>
+              <div key={person.name} className="flex items-start gap-3 bg-white dark:bg-white/5 rounded-xl px-4 py-3 border border-forest-500/15 dark:border-white/5">
+                <span className="text-gold-700 dark:text-gold-400 text-lg mt-0.5 flex-shrink-0">🕯️</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-white font-medium text-sm">{person.name}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className="text-ink dark:text-white font-medium text-sm">{person.name}</p>
+                  <p className="text-xs text-ink-muted dark:text-slate-400 mt-0.5">
                     {person.branch}
                     {person.year ? ` · ${person.year}` : ''}
                   </p>
                   {person.note && (
-                    <p className="text-xs text-slate-500 italic mt-1">{person.note}</p>
+                    <p className="text-xs text-ink-muted dark:text-slate-500 italic mt-1">{person.note}</p>
                   )}
                 </div>
               </div>
@@ -184,9 +191,9 @@ export default function OurJourneyPage() {
         className="mt-16 text-center"
       >
         <GlassCard className="inline-block">
-          <p className="text-slate-400 text-sm">
+          <p className="text-ink-muted dark:text-slate-400 text-sm">
             📝 This journey continues to be written. Check back regularly for updates as we get closer to
-            <span className="text-gold-400 font-semibold"> December 27-28, 2026</span>.
+            <span className="text-gold-700 dark:text-gold-400 font-semibold"> December 27-28, 2026</span>.
           </p>
         </GlassCard>
       </motion.div>

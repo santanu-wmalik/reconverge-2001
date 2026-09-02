@@ -224,6 +224,11 @@ CREATE TABLE IF NOT EXISTS photos (
 );
 CREATE INDEX IF NOT EXISTS photos_uploader_idx ON photos (uploader_id);
 CREATE INDEX IF NOT EXISTS photos_created_at_idx ON photos (created_at DESC);
+-- "Then & Now" era tag. 'then' = college days, 'now' = recent. The DEFAULT
+-- backfills every pre-existing row as 'then'; admins flip individual photos
+-- to 'now' from the gallery. Drives the two strips on the landing page.
+ALTER TABLE photos ADD COLUMN IF NOT EXISTS era TEXT NOT NULL DEFAULT 'then';
+CREATE INDEX IF NOT EXISTS photos_era_idx ON photos (era, created_at DESC);
 
 -- ─── password_resets (forgot-password flow) ──────────────────────────────
 -- Only the SHA-256 hash of the reset token is stored, never the raw token.

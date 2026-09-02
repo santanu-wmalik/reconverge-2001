@@ -88,11 +88,11 @@ function ItemForm({ initial, onSave, onCancel, alumniList = [], currentUserId })
 
   return (
     <GlassCard hover={false} className="border-gold-500/30">
-      <h3 className="text-white font-heading font-semibold mb-4">{initial ? 'Edit item' : 'Add a travel item'}</h3>
+      <h3 className="text-ink font-heading font-semibold mb-4">{initial ? 'Edit item' : 'Add a travel item'}</h3>
 
       {/* Category picker */}
       <div className="mb-4">
-        <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold mb-2">What kind of item?</p>
+        <p className="text-xs uppercase tracking-wider text-gold-700 font-semibold mb-2">What kind of item?</p>
         <div className="flex flex-wrap gap-2">
           {TRAVEL_CATEGORIES.map((c) => (
             <button
@@ -102,7 +102,7 @@ function ItemForm({ initial, onSave, onCancel, alumniList = [], currentUserId })
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition ${
                 c.id === catId
                   ? 'bg-gold-500 text-navy-950 border-gold-400'
-                  : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'
+                  : 'bg-white text-ink-soft border-forest-500/15 hover:bg-forest-600/8'
               }`}
             >
               <span>{c.icon}</span>
@@ -153,8 +153,8 @@ function ItemForm({ initial, onSave, onCancel, alumniList = [], currentUserId })
       </div>
 
       {/* Visibility */}
-      <div className="mb-4 pt-4 border-t border-white/5">
-        <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold mb-2">Who can see this?</p>
+      <div className="mb-4 pt-4 border-t border-forest-500/15">
+        <p className="text-xs uppercase tracking-wider text-gold-700 font-semibold mb-2">Who can see this?</p>
         <div className="grid sm:grid-cols-2 gap-2">
           {VISIBILITY_LEVELS.map((v) => (
             <button
@@ -164,13 +164,13 @@ function ItemForm({ initial, onSave, onCancel, alumniList = [], currentUserId })
               className={`text-left flex items-start gap-3 px-3 py-2 rounded-xl border transition ${
                 v.id === visibility
                   ? 'border-gold-400/60 bg-gold-500/10'
-                  : 'border-white/10 bg-white/3 hover:bg-white/5'
+                  : 'border-forest-500/15 bg-white hover:bg-forest-600/8'
               }`}
             >
               <span className="text-lg flex-shrink-0">{v.icon}</span>
               <div>
-                <p className="text-sm text-white font-medium">{v.label}</p>
-                <p className="text-xs text-slate-500">{v.blurb}</p>
+                <p className="text-sm text-ink font-medium">{v.label}</p>
+                <p className="text-xs text-ink-muted">{v.blurb}</p>
               </div>
             </button>
           ))}
@@ -180,10 +180,10 @@ function ItemForm({ initial, onSave, onCancel, alumniList = [], currentUserId })
         {visibility === 'specific' && (
           <div className="mt-4 rounded-xl border border-gold-500/30 bg-gold-500/5 p-3">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold">
+              <p className="text-xs uppercase tracking-wider text-gold-700 font-semibold">
                 Pick batchmates
               </p>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-ink-soft">
                 {allowedAlumniIds.length} selected
               </p>
             </div>
@@ -199,7 +199,7 @@ function ItemForm({ initial, onSave, onCancel, alumniList = [], currentUserId })
                       key={id}
                       type="button"
                       onClick={() => toggleAlumnus(id)}
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gold-500/20 text-gold-100 border border-gold-400/40 hover:bg-gold-500/30"
+                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-gold-500/20 text-gold-700 border border-gold-400/40 hover:bg-gold-500/30"
                       title="Click to remove"
                     >
                       {a.name}
@@ -216,9 +216,9 @@ function ItemForm({ initial, onSave, onCancel, alumniList = [], currentUserId })
               placeholder="Search by name, email, or branch…"
             />
 
-            <div className="mt-2 max-h-56 overflow-y-auto rounded-lg border border-white/5 bg-black/20 divide-y divide-white/5">
+            <div className="mt-2 max-h-56 overflow-y-auto rounded-lg border border-forest-500/15 bg-black/20 divide-y divide-white/5">
               {pickerCandidates.length === 0 ? (
-                <p className="text-xs text-slate-500 p-3 text-center">
+                <p className="text-xs text-ink-muted p-3 text-center">
                   {alumniList.length === 0
                     ? 'No batchmates registered yet — check back once registrations pick up.'
                     : 'No matches for this search.'}
@@ -230,7 +230,7 @@ function ItemForm({ initial, onSave, onCancel, alumniList = [], currentUserId })
                     <label
                       key={a.id}
                       className={`flex items-center gap-2 px-3 py-2 text-sm cursor-pointer transition ${
-                        checked ? 'bg-gold-500/10 text-white' : 'text-slate-300 hover:bg-white/5'
+                        checked ? 'bg-gold-500/10 text-ink' : 'text-ink-soft hover:bg-forest-600/8'
                       }`}
                     >
                       <input
@@ -240,9 +240,9 @@ function ItemForm({ initial, onSave, onCancel, alumniList = [], currentUserId })
                         className="accent-gold-400"
                       />
                       <span className="flex-1 min-w-0">
-                        <span className="text-white">{a.name}</span>
+                        <span className="text-ink">{a.name}</span>
                         {a.branch && (
-                          <span className="text-xs text-slate-500"> · {a.branch}</span>
+                          <span className="text-xs text-ink-muted"> · {a.branch}</span>
                         )}
                       </span>
                     </label>
@@ -250,14 +250,14 @@ function ItemForm({ initial, onSave, onCancel, alumniList = [], currentUserId })
                 })
               )}
             </div>
-            <p className="text-xs text-slate-500 mt-2">
+            <p className="text-xs text-ink-muted mt-2">
               Only the people you tick will see this item on the Who's Coming board.
             </p>
           </div>
         )}
       </div>
 
-      <div className="flex justify-end gap-2 pt-4 border-t border-white/10">
+      <div className="flex justify-end gap-2 pt-4 border-t border-forest-500/15">
         <Button variant="ghost" size="sm" onClick={onCancel}>Cancel</Button>
         <Button size="sm" onClick={handleSubmit}>{initial ? 'Save changes' : 'Add item'}</Button>
       </div>
@@ -277,9 +277,9 @@ function ItemCard({ item, alumniName, onEdit, onDelete }) {
         <div className="flex items-start gap-3 min-w-0">
           <div className="text-2xl flex-shrink-0">{cat.icon}</div>
           <div className="min-w-0">
-            <p className="text-[10px] uppercase tracking-wider text-slate-400">{cat.label}</p>
-            <h4 className="text-white font-heading font-semibold text-sm">{item.title || cat.label}</h4>
-            {alumniName && <p className="text-xs text-slate-400 mt-0.5">by {alumniName}</p>}
+            <p className="text-[10px] uppercase tracking-wider text-ink-soft">{cat.label}</p>
+            <h4 className="text-ink font-heading font-semibold text-sm">{item.title || cat.label}</h4>
+            {alumniName && <p className="text-xs text-ink-soft mt-0.5">by {alumniName}</p>}
           </div>
         </div>
         <Badge variant={vis.variant} size="sm">{vis.label}</Badge>
@@ -289,16 +289,16 @@ function ItemCard({ item, alumniName, onEdit, onDelete }) {
         <dl className="grid sm:grid-cols-2 gap-x-6 gap-y-1 text-xs">
           {filled.map((f) => (
             <div key={f.name} className="flex gap-2">
-              <dt className="text-slate-500 flex-shrink-0">{f.label}:</dt>
-              <dd className="text-slate-200 truncate">{String(item.fields[f.name])}</dd>
+              <dt className="text-ink-muted flex-shrink-0">{f.label}:</dt>
+              <dd className="text-ink truncate">{String(item.fields[f.name])}</dd>
             </div>
           ))}
         </dl>
       )}
 
       {(onEdit || onDelete) && (
-        <div className="flex justify-end gap-2 pt-3 mt-3 border-t border-white/5">
-          {onEdit && <button type="button" className="text-xs text-slate-400 hover:text-white" onClick={onEdit}>Edit</button>}
+        <div className="flex justify-end gap-2 pt-3 mt-3 border-t border-forest-500/15">
+          {onEdit && <button type="button" className="text-xs text-ink-soft hover:text-ink" onClick={onEdit}>Edit</button>}
           {onDelete && <button type="button" className="text-xs text-red-400 hover:text-red-300" onClick={onDelete}>Delete</button>}
         </div>
       )}
@@ -404,7 +404,7 @@ export default function TravelPlannerPage() {
       {tab === 'my-plan' && (
         <div>
           <div className="flex items-center justify-between mb-4">
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-ink-soft">
               {loading
                 ? 'Loading…'
                 : myItems.length === 0
@@ -465,8 +465,8 @@ export default function TravelPlannerPage() {
           {!loading && myItems.length === 0 && editing !== 'new' && (
             <GlassCard className="text-center border-gold-500/20">
               <div className="text-4xl mb-3">🧳</div>
-              <h4 className="text-white font-heading font-semibold mb-1">Start your itinerary</h4>
-              <p className="text-sm text-slate-400 mb-4">Add your flight, train, carpool or anything else. Everything you add is <span className="text-white">Private by default</span> — change visibility per-item when you want others to see it.</p>
+              <h4 className="text-ink font-heading font-semibold mb-1">Start your itinerary</h4>
+              <p className="text-sm text-ink-soft mb-4">Add your flight, train, carpool or anything else. Everything you add is <span className="text-ink">Private by default</span> — change visibility per-item when you want others to see it.</p>
               <Button size="sm" onClick={() => setEditing('new')}>+ Add your first item</Button>
             </GlassCard>
           )}
@@ -479,7 +479,7 @@ export default function TravelPlannerPage() {
           <div className="flex flex-wrap gap-2 mb-6">
             <button
               onClick={() => setBoardFilter('all')}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${boardFilter === 'all' ? 'bg-gold-500 text-navy-950 border-gold-400' : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'}`}
+              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${boardFilter === 'all' ? 'bg-gold-500 text-navy-950 border-gold-400' : 'bg-white text-ink-soft border-forest-500/15 hover:bg-forest-600/8'}`}
             >
               All
             </button>
@@ -487,7 +487,7 @@ export default function TravelPlannerPage() {
               <button
                 key={c.id}
                 onClick={() => setBoardFilter(c.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition ${boardFilter === c.id ? 'bg-gold-500 text-navy-950 border-gold-400' : 'bg-white/5 text-slate-300 border-white/10 hover:bg-white/10'}`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition ${boardFilter === c.id ? 'bg-gold-500 text-navy-950 border-gold-400' : 'bg-white text-ink-soft border-forest-500/15 hover:bg-forest-600/8'}`}
               >
                 <span>{c.icon}</span>{c.label}
               </button>
@@ -495,12 +495,12 @@ export default function TravelPlannerPage() {
           </div>
 
           {loading ? (
-            <p className="text-sm text-slate-400">Loading…</p>
+            <p className="text-sm text-ink-soft">Loading…</p>
           ) : filteredBoardItems.length === 0 ? (
-            <GlassCard className="text-center border-primary-400/30">
+            <GlassCard className="text-center border-forest-500/20">
               <div className="text-4xl mb-3">🌏</div>
-              <h4 className="text-white font-heading font-semibold mb-1">Nothing shared here yet</h4>
-              <p className="text-sm text-slate-400">
+              <h4 className="text-ink font-heading font-semibold mb-1">Nothing shared here yet</h4>
+              <p className="text-sm text-ink-soft">
                 {boardFilter === 'all'
                   ? 'When batchmates mark their travel items as "Registered alumni", they\u2019ll show up here.'
                   : 'No items in this category yet. Try All or a different category.'}
@@ -519,12 +519,12 @@ export default function TravelPlannerPage() {
       )}
 
       {/* Info footer */}
-      <GlassCard className="mt-10 border-primary-400/30 bg-gradient-to-br from-primary-900/20 to-transparent">
+      <GlassCard className="mt-10 border-forest-500/20 bg-gradient-to-br from-primary-900/20 to-transparent">
         <div className="flex items-start gap-3">
           <span className="text-2xl">🔒</span>
           <div>
-            <p className="text-sm text-white font-medium mb-1">How sharing works</p>
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-sm text-ink font-medium mb-1">How sharing works</p>
+            <p className="text-xs text-ink-soft leading-relaxed">
               Every item is <b>Private by default</b>. Switch to <b>Registered alumni</b> to make it visible on the Who's Coming board for any logged-in batchmate, or pick <b>Specific people</b> to share with individual batchmates only — they'll see it on their board, nobody else will. Travel details never appear on the public website.
             </p>
           </div>

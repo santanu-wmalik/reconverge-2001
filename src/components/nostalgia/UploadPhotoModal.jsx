@@ -19,7 +19,6 @@ const CATEGORIES = [
   { value: 'hostel', label: 'Hostel Life' },
   { value: 'events', label: 'Events' },
   { value: 'campus', label: 'Campus' },
-  { value: 'archive', label: 'Archive Scans' },
 ];
 
 const MAX_BYTES_PER_FILE = 20 * 1024 * 1024; // 20 MB pre-resize sanity cap
@@ -46,6 +45,7 @@ export default function UploadPhotoModal({ open, onClose, onUploaded }) {
   const [items, setItems] = useState([]);       // array of pending items
   const [sharedCaption, setSharedCaption] = useState('');
   const [category, setCategory] = useState('batch');
+  const [era, setEra] = useState('then'); // then | now — drives the home-page strips
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0, failed: 0 });
 
@@ -56,6 +56,7 @@ export default function UploadPhotoModal({ open, onClose, onUploaded }) {
     setItems([]);
     setSharedCaption('');
     setCategory('batch');
+    setEra('then');
     setProgress({ done: 0, total: 0, failed: 0 });
     if (fileRef.current) fileRef.current.value = '';
   };
@@ -127,6 +128,7 @@ export default function UploadPhotoModal({ open, onClose, onUploaded }) {
           url: it.preview.dataUrl,
           caption: captionText,
           category,
+          era,
           uploaderId: user?.id || user?.alumniId || null,
           uploaderName: user?.name || 'Anonymous',
           width: it.preview.width,
@@ -198,19 +200,19 @@ export default function UploadPhotoModal({ open, onClose, onUploaded }) {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
-            className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-primary-900/95 border border-white/10 shadow-2xl p-6"
+            className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl bg-white border border-forest-500/15 shadow-2xl p-6"
           >
-            <div className="flex items-start justify-between mb-5 sticky top-0 z-10 bg-primary-900/95 -mx-6 px-6 pb-3 border-b border-white/5">
+            <div className="flex items-start justify-between mb-5 sticky top-0 z-10 bg-white -mx-6 px-6 pb-3 border-b border-forest-500/15">
               <div>
-                <h2 className="text-xl font-heading font-bold text-white">Share Memories</h2>
-                <p className="text-sm text-slate-400 mt-1">
+                <h2 className="text-xl font-heading font-bold text-ink">Share Memories</h2>
+                <p className="text-sm text-ink-soft mt-1">
                   Pick one photo or many — upload them all in a single batch.
                 </p>
               </div>
               <button
                 onClick={handleClose}
                 disabled={uploading}
-                className="text-slate-400 hover:text-white transition-colors disabled:opacity-40"
+                className="text-ink-soft hover:text-ink transition-colors disabled:opacity-40"
                 aria-label="Close"
               >
                 ✕
@@ -219,16 +221,16 @@ export default function UploadPhotoModal({ open, onClose, onUploaded }) {
 
             {/* Picker — always shown so users can add more mid-batch */}
             <div
-              className="relative rounded-xl border-2 border-dashed border-white/15 bg-white/5 py-6 flex items-center justify-center overflow-hidden mb-4 cursor-pointer hover:border-gold-400/40 transition-colors"
+              className="relative rounded-xl border-2 border-dashed border-forest-500/15 bg-white py-6 flex items-center justify-center overflow-hidden mb-4 cursor-pointer hover:border-gold-400/40 transition-colors"
               onClick={() => !uploading && fileRef.current?.click()}
             >
               <div className="text-center px-4">
-                <p className="text-slate-300 font-medium">
+                <p className="text-ink-soft font-medium">
                   {items.length === 0
                     ? 'Tap to choose photos'
                     : 'Tap to add more photos'}
                 </p>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-ink-muted mt-1">
                   JPG or PNG · multiple selection allowed · auto-resized for faster upload
                 </p>
               </div>
@@ -264,6 +266,34 @@ export default function UploadPhotoModal({ open, onClose, onUploaded }) {
                   options={CATEGORIES}
                   disabled={uploading}
                 />
+                <div>
+                  <label className="block text-sm font-medium text-ink-soft mb-1.5">
+                    When was this taken? (applies to all)
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {[
+                      { v: 'then', l: 'Then — college days' },
+                      { v: 'now', l: 'Now — recent' },
+                    ].map((o) => (
+                      <button
+                        key={o.v}
+                        type="button"
+                        disabled={uploading}
+                        onClick={() => setEra(o.v)}
+                        className={`px-4 py-2 rounded-lg text-sm border transition ${
+                          era === o.v
+                            ? 'bg-gold-500 text-forest-900 border-gold-500'
+                            : 'bg-white text-ink-soft border-forest-500/15 hover:bg-forest-600/8'
+                        }`}
+                      >
+                        {o.l}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-ink-muted mt-1">
+                    Feeds the Then &amp; Now strips on the home page. Admins can change it later.
+                  </p>
+                </div>
               </div>
             )}
 
@@ -278,7 +308,7 @@ export default function UploadPhotoModal({ open, onClose, onUploaded }) {
                         ? 'border-red-500/40 bg-red-500/5'
                         : it.status === 'done'
                           ? 'border-emerald-500/40 bg-emerald-500/5'
-                          : 'border-white/10 bg-white/5'
+                          : 'border-forest-500/15 bg-white'
                     }`}
                   >
                     <div className="aspect-video bg-black/40 flex items-center justify-center">
@@ -289,7 +319,7 @@ export default function UploadPhotoModal({ open, onClose, onUploaded }) {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-ink-soft">
                           {it.status === 'processing' ? 'Processing…' : 'No preview'}
                         </span>
                       )}
@@ -298,7 +328,7 @@ export default function UploadPhotoModal({ open, onClose, onUploaded }) {
                     {/* Status pill */}
                     <div className="absolute top-1.5 left-1.5">
                       {it.status === 'processing' && (
-                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-black/60 text-slate-200">Processing…</span>
+                        <span className="text-[10px] px-1.5 py-0.5 rounded bg-black/60 text-ink">Processing…</span>
                       )}
                       {it.status === 'uploading' && (
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-gold-500 text-navy-950 font-semibold">Uploading…</span>
@@ -331,10 +361,10 @@ export default function UploadPhotoModal({ open, onClose, onUploaded }) {
                         placeholder={sharedCaption || 'Caption for this photo (optional)'}
                         maxLength={140}
                         disabled={uploading || it.status === 'done'}
-                        className="w-full text-xs bg-white/5 border border-white/10 rounded px-2 py-1 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-gold-500/40"
+                        className="w-full text-xs bg-white border border-forest-500/15 rounded px-2 py-1 text-ink placeholder-ink-muted focus:outline-none focus:border-gold-500/40"
                       />
                       {it.preview && (
-                        <p className="text-[10px] text-slate-500">
+                        <p className="text-[10px] text-ink-muted">
                           {it.preview.width}×{it.preview.height} · {(it.preview.bytes / 1024).toFixed(0)} KB
                         </p>
                       )}
@@ -350,14 +380,14 @@ export default function UploadPhotoModal({ open, onClose, onUploaded }) {
             {/* Progress bar during batch upload */}
             {uploading && progress.total > 0 && (
               <div className="mb-4">
-                <div className="flex items-center justify-between text-xs text-slate-400 mb-1">
+                <div className="flex items-center justify-between text-xs text-ink-soft mb-1">
                   <span>
                     Uploaded {progress.done} of {progress.total}
                     {progress.failed > 0 && ` · ${progress.failed} failed`}
                   </span>
                   <span>{Math.round((progress.done / progress.total) * 100)}%</span>
                 </div>
-                <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                <div className="h-1.5 bg-white rounded-full overflow-hidden">
                   <div
                     className="h-full bg-gold-500 transition-all"
                     style={{ width: `${(progress.done / progress.total) * 100}%` }}
@@ -366,7 +396,7 @@ export default function UploadPhotoModal({ open, onClose, onUploaded }) {
               </div>
             )}
 
-            <div className="flex gap-3 mt-2 sticky bottom-0 bg-primary-900/95 -mx-6 px-6 pt-3 border-t border-white/5">
+            <div className="flex gap-3 mt-2 sticky bottom-0 bg-white -mx-6 px-6 pt-3 border-t border-forest-500/15">
               <Button
                 onClick={handleSubmit}
                 loading={uploading}

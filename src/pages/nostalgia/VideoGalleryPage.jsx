@@ -34,7 +34,7 @@ export default function VideoGalleryPage() {
       />
 
       {galleryVideos.length === 0 ? (
-        <p className="text-center text-slate-400 py-12">
+        <p className="text-center text-ink-soft py-12">
           No videos yet — check back as more clips are added.
         </p>
       ) : (
@@ -53,7 +53,7 @@ export default function VideoGalleryPage() {
                     // 16:9 responsive wrapper — works on phones without the
                     // iframe overflowing or getting clipped.
                     <div
-                      className="relative w-full overflow-hidden rounded-xl border border-white/10 bg-black/40 mb-3"
+                      className="relative w-full overflow-hidden rounded-xl border border-forest-500/15 bg-black/40 mb-3"
                       style={{ paddingTop: '56.25%' }}
                     >
                       <iframe
@@ -70,17 +70,17 @@ export default function VideoGalleryPage() {
                       href={v.youtubeUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block text-sm text-gold-400 underline mb-3"
+                      className="block text-sm text-gold-700 underline mb-3"
                     >
                       Watch on YouTube ↗
                     </a>
                   )}
-                  <h3 className="text-white font-heading font-semibold">{v.title}</h3>
+                  <h3 className="text-ink font-heading font-semibold">{v.title}</h3>
                   {v.description && (
-                    <p className="text-xs text-slate-400 mt-1 leading-relaxed">{v.description}</p>
+                    <p className="text-xs text-ink-soft mt-1 leading-relaxed">{v.description}</p>
                   )}
                   {v.publishedAt && (
-                    <p className="text-[11px] uppercase tracking-wider text-slate-500 mt-2">
+                    <p className="text-[11px] uppercase tracking-wider text-ink-muted mt-2">
                       {formatDate(v.publishedAt, { month: 'short' })}
                     </p>
                   )}

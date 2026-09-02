@@ -25,6 +25,7 @@ import { mountAuth, authMiddleware } from './server/auth.js';
 import { mountResource } from './server/resources.js';
 import { mountPaymentVerification } from './server/paymentVerification.js';
 import { mountReminders } from './server/reminders.js';
+import { mountPublic } from './server/public.js';
 import { seedData } from './server/seed-data.mjs';
 import { tables, coerce } from './server/columns.js';
 
@@ -134,9 +135,12 @@ async function main() {
     defaultSort: { column: 'created_at', direction: 'DESC' },
   });
 
-  // Admin reminder / update-blast endpoint. Gated inside the handler on
-  // role === 'admin' | 'super-admin'.
+  // Reminders + payment verification are gated inside their handlers by
+  // permission (server/auth.js sessionCan). mountPublic serves PII-free
+  // landing-page aggregates and is deliberately UNauthenticated — its path
+  // prefix (/api/public/) is allow-listed in auth.js isPublicReq.
   mountReminders(app);
+  mountPublic(app);
   mountPaymentVerification(app);
 
   // Fallback error handler — keeps stack traces out of the response while

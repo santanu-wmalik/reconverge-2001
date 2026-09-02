@@ -36,7 +36,7 @@ function PermChip({ label, name, row, busy, onToggle }) {
       className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full border transition ${
         on
           ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-200'
-          : 'bg-white/5 border-white/15 text-slate-400 hover:border-white/30 hover:text-white'
+          : 'bg-white border-forest-500/15 text-ink-soft hover:border-forest-500/40 hover:text-ink'
       } ${disabled ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
     >
       {on ? '✓ ' : ''}{label}
@@ -55,10 +55,10 @@ function Toggle({ on, disabled, onChange, label }) {
       onClick={() => !disabled && onChange(!on)}
       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0 ${
         disabled
-          ? 'bg-white/5 cursor-not-allowed opacity-50'
+          ? 'bg-white cursor-not-allowed opacity-50'
           : on
           ? 'bg-gold-500'
-          : 'bg-white/10 hover:bg-white/15'
+          : 'bg-cream-200 hover:bg-forest-600/8'
       }`}
     >
       <span
@@ -175,8 +175,8 @@ export default function UsersPage() {
   return (
     <motion.div {...pageTransition}>
       <div className="mb-8">
-        <h1 className="text-3xl font-heading font-bold text-white">User Management</h1>
-        <p className="text-slate-400 mt-1 text-sm">
+        <h1 className="text-3xl font-heading font-bold text-ink">User Management</h1>
+        <p className="text-ink-soft mt-1 text-sm">
           Super-admin only. Toggle admin-portal access for any alumnus. The super-admin role itself is seeded in the database and cannot be changed here.
         </p>
       </div>
@@ -184,29 +184,29 @@ export default function UsersPage() {
       {/* Summary */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         <GlassCard>
-          <p className="text-xs uppercase tracking-wider text-slate-400">Total users</p>
-          <p className="text-2xl font-heading font-bold text-white mt-1">{stats.total}</p>
+          <p className="text-xs uppercase tracking-wider text-ink-soft">Total users</p>
+          <p className="text-2xl font-heading font-bold text-ink mt-1">{stats.total}</p>
         </GlassCard>
         <GlassCard>
-          <p className="text-xs uppercase tracking-wider text-slate-400">Alumni</p>
-          <p className="text-2xl font-heading font-bold text-white mt-1">{stats.alumni}</p>
+          <p className="text-xs uppercase tracking-wider text-ink-soft">Alumni</p>
+          <p className="text-2xl font-heading font-bold text-ink mt-1">{stats.alumni}</p>
         </GlassCard>
         <GlassCard>
-          <p className="text-xs uppercase tracking-wider text-slate-400">Admins</p>
-          <p className="text-2xl font-heading font-bold text-gold-400 mt-1">{stats.admins}</p>
+          <p className="text-xs uppercase tracking-wider text-ink-soft">Admins</p>
+          <p className="text-2xl font-heading font-bold text-gold-700 mt-1">{stats.admins}</p>
         </GlassCard>
         <GlassCard>
-          <p className="text-xs uppercase tracking-wider text-slate-400">Super admins</p>
-          <p className="text-2xl font-heading font-bold text-gold-400 mt-1">{stats.supers}</p>
+          <p className="text-xs uppercase tracking-wider text-ink-soft">Super admins</p>
+          <p className="text-2xl font-heading font-bold text-gold-700 mt-1">{stats.supers}</p>
         </GlassCard>
       </div>
 
       {/* List */}
       <GlassCard padding="p-0">
         {loading ? (
-          <div className="p-6 text-sm text-slate-400">Loading users…</div>
+          <div className="p-6 text-sm text-ink-soft">Loading users…</div>
         ) : users.length === 0 ? (
-          <div className="p-6 text-sm text-slate-400">No users yet.</div>
+          <div className="p-6 text-sm text-ink-soft">No users yet.</div>
         ) : (
           <motion.ul variants={staggerContainer} initial="hidden" animate="visible" className="divide-y divide-white/5">
             {users.map((u) => {
@@ -221,13 +221,13 @@ export default function UsersPage() {
                   <Avatar src={alum?.avatar} name={alum?.name || u.email} size="md" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <p className="text-white font-medium truncate">{alum?.name || u.email}</p>
+                      <p className="text-ink font-medium truncate">{alum?.name || u.email}</p>
                       <Badge variant={cfg.variant} size="sm">{cfg.label}</Badge>
                       {isSelf && <Badge size="sm">You</Badge>}
                     </div>
-                    <p className="text-xs text-slate-500 truncate">{u.email}</p>
+                    <p className="text-xs text-ink-muted truncate">{u.email}</p>
                     {alum && (
-                      <p className="text-xs text-slate-500 mt-0.5 truncate">
+                      <p className="text-xs text-ink-muted mt-0.5 truncate">
                         {alum.branch} · {alum.currentCity || '—'}
                       </p>
                     )}
@@ -242,7 +242,7 @@ export default function UsersPage() {
                         type="button"
                         onClick={() => handleImpersonate(u)}
                         disabled={busyId === u.id}
-                        className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gold-400/40 text-gold-300 hover:bg-gold-400/10 disabled:opacity-50 whitespace-nowrap"
+                        className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gold-400/40 text-gold-700 hover:bg-gold-400/10 disabled:opacity-50 whitespace-nowrap"
                         title={`View the portal as ${u.email}`}
                       >
                         {busyId === u.id ? 'Switching…' : 'Impersonate'}
@@ -255,7 +255,7 @@ export default function UsersPage() {
                         onChange={(next) => handleToggle(u, next)}
                         label={`Admin portal access for ${u.email}`}
                       />
-                      <p className="text-[10px] uppercase tracking-wider text-slate-500">
+                      <p className="text-[10px] uppercase tracking-wider text-ink-muted">
                         Admin portal {on ? 'on' : 'off'}
                       </p>
                       {/* Permission chips — only meaningful once someone is
@@ -288,7 +288,7 @@ export default function UsersPage() {
         )}
       </GlassCard>
 
-      <p className="text-xs text-slate-500 mt-4">
+      <p className="text-xs text-ink-muted mt-4">
         The toggle flips the user&apos;s role between <b>alumni</b> and <b>admin</b>. Super-admin rows (and your own row) are locked.
       </p>
     </motion.div>

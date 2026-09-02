@@ -16,7 +16,7 @@ import Stepper from '../../components/ui/Stepper';
 const steps = ['Personal', 'Academic', 'Travel & Stay', 'Preferences', 'Payment', 'Review'];
 
 function RequiredMark() {
-  return <span className="text-red-400 ml-0.5" aria-hidden="true">*</span>;
+  return <span className="text-red-700 dark:text-red-400 ml-0.5" aria-hidden="true">*</span>;
 }
 
 export default function RegistrationPage() {
@@ -105,24 +105,24 @@ export default function RegistrationPage() {
   return (
     <motion.div {...pageTransition} className="max-w-3xl mx-auto px-4 py-12">
       <div className="text-center mb-6">
-        <h1 className="text-3xl md:text-4xl font-heading font-bold text-white mb-2">Register for the Reunion</h1>
-        <p className="text-slate-400">Join 340+ alumni for REConverge 2001 — Dec 27–29, 2026 at Calicut</p>
+        <h1 className="text-3xl md:text-4xl font-heading font-bold text-ink dark:text-white mb-2">Sign Up for the Reunion</h1>
+        <p className="text-ink-muted dark:text-slate-400">Join 340+ alumni for REConverge 2001 — Dec 27–29, 2026 at Calicut</p>
       </div>
 
       {/* Already-registered nudge — surfaced prominently so returning alumni
           don't accidentally start a second account. */}
-      <div className="mb-6 flex items-center justify-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/5 px-4 py-2 text-sm text-slate-300 max-w-xl mx-auto">
-        <span>Already registered?</span>
+      <div className="mb-6 flex items-center justify-center gap-2 rounded-full border border-gold-500/30 bg-gold-500/5 px-4 py-2 text-sm text-ink-soft dark:text-slate-300 max-w-xl mx-auto">
+        <span>Already signed up?</span>
         <Link
           to="/login"
-          className="text-gold-400 hover:text-gold-300 font-semibold underline underline-offset-2"
+          className="text-gold-700 dark:text-gold-400 hover:text-gold-800 dark:hover:text-gold-300 font-semibold underline underline-offset-2"
         >
           Sign In →
         </Link>
       </div>
 
-      <p className="text-center text-xs text-slate-500 mb-8">
-        Only <span className="text-white">Email</span> and <span className="text-white">Password</span> are required. Everything else is optional — fill what you can now and update later from your profile.
+      <p className="text-center text-xs text-ink-muted dark:text-slate-500 mb-8">
+        Only <span className="text-ink dark:text-white">Email</span> and <span className="text-ink dark:text-white">Password</span> are required. Everything else is optional — fill what you can now and update later from your profile.
       </p>
 
       <div className="mb-8">
@@ -132,7 +132,7 @@ export default function RegistrationPage() {
       <GlassCard hover={false}>
         {step === 0 && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white mb-4">Personal Information</h3>
+            <h3 className="text-lg font-semibold text-ink dark:text-white mb-4">Personal Information</h3>
             <Input label="Full Name" value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="Enter your full name" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
@@ -164,7 +164,7 @@ export default function RegistrationPage() {
 
         {step === 1 && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white mb-4">Academic Details</h3>
+            <h3 className="text-lg font-semibold text-ink dark:text-white mb-4">Academic Details</h3>
             <Select label="Branch / Department" value={form.branch} onChange={(e) => update('branch', e.target.value)} options={BRANCHES} placeholder="Select your branch" />
             <Input label="Hostel" value={form.hostel} onChange={(e) => update('hostel', e.target.value)} placeholder="e.g. D, E, F — or the block name you remember" />
             <Input label="Roll Number" value={form.rollNumber} onChange={(e) => update('rollNumber', e.target.value)} placeholder="e.g. CS-2001-042" />
@@ -173,7 +173,7 @@ export default function RegistrationPage() {
 
         {step === 2 && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white mb-4">Travel & Stay</h3>
+            <h3 className="text-lg font-semibold text-ink dark:text-white mb-4">Travel & Stay</h3>
             <Select label="Mode of Travel" value={form.travelMode} onChange={(e) => update('travelMode', e.target.value)} options={TRAVEL_MODES} placeholder="How will you travel?" />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -185,8 +185,8 @@ export default function RegistrationPage() {
               <Input label="Departure Time" type="time" value={form.departureTime} onChange={(e) => update('departureTime', e.target.value)} />
             </div>
 
-            <div className="pt-4 border-t border-white/5">
-              <p className="text-xs text-gold-400 uppercase tracking-wider font-semibold mb-3">Accommodation (Gokulam Grand)</p>
+            <div className="pt-4 border-t border-forest-500/15 dark:border-white/5">
+              <p className="text-xs text-gold-700 dark:text-gold-400 uppercase tracking-wider font-semibold mb-3">Accommodation (Gokulam Grand)</p>
               <Select
                 label="Room Preference"
                 value={form.roomPreference}
@@ -194,7 +194,7 @@ export default function RegistrationPage() {
                 options={ROOM_PREFERENCES}
                 placeholder="Select room type / sharing"
               />
-              <p className="text-xs text-slate-500 mt-1 mb-3">Accommodation is paid directly to the hotel, separate from the reunion fee.</p>
+              <p className="text-xs text-ink-muted dark:text-slate-500 mt-1 mb-3">Accommodation is paid directly to the hotel, separate from the reunion fee.</p>
               <Input
                 label="Preferred Roommate (optional)"
                 value={form.preferredRoommate}
@@ -207,40 +207,40 @@ export default function RegistrationPage() {
 
         {step === 3 && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white mb-4">Family & Preferences</h3>
+            <h3 className="text-lg font-semibold text-ink dark:text-white mb-4">Family & Preferences</h3>
             <Select label="T-Shirt Size" value={form.tshirtSize} onChange={(e) => update('tshirtSize', e.target.value)} options={TSHIRT_SIZES} placeholder="Select size" />
             <Select label="Dietary Preference" value={form.dietaryPref} onChange={(e) => update('dietaryPref', e.target.value)} options={DIETARY_OPTIONS} placeholder="Select preference" />
 
-            <div className="pt-4 border-t border-white/5">
-              <p className="text-xs text-gold-400 uppercase tracking-wider font-semibold mb-3">Who's coming with you?</p>
+            <div className="pt-4 border-t border-forest-500/15 dark:border-white/5">
+              <p className="text-xs text-gold-700 dark:text-gold-400 uppercase tracking-wider font-semibold mb-3">Who's coming with you?</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Input label="Adults (incl. self)" type="number" min="1" max="6" value={form.adults} onFocus={(e) => e.target.select()} onChange={(e) => update('adults', Math.max(1, parseInt(e.target.value) || 1))} />
                 <Input label="Children < 10" type="number" min="0" max="6" value={form.childrenUnder10} onFocus={(e) => e.target.select()} onChange={(e) => update('childrenUnder10', parseInt(e.target.value) || 0)} />
                 <Input label="Children 10+" type="number" min="0" max="6" value={form.children10Plus} onFocus={(e) => e.target.select()} onChange={(e) => update('children10Plus', parseInt(e.target.value) || 0)} />
               </div>
-              <p className="text-xs text-slate-500 mt-2">Per hotel policy, children 10+ count as extra persons in room billing.</p>
+              <p className="text-xs text-ink-muted dark:text-slate-500 mt-2">Per hotel policy, children 10+ count as extra persons in room billing.</p>
             </div>
 
-            <div className="pt-4 border-t border-white/5">
-              <p className="text-xs text-gold-400 uppercase tracking-wider font-semibold mb-3">Anything else we should know?</p>
+            <div className="pt-4 border-t border-forest-500/15 dark:border-white/5">
+              <p className="text-xs text-gold-700 dark:text-gold-400 uppercase tracking-wider font-semibold mb-3">Anything else we should know?</p>
               <label className="block mb-4">
-                <span className="text-sm text-slate-300 mb-1 block">Special Requests</span>
+                <span className="text-sm text-ink-soft dark:text-slate-300 mb-1 block">Special Requests</span>
                 <textarea
                   value={form.specialRequests}
                   onChange={(e) => update('specialRequests', e.target.value)}
                   rows={3}
                   placeholder="Accessibility needs, allergies, a roommate ask, an ice-breaker memory you want us to keep handy…"
-                  className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-gold-400/40 resize-y"
+                  className="w-full rounded-xl bg-white dark:bg-white/5 border border-forest-500/15 dark:border-white/10 px-4 py-2.5 text-sm text-ink dark:text-white placeholder-ink-muted dark:placeholder-slate-500 focus:outline-none focus:border-gold-400/40 resize-y"
                 />
               </label>
               <label className="block">
-                <span className="text-sm text-slate-300 mb-1 block">Notes (free text)</span>
+                <span className="text-sm text-ink-soft dark:text-slate-300 mb-1 block">Notes (free text)</span>
                 <textarea
                   value={form.notes}
                   onChange={(e) => update('notes', e.target.value)}
                   rows={2}
                   placeholder="Anything you want the organising team to note about your registration"
-                  className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-gold-400/40 resize-y"
+                  className="w-full rounded-xl bg-white dark:bg-white/5 border border-forest-500/15 dark:border-white/10 px-4 py-2.5 text-sm text-ink dark:text-white placeholder-ink-muted dark:placeholder-slate-500 focus:outline-none focus:border-gold-400/40 resize-y"
                 />
               </label>
             </div>
@@ -249,29 +249,29 @@ export default function RegistrationPage() {
 
         {step === 4 && (
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-white mb-4">Payment & ID</h3>
+            <h3 className="text-lg font-semibold text-ink dark:text-white mb-4">Payment & ID</h3>
 
             <div className="bg-gold-500/5 border border-gold-500/20 rounded-xl p-4 mb-2">
               <div className="flex justify-between items-baseline">
-                <span className="text-xs uppercase tracking-wider text-gold-400 font-semibold">Registration Fee</span>
-                <span className="text-2xl font-bold text-gold-400">₹{registrationFee.toLocaleString('en-IN')}</span>
+                <span className="text-xs uppercase tracking-wider text-gold-700 dark:text-gold-400 font-semibold">Registration Fee</span>
+                <span className="text-2xl font-bold text-gold-700 dark:text-gold-400">₹{registrationFee.toLocaleString('en-IN')}</span>
               </div>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-ink-muted dark:text-slate-500 mt-1">
                 ₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')} self + ₹{EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')} × {familyCount} family member{familyCount === 1 ? '' : 's'}
               </p>
-              <p className="text-xs text-slate-500 mt-1">Accommodation &amp; Giving Back are billed separately.</p>
+              <p className="text-xs text-ink-muted dark:text-slate-500 mt-1">Accommodation &amp; Giving Back are billed separately.</p>
             </div>
 
             <div className="rounded-lg border border-gold-500/30 bg-gold-500/5 p-4 space-y-2 text-sm">
-              <p className="text-xs uppercase tracking-wider text-gold-400 font-semibold">Where to send the payment</p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 text-slate-200">
-                <div><span className="text-slate-400">Beneficiary:</span> {batchBankAccount.beneficiary}</div>
-                <div><span className="text-slate-400">Account No:</span> <span className="font-mono">{batchBankAccount.accountNumber}</span></div>
-                <div><span className="text-slate-400">IFSC:</span> <span className="font-mono">{batchBankAccount.ifsc}</span></div>
-                <div><span className="text-slate-400">Branch:</span> {batchBankAccount.bankBranch} ({batchBankAccount.branchCode})</div>
-                <div className="md:col-span-2"><span className="text-slate-400">Supports:</span> {batchBankAccount.supports.join(' · ')}</div>
+              <p className="text-xs uppercase tracking-wider text-gold-700 dark:text-gold-400 font-semibold">Where to send the payment</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1 text-ink-soft dark:text-slate-200">
+                <div><span className="text-ink-muted dark:text-slate-400">Beneficiary:</span> {batchBankAccount.beneficiary}</div>
+                <div><span className="text-ink-muted dark:text-slate-400">Account No:</span> <span className="font-mono">{batchBankAccount.accountNumber}</span></div>
+                <div><span className="text-ink-muted dark:text-slate-400">IFSC:</span> <span className="font-mono">{batchBankAccount.ifsc}</span></div>
+                <div><span className="text-ink-muted dark:text-slate-400">Branch:</span> {batchBankAccount.bankBranch} ({batchBankAccount.branchCode})</div>
+                <div className="md:col-span-2"><span className="text-ink-muted dark:text-slate-400">Supports:</span> {batchBankAccount.supports.join(' · ')}</div>
               </div>
-              <p className="text-xs text-slate-400 italic">{batchBankAccount.paymentReferenceHint}</p>
+              <p className="text-xs text-ink-muted dark:text-slate-400 italic">{batchBankAccount.paymentReferenceHint}</p>
             </div>
 
             <Input
@@ -280,24 +280,24 @@ export default function RegistrationPage() {
               onChange={(e) => update('paymentUid', e.target.value)}
               placeholder="Paste after bank / UPI transfer — or add later from your Profile"
             />
-            <p className="text-xs text-slate-500 -mt-2">
+            <p className="text-xs text-ink-muted dark:text-slate-500 -mt-2">
               Payment goes direct to the REConverge 2001 batch bank account (the website does not collect payments). You can register first and add the Payment UID later from your Profile; status will stay "Unpaid" until the Finance Committee verifies.
             </p>
 
-            <div className="pt-4 border-t border-white/5">
-              <p className="text-xs text-gold-400 uppercase tracking-wider font-semibold mb-3">ID for hotel check-in (optional — collected nearer the event)</p>
+            <div className="pt-4 border-t border-forest-500/15 dark:border-white/5">
+              <p className="text-xs text-gold-700 dark:text-gold-400 uppercase tracking-wider font-semibold mb-3">ID for hotel check-in (optional — collected nearer the event)</p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Select label="ID Type" value={form.idType} onChange={(e) => update('idType', e.target.value)} options={ID_TYPES} placeholder="Select ID type" />
                 <Input label="ID Number (last 4 digits)" value={form.idNumber} onChange={(e) => update('idNumber', e.target.value)} placeholder="Only the last 4 for our records" maxLength={4} />
               </div>
-              <p className="text-xs text-slate-500 mt-2">Gokulam Grand requires ID proof from every guest at check-in. We only store the last 4 digits for rooming cross-reference.</p>
+              <p className="text-xs text-ink-muted dark:text-slate-500 mt-2">Gokulam Grand requires ID proof from every guest at check-in. We only store the last 4 digits for rooming cross-reference.</p>
             </div>
           </div>
         )}
 
         {step === 5 && (
           <div>
-            <h3 className="text-lg font-semibold text-white mb-4">Review Your Details</h3>
+            <h3 className="text-lg font-semibold text-ink dark:text-white mb-4">Review Your Details</h3>
             <div className="space-y-3 text-sm">
               {[
                 ['Name', form.name || '-'],
@@ -320,25 +320,25 @@ export default function RegistrationPage() {
                 ['ID', form.idType ? `${form.idType} (…${form.idNumber || '----'})` : '-'],
                 ['Payment UID', form.paymentUid || 'To be added later'],
               ].map(([label, value]) => (
-                <div key={label} className="flex justify-between py-2 border-b border-white/5 gap-4">
-                  <span className="text-slate-400 flex-shrink-0">{label}</span>
-                  <span className="text-white font-medium text-right break-words">{value}</span>
+                <div key={label} className="flex justify-between py-2 border-b border-forest-500/15 dark:border-white/5 gap-4">
+                  <span className="text-ink-muted dark:text-slate-400 flex-shrink-0">{label}</span>
+                  <span className="text-ink dark:text-white font-medium text-right break-words">{value}</span>
                 </div>
               ))}
               <div className="flex justify-between py-3 border-t border-gold-500/20 mt-4">
-                <span className="text-gold-400 font-semibold">Registration Fee</span>
-                <span className="text-gold-400 font-bold text-lg">₹{registrationFee.toLocaleString('en-IN')}</span>
+                <span className="text-gold-700 dark:text-gold-400 font-semibold">Registration Fee</span>
+                <span className="text-gold-700 dark:text-gold-400 font-bold text-lg">₹{registrationFee.toLocaleString('en-IN')}</span>
               </div>
             </div>
           </div>
         )}
 
-        <div className="flex justify-between mt-8 pt-4 border-t border-white/10">
+        <div className="flex justify-between mt-8 pt-4 border-t border-forest-500/15 dark:border-white/10">
           <Button variant="ghost" onClick={() => setStep((s) => Math.max(0, s - 1))} disabled={step === 0}>Back</Button>
           {step < steps.length - 1 ? (
             <Button onClick={() => setStep((s) => Math.min(steps.length - 1, s + 1))}>Continue</Button>
           ) : (
-            <Button loading={loading} onClick={handleSubmit}>Submit Registration</Button>
+            <Button loading={loading} onClick={handleSubmit}>Complete Sign Up</Button>
           )}
         </div>
       </GlassCard>

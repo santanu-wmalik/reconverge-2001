@@ -59,7 +59,7 @@ function CreateGroupForm({ user, onCreated, onCancel }) {
 
   return (
     <GlassCard hover={false} className="border-gold-500/30 mb-6">
-      <h3 className="text-white font-heading font-semibold mb-4">Create a custom group</h3>
+      <h3 className="text-ink font-heading font-semibold mb-4">Create a custom group</h3>
       <div className="space-y-3">
         <Input
           label="Group name"
@@ -67,34 +67,34 @@ function CreateGroupForm({ user, onCreated, onCancel }) {
           onChange={(e) => setName(e.target.value)}
           placeholder="e.g. Cricket Crew · Wayanad Trek · Music Nights"
         />
-        <p className="text-[11px] text-slate-500 -mt-2">
+        <p className="text-[11px] text-ink-muted -mt-2">
           Cover art auto-picks from keywords in the name — try words like <i>music</i>, <i>trek</i>, <i>cricket</i>, <i>food</i>, <i>tech</i>, <i>photo</i>, <i>wine</i>…
         </p>
         <label className="block">
-          <span className="text-sm text-slate-300 mb-1 block">Description</span>
+          <span className="text-sm text-ink-soft mb-1 block">Description</span>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={2}
             placeholder="A line or two on what the group is about"
-            className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-gold-400/40 resize-y"
+            className="w-full rounded-xl bg-white border border-forest-500/15 px-4 py-2.5 text-sm text-ink placeholder-ink-muted focus:outline-none focus:border-gold-400/40 resize-y"
           />
         </label>
         {/* Live preview */}
         <div>
-          <span className="text-xs uppercase tracking-wider text-gold-400 font-semibold">Preview</span>
-          <div className="mt-2 rounded-xl overflow-hidden border border-white/10 flex items-center gap-3 p-2 bg-white/3">
+          <span className="text-xs uppercase tracking-wider text-gold-700 font-semibold">Preview</span>
+          <div className="mt-2 rounded-xl overflow-hidden border border-forest-500/15 flex items-center gap-3 p-2 bg-white">
             <div className="h-16 w-24 flex-shrink-0 rounded-lg overflow-hidden">
               <img src={customGroupCover({ bg: theme.bg, fg: theme.fg, label: name || 'Preview' })} alt="preview" className="w-full h-full object-cover" />
             </div>
             <div className="min-w-0">
-              <p className="text-white text-sm font-medium truncate">{theme.emoji} {name || 'Your group name'}</p>
-              <p className="text-xs text-slate-500 truncate">{description || 'Description…'}</p>
+              <p className="text-ink text-sm font-medium truncate">{theme.emoji} {name || 'Your group name'}</p>
+              <p className="text-xs text-ink-muted truncate">{description || 'Description…'}</p>
             </div>
           </div>
         </div>
       </div>
-      <div className="flex justify-end gap-2 mt-5 pt-4 border-t border-white/10">
+      <div className="flex justify-end gap-2 mt-5 pt-4 border-t border-forest-500/15">
         <Button variant="ghost" size="sm" onClick={onCancel}>Cancel</Button>
         <Button size="sm" loading={busy} onClick={submit}>Create group</Button>
       </div>
@@ -172,8 +172,8 @@ export default function GroupsListPage() {
 
       {isAuthenticated && (
         <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-          <p className="text-xs text-slate-400">
-            You&apos;ve created <span className="text-white font-medium">{myCustomCount}</span> of {MAX_CUSTOM_PER_USER} custom groups.
+          <p className="text-xs text-ink-soft">
+            You&apos;ve created <span className="text-ink font-medium">{myCustomCount}</span> of {MAX_CUSTOM_PER_USER} custom groups.
           </p>
           {!creating && (
             canCreateMore ? (
@@ -209,15 +209,15 @@ export default function GroupsListPage() {
                     <img src={group.coverImage} alt={group.name} className="w-full h-full object-cover" />
                   </div>
                   <div className="flex items-center justify-between mb-2 gap-2">
-                    <h3 className="text-white font-semibold text-sm truncate">{group.name}</h3>
+                    <h3 className="text-ink font-semibold text-sm truncate">{group.name}</h3>
                     {group.isCustom ? (
                       <Badge variant="gold" size="sm">✨ Custom</Badge>
                     ) : (
                       <Badge size="sm">{group.category}</Badge>
                     )}
                   </div>
-                  <p className="text-slate-400 text-xs line-clamp-2 mb-3">{group.description}</p>
-                  <div className="flex items-center gap-3 text-xs text-slate-500 flex-wrap">
+                  <p className="text-ink-soft text-xs line-clamp-2 mb-3">{group.description}</p>
+                  <div className="flex items-center gap-3 text-xs text-ink-muted flex-wrap">
                     {joinedHere > 0 && <span>🙋 {joinedHere} joined on site</span>}
                     {group.memberCount != null && <span>💬 WhatsApp: {group.memberCount} members</span>}
                   </div>
@@ -234,7 +234,7 @@ export default function GroupsListPage() {
                       💬 Join WhatsApp group →
                     </button>
                   ) : group.whatsAppRequestContact ? (
-                    <p className="mt-3 text-[11px] text-slate-500 italic">
+                    <p className="mt-3 text-[11px] text-ink-muted italic">
                       WhatsApp invite via: {group.whatsAppRequestContact}
                     </p>
                   ) : null}

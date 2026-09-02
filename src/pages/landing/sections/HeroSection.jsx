@@ -1,178 +1,157 @@
-import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import CountdownTimer from '../../../components/shared/CountdownTimer';
-import AnimatedCounter from '../../../components/shared/AnimatedCounter';
-import Button from '../../../components/ui/Button';
 import { EVENT_CONFIG, STATS, EARLY_BIRD_DEADLINE } from '../../../data/constants';
+import AnimatedCounter from '../../../components/shared/AnimatedCounter';
 import { staggerContainer, staggerItem } from '../../../utils/animationVariants';
 
-// Hero backdrop shares the same campus set as BackgroundSlideshow (see
-// /public/images/campus). Shuffled per page load so the opener is different
-// each visit.
-const HERO_BG_IMAGES = [
-  '/images/campus/Admin-building.png',
-  '/images/campus/Drone-view-1.png',
-  '/images/campus/Drone-view.png',
-  '/images/campus/Front-gate.png',
-  '/images/campus/Front-view.png',
-  '/images/campus/Rajpath.png',
-];
+// rect1an-style hero.
+//   Desktop (md+): split — Rajpath under a forest tint on the left with a
+//     diagonal edge; Admin building full-bleed on the right; left-aligned copy.
+//   Mobile (<md): mimics rect1an's phone layout — a full-width solid green
+//     panel with CENTRED copy, no diagonal, and the Admin-building photo as
+//     its own block directly beneath the panel.
+// Both images are fixed (no rotation).
 
-function shuffled(arr) {
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+const RIGHT_IMAGE = '/images/campus/Admin-building.png';
+const LEFT_IMAGE  = '/images/campus/Rajpath.png';
 
 export default function HeroSection() {
-  const heroImages = useMemo(() => shuffled(HERO_BG_IMAGES), []);
-  const [currentBg, setCurrentBg] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentBg((prev) => (prev + 1) % heroImages.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [heroImages.length]);
-
-  const daysLeft = Math.max(
-    0,
-    Math.ceil((EARLY_BIRD_DEADLINE - Date.now()) / (1000 * 60 * 60 * 24))
-  );
+  const daysLeft = Math.max(0, Math.ceil((EARLY_BIRD_DEADLINE - Date.now()) / 86400000));
   const earlyBirdOver = daysLeft === 0;
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-      {/* Background slideshow */}
-      <div className="absolute inset-0 z-0 overflow-hidden">
-        {heroImages.map((url, i) => (
-          <div
-            key={url}
-            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-              i === currentBg ? 'opacity-95' : 'opacity-0'
-            }`}
+    <>
+      <section className="relative overflow-hidden bg-forest-800">
+        {/* Right: Admin building — desktop only as the backdrop */}
+        <div className="hidden md:block absolute inset-0">
+          <img src={RIGHT_IMAGE} alt="NIT Calicut administrative building" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-forest-900/40 via-transparent to-transparent" />
+        </div>
+
+        {/* Left: forest panel — full width on mobile, 58% + diagonal on md+ */}
+        <div className="absolute inset-y-0 left-0 w-full md:w-[58%] md:clip-diagonal-right overflow-hidden">
+          <img src={LEFT_IMAGE} alt="" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-forest-panel opacity-85" />
+          <div className="absolute inset-0 opacity-25 [background-image:radial-gradient(rgba(255,255,255,0.35)_1px,transparent_1px)] [background-size:26px_26px]" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 pt-6 pb-6 md:pt-24 md:pb-32 md:min-h-[64vh] flex items-center justify-center md:justify-start">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            animate="visible"
+            className="max-w-xl text-cream-50 text-center md:text-left flex flex-col items-center md:items-start"
           >
-            <img
-              src={url}
-              alt=""
-              className="w-full h-full object-cover"
-            />
-          </div>
-        ))}
-        {/* Lighter gradient overlay so campus photos read clearly, still
-            dark enough at top / bottom to keep header + CTA text legible. */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-black/70" />
-      </div>
+            {/* 25 star badge + logo */}
+            <motion.div variants={staggerItem} className="mb-3 md:mb-4 flex items-center gap-3">
+              <span className="relative inline-flex items-center justify-center w-11 h-11">
+                <svg viewBox="0 0 24 24" className="w-11 h-11 drop-shadow-[0_0_6px_rgba(255,255,255,0.55)]" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="silverStar" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor="#ffffff" />
+                      <stop offset="35%" stopColor="#dfe4ea" />
+                      <stop offset="55%" stopColor="#f7f9fb" />
+                      <stop offset="80%" stopColor="#aab4bf" />
+                      <stop offset="100%" stopColor="#8f9aa7" />
+                    </linearGradient>
+                  </defs>
+                  <path fill="url(#silverStar)" stroke="#ffffff" strokeWidth="0.6" d="M12 2l2.9 6.6 7.1.7-5.3 4.8 1.6 7L12 17.6 5.7 21.1l1.6-7L2 9.3l7.1-.7L12 2z" />
+                </svg>
+                <span className="absolute text-[10px] font-bold text-forest-900">25</span>
+              </span>
+              <img src={EVENT_CONFIG.logoUrl} alt="REConverge 2001" className="w-11 h-11 rounded-full ring-1 ring-gold-400/60 object-contain bg-white/90" />
+            </motion.div>
 
-      {/* Background gradient orbs */}
-      <div className="absolute inset-0 overflow-hidden z-[1]">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-primary-400/10 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gold-500/5 rounded-full blur-3xl" />
-      </div>
+            <motion.h1
+              variants={staggerItem}
+              className="font-heading font-bold leading-none text-4xl sm:text-6xl md:text-7xl mb-2 md:mb-3 tracking-tight"
+            >
+              <span className="text-gold-400">REC</span>
+              <span className="text-cream-50">onverge</span>
+            </motion.h1>
 
-      <div className="relative z-20 max-w-5xl mx-auto px-4 sm:px-6 text-center py-20">
-        <motion.div variants={staggerContainer} initial="hidden" animate="visible">
-          {/* Badge */}
-          <motion.div variants={staggerItem} className="mb-6">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gold-500/10 border border-gold-400/20 text-gold-400 text-sm font-medium">
-              <span className="w-2 h-2 bg-gold-400 rounded-full animate-pulse" />
-              25 Glorious Years
-            </span>
-          </motion.div>
+            <motion.p variants={staggerItem} className="nav-caps text-cream-200/90 mb-3 md:mb-4">
+              Batch 2001 — Silver Jubilee Reunion
+            </motion.p>
 
-          {/* Logo */}
-          <motion.div variants={staggerItem} className="flex justify-center mb-6">
-            <img src={EVENT_CONFIG.logoUrl} alt="REConverge 2001" className="w-24 h-24 md:w-32 md:h-32 object-contain" />
-          </motion.div>
+            <motion.p
+              variants={staggerItem}
+              className="font-heading italic text-xl sm:text-3xl md:text-4xl text-cream-50 mb-3 md:mb-4"
+            >
+              {EVENT_CONFIG.tagline}
+            </motion.p>
 
-          {/* Heading */}
-          <motion.h1
-            variants={staggerItem}
-            className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-heading font-bold text-white mb-4 leading-tight break-words"
-          >
-            <span className="block"><span className="text-red-500">REC</span>onverge</span>
-            <span className="block gradient-text">2001</span>
-          </motion.h1>
+            {/* thin gold rule — rect1an mobile detail; hidden on desktop */}
+            <motion.span variants={staggerItem} className="md:hidden block h-px w-40 bg-gold-400/40 mb-3" aria-hidden="true" />
 
-          {/* Tagline */}
-          <motion.p
-            variants={staggerItem}
-            className="text-lg md:text-xl text-gold-400 font-heading italic max-w-2xl mx-auto mb-2"
-          >
-            {EVENT_CONFIG.tagline}
-          </motion.p>
+            <motion.p variants={staggerItem} className="nav-caps text-cream-200/80 mb-5 md:mb-7">
+              {EVENT_CONFIG.displayDates} · {EVENT_CONFIG.venue.city}
+            </motion.p>
 
-          <motion.p
-            variants={staggerItem}
-            className="text-sm md:text-base text-slate-300 max-w-2xl mx-auto mb-4"
-          >
-            {EVENT_CONFIG.heroQuote}
-          </motion.p>
-
-          {/* Venue info */}
-          <motion.p variants={staggerItem} className="text-sm text-slate-400 mb-8">
-            {EVENT_CONFIG.displayDates} | {EVENT_CONFIG.venue.name}
-          </motion.p>
-
-          {/* Countdown */}
-          <motion.div variants={staggerItem} className="flex justify-center mb-10">
-            <CountdownTimer targetDate={EVENT_CONFIG.eventDate} />
-          </motion.div>
-
-          {/* Early-bird teaser — details live behind login on /early-bird.
-              Public copy is pure hook + urgency, no price / bank details. */}
-          {!earlyBirdOver && (
-            <motion.div variants={staggerItem} className="mb-6 flex justify-center px-4">
+            <motion.div
+              variants={staggerItem}
+              className="w-full sm:w-auto flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 mb-3 md:mb-4"
+            >
               <Link
                 to="/register"
-                className="group inline-flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-2xl sm:rounded-full px-4 py-2 text-xs sm:text-sm font-bold text-black text-center bg-gradient-to-r from-gold-300 via-gold-400 to-gold-500 shadow-lg shadow-gold-500/40 hover:shadow-gold-500/70 hover:scale-105 transition-all animate-pulse-glow max-w-full"
-                style={{ textShadow: 'none' }}
+                className="nav-caps w-[78%] max-w-[320px] sm:w-auto sm:max-w-none px-8 py-4 text-center border-2 border-transparent bg-gradient-to-b from-[#f7f9fb] via-[#cfd6de] to-[#9aa5b1] text-[#16202b] shadow-lg shadow-black/30 ring-1 ring-white/70 hover:from-white hover:via-[#dde3e9] hover:to-[#aab4bf] transition"
               >
-                <span className="text-base">🎟</span>
-                <span className="hidden sm:inline">Early Bird discount ends 30 Sept — {daysLeft} day{daysLeft === 1 ? '' : 's'} left</span>
-                <span className="sm:hidden">Early Bird ends 30 Sept · {daysLeft}d left</span>
-                <span className="opacity-90 group-hover:translate-x-0.5 transition-transform">→ Buy Tickets</span>
+                Sign Up
+              </Link>
+              <a
+                href="#event-highlights"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('event-highlights')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                className="nav-caps w-[78%] max-w-[320px] sm:w-auto sm:max-w-none px-8 py-4 text-center border-2 border-cream-100/80 text-cream-50 hover:bg-cream-100/10 transition"
+              >
+                View Schedule
+              </a>
+            </motion.div>
+
+            <motion.div variants={staggerItem} className="mb-3 md:mb-4">
+              <Link
+                to="/rsvp"
+                className="nav-caps text-cream-200/90 underline underline-offset-4 decoration-gold-400/60 hover:text-gold-300"
+              >
+                Show Interest
               </Link>
             </motion.div>
-          )}
 
-          {/* CTA Buttons */}
-          <motion.div variants={staggerItem} className="flex flex-wrap items-center justify-center gap-4 mb-14">
-            <Link to="/register">
-              <Button size="lg">Register</Button>
-            </Link>
-            <Link to="/rsvp">
-              <Button size="lg" variant="outline">RSVP</Button>
-            </Link>
-            <Link to="/yearbook">
-              <Button size="lg" variant="outline">Yearbook</Button>
-            </Link>
+            {!earlyBirdOver && (
+              <motion.div variants={staggerItem}>
+                <Link
+                  to="/register"
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 min-h-[44px] sm:min-h-0 text-[11px] font-semibold bg-cream-50/10 border border-gold-400/50 text-gold-200 hover:bg-cream-50/15"
+                >
+                  <span>🎟</span>
+                  <span>Early Bird ends 30 Sept · {daysLeft} day{daysLeft === 1 ? '' : 's'} left</span>
+                </Link>
+              </motion.div>
+            )}
           </motion.div>
+        </div>
+      </section>
 
-          {/* Stats */}
-          <motion.div
-            variants={staggerItem}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8"
-          >
-            {STATS.map((stat) => (
-              <div key={stat.label} className="glass px-4 py-4">
-                <div className="text-2xl md:text-3xl font-bold font-heading gradient-text">
-                  <AnimatedCounter end={stat.value} suffix={stat.suffix} />
-                </div>
-                <div className="text-xs md:text-sm text-slate-400 mt-1">{stat.label}</div>
-              </div>
-            ))}
-          </motion.div>
-        </motion.div>
+      {/* Mobile-only campus photo block beneath the panel (rect1an layout) */}
+      <div className="md:hidden w-full h-56 sm:h-72 overflow-hidden bg-forest-900">
+        <img src={RIGHT_IMAGE} alt="NIT Calicut administrative building" className="w-full h-full object-cover" />
       </div>
 
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-slate-950 to-transparent z-[2]" />
-    </section>
+      {/* Stats band */}
+      <section className="bg-cream-200 border-y border-forest-500/10">
+        <div className="max-w-6xl mx-auto px-6 py-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          {STATS.map((stat) => (
+            <div key={stat.label}>
+              <div className="font-heading text-3xl md:text-4xl text-gold-600">
+                <AnimatedCounter end={stat.value} suffix={stat.suffix} />
+              </div>
+              <div className="nav-caps text-ink-muted mt-1">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </>
   );
 }

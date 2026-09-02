@@ -20,7 +20,7 @@ export default function ProductDetailPage() {
   const [selectedColor, setSelectedColor] = useState(product?.colors[0]?.name || '');
   const [quantity, setQuantity] = useState(1);
 
-  if (!product) return <div className="text-center py-20 text-slate-400">Product not found</div>;
+  if (!product) return <div className="text-center py-20 text-ink-soft">Product not found</div>;
 
   const handleAdd = () => {
     addToCart(product, selectedSize, selectedColor, quantity);
@@ -29,21 +29,21 @@ export default function ProductDetailPage() {
 
   return (
     <motion.div {...pageTransition}>
-      <Link to="/store" className="text-gold-400 hover:text-gold-300 text-sm mb-4 inline-block">&larr; Back to Store</Link>
+      <Link to="/store" className="text-gold-700 hover:text-gold-300 text-sm mb-4 inline-block">&larr; Back to Store</Link>
       <div className="grid md:grid-cols-2 gap-8">
         <div className="rounded-2xl overflow-hidden">
           <img src={product.images[0]} alt={product.name} className="w-full h-auto object-cover" />
         </div>
         <div>
-          <h1 className="text-2xl md:text-3xl font-heading font-bold text-white">{product.name}</h1>
+          <h1 className="text-2xl md:text-3xl font-heading font-bold text-ink">{product.name}</h1>
           <p className="text-3xl font-bold gradient-text mt-2">{formatCurrency(product.price)}</p>
-          <p className="text-slate-400 mt-4">{product.description}</p>
+          <p className="text-ink-soft mt-4">{product.description}</p>
 
           <div className="mt-6">
-            <p className="text-sm font-medium text-slate-300 mb-2">Size</p>
+            <p className="text-sm font-medium text-ink-soft mb-2">Size</p>
             <div className="flex gap-2">
               {product.sizes.map((size) => (
-                <button key={size} onClick={() => setSelectedSize(size)} className={cn('px-4 py-2 rounded-lg text-sm border transition-all', selectedSize === size ? 'border-gold-400 text-gold-400 bg-gold-400/10' : 'border-white/10 text-slate-400 hover:border-white/20')}>
+                <button key={size} onClick={() => setSelectedSize(size)} className={cn('px-4 py-2 rounded-lg text-sm border transition-all', selectedSize === size ? 'border-gold-400 text-gold-700 bg-gold-400/10' : 'border-forest-500/15 text-ink-soft hover:border-forest-500/40')}>
                   {size}
                 </button>
               ))}
@@ -52,17 +52,17 @@ export default function ProductDetailPage() {
 
           {product.colors.length > 1 && (
             <div className="mt-6">
-              <p className="text-sm font-medium text-slate-300 mb-2">Color</p>
+              <p className="text-sm font-medium text-ink-soft mb-2">Color</p>
               <div className="flex gap-2">
                 {product.colors.map((c) => (
-                  <button key={c.name} onClick={() => setSelectedColor(c.name)} className={cn('w-8 h-8 rounded-full border-2 transition-all', selectedColor === c.name ? 'border-gold-400 ring-2 ring-gold-400/30' : 'border-white/20')} style={{ backgroundColor: c.hex }} title={c.name} />
+                  <button key={c.name} onClick={() => setSelectedColor(c.name)} className={cn('w-8 h-8 rounded-full border-2 transition-all', selectedColor === c.name ? 'border-gold-400 ring-2 ring-gold-400/30' : 'border-forest-500/15')} style={{ backgroundColor: c.hex }} title={c.name} />
                 ))}
               </div>
             </div>
           )}
 
           <div className="mt-6">
-            <p className="text-sm font-medium text-slate-300 mb-2">Quantity</p>
+            <p className="text-sm font-medium text-ink-soft mb-2">Quantity</p>
             <QuantitySelector value={quantity} onChange={setQuantity} />
           </div>
 

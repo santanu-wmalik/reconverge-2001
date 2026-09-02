@@ -30,6 +30,15 @@ const looksLikeDemo = (a) => {
   return false;
 };
 
+// Engagement tier of an entry (matches the Roll of Honour "paid" rule):
+//   interest → quick RSVP only · signedUp → account, not paid · paid → any
+//   paid status (paid / pending-verification / confirmed).
+const PAID_ANY = new Set(['paid', 'pending-verification', 'confirmed']);
+const tierOf = (e) => {
+  if (e.kind !== 'registered') return 'interest';
+  return PAID_ANY.has(e.paymentStatus) ? 'paid' : 'signedUp';
+};
+
 const fmtDate = (iso) => {
   if (!iso) return null;
   // The DB stores arrival/departure as plain 'YYYY-MM-DD' strings — calendar
@@ -60,6 +69,7 @@ const fromAlumni = (a) => ({
   state: a.state || '',
   arrivalDate: a.arrivalDate || '',
   departureDate: a.departureDate || '',
+  paymentStatus: a.paymentStatus || null,
   // family = extra adults + children
   family:
     Math.max(0, (Number(a.adults) || 1) - 1) +
@@ -101,6 +111,8 @@ export default function WhosComingPage() {
   const [branch, setBranch] = useState('');
   const [hostel, setHostel] = useState('');
   const [kind, setKind] = useState('all'); // all | registered | rsvp
+  // Engagement tier chosen by clicking a stat card: all | interest | signedUp | paid
+  const [tier, setTier] = useState('all');
 
   useEffect(() => {
     Promise.allSettled([alumniApi.getAll(), rsvpApi.getAll()])
@@ -138,6 +150,7 @@ export default function WhosComingPage() {
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return entries.filter((a) => {
+      if (tier !== 'all' && tierOf(a) !== tier) return false;
       if (kind !== 'all' && a.kind !== kind) return false;
       if (branch && a.branch !== branch) return false;
       if (hostel && a.hostel !== hostel) return false;
@@ -148,39 +161,38 @@ export default function WhosComingPage() {
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [entries, search, branch, hostel, kind]);
+  }, [entries, search, branch, hostel, kind, tier]);
 
   const stats = useMemo(() => {
-    const reg = entries.filter((e) => e.kind === 'registered').length;
-    const rsv = entries.filter((e) => e.kind === 'rsvp').length;
-    const branches = new Set(entries.map((e) => e.branch).filter(Boolean)).size;
-    // Headcount is only meaningful for registered (full party size known).
-    // RSVPs only carry a loose "familyJoining" string; we add 1 (the alum)
-    // plus any numeric family count we managed to parse.
+    // Three-tier engagement model — see utils/interestState.js and tierOf().
+    const paid = entries.filter((e) => tierOf(e) === 'paid').length;
+    const signedUp = entries.filter((e) => tierOf(e) === 'signedUp').length;
+    const interest = entries.filter((e) => tierOf(e) === 'interest').length;
     const headcount = entries.reduce(
       (n, e) => n + 1 + (Number(e.family) || 0),
       0
     );
-    return { reg, rsv, branches, headcount };
+    return { interest, signedUp, paid, headcount };
   }, [entries]);
 
   return (
     <motion.div {...pageTransition} className="max-w-6xl mx-auto">
       <div className="mb-6">
-        <h1 className="text-3xl md:text-4xl font-heading font-bold text-white mb-2">
+        <h1 className="text-3xl md:text-4xl font-heading font-bold text-ink mb-2">
           Who's Registered 🙋
         </h1>
-        <p className="text-slate-400 text-sm">
+        <p className="text-ink-soft text-sm">
           Everyone signalling intent for REConverge 2001 — full registrations
           plus quick RSVPs. Refresh as more come in.
         </p>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-        <StatPill label="Registered" value={stats.reg} />
-        <StatPill label="RSVPed" value={stats.rsv} />
-        <StatPill label="Total headcount (incl. family)" value={stats.headcount} />
+      {/* Stats — click a tier card to filter the roster below; click again to clear */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <StatPill label="Shown Interest" value={stats.interest} active={tier === 'interest'} onClick={() => setTier((t) => (t === 'interest' ? 'all' : 'interest'))} />
+        <StatPill label="Signed Up (Not Paid)" value={stats.signedUp} active={tier === 'signedUp'} onClick={() => setTier((t) => (t === 'signedUp' ? 'all' : 'signedUp'))} />
+        <StatPill label="Paid & Attending" value={stats.paid} active={tier === 'paid'} onClick={() => setTier((t) => (t === 'paid' ? 'all' : 'paid'))} />
+        <StatPill label="Total headcount (incl. family)" value={stats.headcount} active={tier === 'all'} onClick={() => setTier('all')} />
       </div>
 
       {/* Filters */}
@@ -220,11 +232,11 @@ export default function WhosComingPage() {
       </GlassCard>
 
       {loading ? (
-        <p className="text-center text-slate-400 py-12">Loading the roster…</p>
+        <p className="text-center text-ink-soft py-12">Loading the roster…</p>
       ) : filtered.length === 0 ? (
         <GlassCard hover={false} className="text-center">
-          <p className="text-slate-300 font-medium">No matches yet.</p>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-ink-soft font-medium">No matches yet.</p>
+          <p className="text-xs text-ink-muted mt-1">
             Try clearing the filters, or check back as more batchmates register.
           </p>
         </GlassCard>
@@ -239,12 +251,21 @@ export default function WhosComingPage() {
   );
 }
 
-function StatPill({ label, value }) {
+function StatPill({ label, value, active = false, onClick }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-center">
-      <p className="text-2xl font-bold text-gold-400 leading-none">{value}</p>
-      <p className="text-[11px] text-slate-400 uppercase tracking-wider mt-1">{label}</p>
-    </div>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`rounded-xl border px-4 py-3 text-center transition-colors ${
+        active
+          ? 'bg-[#fbf7ea] border-gold-500/70 ring-1 ring-gold-500/40'
+          : 'bg-white border-forest-500/15 hover:border-forest-500/40'
+      }`}
+    >
+      <p className="text-2xl font-bold text-gold-700 leading-none">{value}</p>
+      <p className="text-[11px] text-ink-soft uppercase tracking-wider mt-1">{label}</p>
+    </button>
   );
 }
 
@@ -271,47 +292,47 @@ function AttendeeCard({ a }) {
         <img
           src={a.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(a.name || 'alum')}`}
           alt={a.name}
-          className="w-14 h-14 rounded-full border border-white/10 bg-white/5 object-cover flex-shrink-0"
+          className="w-14 h-14 rounded-full border border-forest-500/15 bg-white object-cover flex-shrink-0"
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <p className="text-white font-semibold leading-tight truncate">{a.name || '—'}</p>
+            <p className="text-ink font-semibold leading-tight truncate">{a.name || '—'}</p>
             <KindBadge kind={a.kind} />
           </div>
-          <p className="text-xs text-slate-400 mt-0.5 truncate">
+          <p className="text-xs text-ink-soft mt-0.5 truncate">
             {a.branch || '—'}
             {a.hostel ? ` · Hostel ${a.hostel}` : ''}
           </p>
         </div>
         {a.family > 0 && (
-          <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gold-500/15 text-gold-300 border border-gold-400/30 flex-shrink-0">
+          <span className="text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gold-500/15 text-gold-700 border border-gold-400/30 flex-shrink-0">
             +{a.family}
           </span>
         )}
       </div>
 
-      <div className="mt-4 space-y-1.5 text-xs text-slate-300">
+      <div className="mt-4 space-y-1.5 text-xs text-ink-soft">
         {(a.designation || a.company) && (
           <p>
-            <span className="text-slate-500">Now: </span>
+            <span className="text-ink-muted">Now: </span>
             {[a.designation, a.company].filter(Boolean).join(' · ')}
           </p>
         )}
         {(a.currentCity || a.state) && (
           <p>
-            <span className="text-slate-500">Based in: </span>
+            <span className="text-ink-muted">Based in: </span>
             {[a.currentCity, a.state].filter(Boolean).join(', ')}
           </p>
         )}
         {(arr || dep) && (
           <p>
-            <span className="text-slate-500">Reunion days: </span>
+            <span className="text-ink-muted">Reunion days: </span>
             {arr || '—'} {arr || dep ? '→' : ''} {dep || '—'}
           </p>
         )}
         {a.kind === 'rsvp' && (a.foodPreference || a.volunteer) && (
           <p>
-            <span className="text-slate-500">RSVP: </span>
+            <span className="text-ink-muted">RSVP: </span>
             {[a.foodPreference, a.volunteer ? 'volunteering' : null]
               .filter(Boolean)
               .join(' · ')}

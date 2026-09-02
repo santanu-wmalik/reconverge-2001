@@ -56,8 +56,8 @@ export default function ResetPasswordPage() {
             alt="REConverge 2001"
             className="w-16 h-16 mx-auto mb-4 object-contain"
           />
-          <h1 className="text-2xl font-heading font-bold text-white">Set a new password</h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <h1 className="text-2xl font-heading font-bold text-ink dark:text-white">Set a new password</h1>
+          <p className="text-ink-muted dark:text-slate-400 text-sm mt-1">
             Choose a strong password you don't use elsewhere.
           </p>
         </div>
@@ -101,7 +101,7 @@ export default function ResetPasswordPage() {
               Update password
             </Button>
             <div className="text-center">
-              <Link to="/login" className="text-sm text-gold-400 hover:text-gold-300 font-medium">
+              <Link to="/login" className="text-sm text-gold-700 dark:text-gold-400 hover:text-gold-800 dark:hover:text-gold-300 font-medium">
                 ← Back to sign in
               </Link>
             </div>

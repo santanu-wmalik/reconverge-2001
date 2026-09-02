@@ -78,21 +78,21 @@ function AnnouncementsPanel({ groupId, user, isMember, alumniIndex }) {
             <Button size="sm" onClick={() => setComposerOpen(true)}>+ New announcement</Button>
           ) : (
             <GlassCard hover={false} className="border-gold-500/30">
-              <h4 className="text-white font-heading font-semibold mb-3">Post announcement</h4>
+              <h4 className="text-ink font-heading font-semibold mb-3">Post announcement</h4>
               <div className="space-y-3">
                 <Input label="Title" value={title} onChange={(e)=>setTitle(e.target.value)} placeholder="Short headline" />
                 <label className="block">
-                  <span className="text-sm text-slate-300 mb-1 block">Content</span>
+                  <span className="text-sm text-ink-soft mb-1 block">Content</span>
                   <textarea
                     value={content}
                     onChange={(e)=>setContent(e.target.value)}
                     rows={4}
                     placeholder="Details…"
-                    className="w-full rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-gold-400/40 resize-y"
+                    className="w-full rounded-xl bg-white border border-forest-500/15 px-4 py-2.5 text-sm text-ink placeholder-ink-muted focus:outline-none focus:border-gold-400/40 resize-y"
                   />
                 </label>
               </div>
-              <div className="flex justify-end gap-2 mt-4 pt-3 border-t border-white/10">
+              <div className="flex justify-end gap-2 mt-4 pt-3 border-t border-forest-500/15">
                 <Button variant="ghost" size="sm" onClick={()=>{setComposerOpen(false); setTitle(''); setContent('');}}>Cancel</Button>
                 <Button size="sm" loading={busy} onClick={post}>Post</Button>
               </div>
@@ -102,11 +102,11 @@ function AnnouncementsPanel({ groupId, user, isMember, alumniIndex }) {
       )}
 
       {loading ? (
-        <p className="text-sm text-slate-400">Loading…</p>
+        <p className="text-sm text-ink-soft">Loading…</p>
       ) : items.length === 0 ? (
         <GlassCard className="text-center">
           <div className="text-3xl mb-2">📢</div>
-          <p className="text-slate-400 text-sm">No announcements yet{isMember ? ' — be the first to post' : ''}.</p>
+          <p className="text-ink-soft text-sm">No announcements yet{isMember ? ' — be the first to post' : ''}.</p>
         </GlassCard>
       ) : (
         <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-4">
@@ -117,13 +117,13 @@ function AnnouncementsPanel({ groupId, user, isMember, alumniIndex }) {
               <motion.div key={a.id} variants={staggerItem}>
                 <GlassCard>
                   <div className="flex items-start justify-between gap-3 mb-1">
-                    <h3 className="text-white font-heading font-semibold">{a.title}</h3>
+                    <h3 className="text-ink font-heading font-semibold">{a.title}</h3>
                     {isOwn && (
                       <button onClick={() => remove(a.id)} className="text-xs text-red-400 hover:text-red-300 flex-shrink-0">Delete</button>
                     )}
                   </div>
-                  <p className="text-slate-300 text-sm whitespace-pre-wrap leading-relaxed mb-3">{a.content}</p>
-                  <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-white/5">
+                  <p className="text-ink-soft text-sm whitespace-pre-wrap leading-relaxed mb-3">{a.content}</p>
+                  <div className="flex items-center justify-between text-xs text-ink-muted pt-2 border-t border-forest-500/15">
                     <span>By {authorName}</span>
                     <span>{timeAgo(a.createdAt)}</span>
                   </div>
@@ -143,7 +143,7 @@ function MembersPanel({ memberships, alumniIndex }) {
     return (
       <GlassCard className="text-center">
         <div className="text-3xl mb-2">👥</div>
-        <p className="text-slate-400 text-sm">No members yet. Click <b>Join</b> above to be the first.</p>
+        <p className="text-ink-soft text-sm">No members yet. Click <b>Join</b> above to be the first.</p>
       </GlassCard>
     );
   }
@@ -156,8 +156,8 @@ function MembersPanel({ memberships, alumniIndex }) {
           <motion.div key={m.id} variants={staggerItem}>
             <GlassCard className="text-center" padding="p-4">
               <Avatar name={name} size="lg" className="mx-auto mb-2" />
-              <p className="text-white text-sm font-medium truncate">{name}</p>
-              <p className="text-slate-500 text-xs mt-0.5">Joined {timeAgo(m.joinedAt)}</p>
+              <p className="text-ink text-sm font-medium truncate">{name}</p>
+              <p className="text-ink-muted text-xs mt-0.5">Joined {timeAgo(m.joinedAt)}</p>
             </GlassCard>
           </motion.div>
         );
@@ -200,10 +200,10 @@ function PollComposer({ groupId, user, onCreated, onCancel }) {
 
   return (
     <GlassCard hover={false} className="border-gold-500/30">
-      <h4 className="text-white font-heading font-semibold mb-3">New poll</h4>
+      <h4 className="text-ink font-heading font-semibold mb-3">New poll</h4>
       <Input label="Question" value={question} onChange={(e)=>setQuestion(e.target.value)} placeholder="e.g. Which night for branch dinner?" />
       <div className="mt-4 space-y-2">
-        <span className="text-sm text-slate-300">Options (min 2, max 6)</span>
+        <span className="text-sm text-ink-soft">Options (min 2, max 6)</span>
         {options.map((opt, i) => (
           <div key={i} className="flex gap-2">
             <Input value={opt} onChange={(e)=>updateOption(i, e.target.value)} placeholder={`Option ${i + 1}`} />
@@ -213,10 +213,10 @@ function PollComposer({ groupId, user, onCreated, onCancel }) {
           </div>
         ))}
         {options.length < 6 && (
-          <button onClick={addOption} className="text-xs text-gold-400 hover:text-gold-300">+ Add option</button>
+          <button onClick={addOption} className="text-xs text-gold-700 hover:text-gold-300">+ Add option</button>
         )}
       </div>
-      <div className="flex justify-end gap-2 mt-4 pt-3 border-t border-white/10">
+      <div className="flex justify-end gap-2 mt-4 pt-3 border-t border-forest-500/15">
         <Button variant="ghost" size="sm" onClick={onCancel}>Cancel</Button>
         <Button size="sm" loading={busy} onClick={submit}>Create poll</Button>
       </div>
@@ -237,8 +237,8 @@ function PollCard({ poll, user, onVote, onDelete }) {
     <GlassCard>
       <div className="flex items-start justify-between gap-3 mb-3">
         <div>
-          <h3 className="text-white font-heading font-semibold">{poll.question}</h3>
-          <p className="text-xs text-slate-500 mt-0.5">{totalVotes} vote{totalVotes === 1 ? '' : 's'} · {timeAgo(poll.createdAt)}</p>
+          <h3 className="text-ink font-heading font-semibold">{poll.question}</h3>
+          <p className="text-xs text-ink-muted mt-0.5">{totalVotes} vote{totalVotes === 1 ? '' : 's'} · {timeAgo(poll.createdAt)}</p>
         </div>
         {isAuthor && (
           <button onClick={onDelete} className="text-xs text-red-400 hover:text-red-300 flex-shrink-0">Delete</button>
@@ -254,23 +254,23 @@ function PollCard({ poll, user, onVote, onDelete }) {
               key={opt.id}
               onClick={() => onVote(opt.id)}
               className={`relative w-full text-left rounded-xl border px-3 py-2 overflow-hidden transition ${
-                isMine ? 'border-gold-400/60 bg-gold-500/10' : 'border-white/10 bg-white/3 hover:bg-white/5'
+                isMine ? 'border-gold-400/60 bg-gold-500/10' : 'border-forest-500/15 bg-white hover:bg-forest-600/8'
               }`}
             >
               <div className="absolute inset-y-0 left-0 bg-gold-500/10" style={{ width: `${pct}%` }} />
               <div className="relative flex items-center justify-between text-sm">
-                <span className="text-white">
-                  {isMine && <span className="text-gold-400 mr-2">✓</span>}
+                <span className="text-ink">
+                  {isMine && <span className="text-gold-700 mr-2">✓</span>}
                   {opt.text}
                 </span>
-                <span className="text-xs text-slate-400 font-mono">{pct}% · {count}</span>
+                <span className="text-xs text-ink-soft font-mono">{pct}% · {count}</span>
               </div>
             </button>
           );
         })}
       </div>
       {myVote && (
-        <p className="text-xs text-slate-500 italic mt-2">Click another option to change your vote.</p>
+        <p className="text-xs text-ink-muted italic mt-2">Click another option to change your vote.</p>
       )}
     </GlassCard>
   );
@@ -330,11 +330,11 @@ function PollsPanel({ groupId, user, isMember }) {
       )}
 
       {loading ? (
-        <p className="text-sm text-slate-400">Loading…</p>
+        <p className="text-sm text-ink-soft">Loading…</p>
       ) : polls.length === 0 ? (
         <GlassCard className="text-center">
           <div className="text-3xl mb-2">📊</div>
-          <p className="text-slate-400 text-sm">No polls yet{isMember ? ' — start one to see what the group thinks' : ''}.</p>
+          <p className="text-ink-soft text-sm">No polls yet{isMember ? ' — start one to see what the group thinks' : ''}.</p>
         </GlassCard>
       ) : (
         <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="space-y-4">
@@ -406,8 +406,8 @@ export default function GroupDetailPage() {
   const isCreator = isCustom && user?.id === group?.creatorId;
   const canDelete = isCustom && (isAdmin || (isCreator && otherMembersCount === 0));
 
-  if (loadingGroup && !group) return <div className="text-center py-20 text-slate-400">Loading…</div>;
-  if (!group) return <div className="text-center py-20 text-slate-400">Group not found</div>;
+  if (loadingGroup && !group) return <div className="text-center py-20 text-ink-soft">Loading…</div>;
+  if (!group) return <div className="text-center py-20 text-ink-soft">Group not found</div>;
 
   const join = async () => {
     setBusyJoin(true);
@@ -467,7 +467,7 @@ export default function GroupDetailPage() {
 
   return (
     <motion.div {...pageTransition}>
-      <Link to="/groups" className="text-gold-400 hover:text-gold-300 text-sm mb-4 inline-block">&larr; All Groups</Link>
+      <Link to="/groups" className="text-gold-700 hover:text-gold-300 text-sm mb-4 inline-block">&larr; All Groups</Link>
 
       <div className="h-28 rounded-2xl overflow-hidden mb-6">
         <img src={group.coverImage} alt={group.name} className="w-full h-full object-cover" />
@@ -475,9 +475,9 @@ export default function GroupDetailPage() {
 
       <div className="flex items-start justify-between gap-4 flex-wrap mb-6">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-heading font-bold text-white">{group.emoji ? `${group.emoji} ` : ''}{group.name}</h1>
-          <p className="text-slate-400 text-sm mt-1">{group.description}</p>
-          <div className="flex gap-3 mt-2 text-xs text-slate-500 items-center flex-wrap">
+          <h1 className="text-2xl font-heading font-bold text-ink">{group.emoji ? `${group.emoji} ` : ''}{group.name}</h1>
+          <p className="text-ink-soft text-sm mt-1">{group.description}</p>
+          <div className="flex gap-3 mt-2 text-xs text-ink-muted items-center flex-wrap">
             <span>👥 {memberships.length} joined on site</span>
             {isCustom ? (
               <Badge variant="gold" size="sm">✨ Custom</Badge>

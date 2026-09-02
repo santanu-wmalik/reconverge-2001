@@ -1,7 +1,14 @@
 import { motion } from 'framer-motion';
 import { fadeInUp } from '../../utils/animationVariants';
 
-export default function SectionHeading({ title, subtitle, centered = true, light = false }) {
+// rect1an-style section heading:
+//   ─── EYEBROW IN SMALL CAPS ───
+//   Italic serif title in forest green
+//   Muted subtitle
+//
+// `eyebrow` is optional. In dark shells (portal/admin) the title falls back
+// to the original gold gradient via .gradient-text's dark: variant.
+export default function SectionHeading({ title, subtitle, eyebrow, centered = true, light = false }) {
   return (
     <motion.div
       variants={fadeInUp}
@@ -10,21 +17,23 @@ export default function SectionHeading({ title, subtitle, centered = true, light
       viewport={{ once: true }}
       className={`mb-12 ${centered ? 'text-center' : ''}`}
     >
+      {eyebrow && (
+        <div className={`mb-3 ${centered ? 'flex justify-center' : ''}`}>
+          <span className="eyebrow">{eyebrow}</span>
+        </div>
+      )}
       <h2
-        className={`text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4 ${
+        className={`text-4xl md:text-5xl lg:text-6xl font-heading font-medium italic mb-3 leading-tight ${
           light ? 'text-white' : 'gradient-text'
         }`}
       >
         {title}
       </h2>
       {subtitle && (
-        <p className="text-slate-400 text-lg max-w-2xl mx-auto">{subtitle}</p>
+        <p className="text-ink-muted dark:text-slate-400 text-base md:text-lg max-w-2xl mx-auto font-serif">
+          {subtitle}
+        </p>
       )}
-      <div className="mt-4 flex items-center justify-center gap-2">
-        <div className="h-0.5 w-12 bg-gold-500/50 rounded-full" />
-        <div className="h-1.5 w-1.5 bg-gold-500 rounded-full" />
-        <div className="h-0.5 w-12 bg-gold-500/50 rounded-full" />
-      </div>
     </motion.div>
   );
 }

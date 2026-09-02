@@ -1,31 +1,35 @@
-import { motion } from 'framer-motion';
 import { cn } from '../../utils/cn';
 
+// Binder-style tabs (matches BinderTabs in the shells and the Our Journey
+// filters): tabs sit on a rail line, the active one shares the page's cream
+// background and opens into the content below. ONE row on phones — tighter
+// type, no icons below sm; icons and full spacing return from sm:.
 export default function Tabs({ tabs, activeTab, onChange, className }) {
   return (
-    <div className={cn('flex gap-1 p-1 bg-white/5 rounded-xl overflow-x-auto', className)}>
-      {tabs.map((tab) => (
-        <button
-          key={tab.id || tab}
-          onClick={() => onChange(tab.id || tab)}
-          className={cn(
-            'relative px-4 py-2 text-sm font-medium rounded-lg transition-colors whitespace-nowrap',
-            (tab.id || tab) === activeTab ? 'text-white' : 'text-slate-400 hover:text-slate-200'
-          )}
-        >
-          {(tab.id || tab) === activeTab && (
-            <motion.div
-              layoutId="activeTab"
-              className="absolute inset-0 bg-primary-700/60 rounded-lg"
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            />
-          )}
-          <span className="relative z-10 flex items-center gap-2">
-            {tab.icon && <span>{tab.icon}</span>}
-            {tab.label || tab}
-          </span>
-        </button>
-      ))}
+    <div className={cn('border-b border-forest-500/25', className)}>
+      <div className="flex flex-nowrap items-end gap-x-0.5 sm:gap-x-1 pt-2">
+        {tabs.map((tab) => {
+          const id = tab.id || tab;
+          const active = id === activeTab;
+          return (
+            <button
+              key={id}
+              onClick={() => onChange(id)}
+              aria-pressed={active}
+              className={cn(
+                'relative min-w-0 flex items-center justify-center gap-1.5 px-1.5 sm:px-4 py-2 rounded-t-lg border border-b-0',
+                'text-[9px] sm:text-[11px] font-semibold uppercase tracking-[0.04em] sm:tracking-[0.08em] whitespace-nowrap transition-colors',
+                active
+                  ? '-mb-px z-10 bg-cream-100 border-forest-500/25 text-forest-700 pb-[11px]'
+                  : 'bg-white/70 border-forest-500/15 text-ink-soft hover:bg-white hover:text-forest-700'
+              )}
+            >
+              {tab.icon && <span aria-hidden="true" className="hidden sm:inline">{tab.icon}</span>}
+              <span className="truncate">{tab.label || tab}</span>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }

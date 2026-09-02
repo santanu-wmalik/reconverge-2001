@@ -501,6 +501,8 @@ const isPublicReq = (req) => {
   const { method, path } = req;
   if (path === '/api/_health') return true;
   if (path.startsWith('/api/auth/')) return true;
+  // PII-free aggregates for the landing page (server/public.js).
+  if (method === 'GET' && path.startsWith('/api/public/')) return true;
   if (method === 'GET'  && path === '/api/announcements') return true;
   if (method === 'POST' && path === '/api/rsvps') return true;
   return false;

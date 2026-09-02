@@ -11,8 +11,8 @@ export default function NotFoundPage() {
         className="text-center"
       >
         <div className="text-8xl md:text-9xl font-heading font-bold gradient-text mb-4">404</div>
-        <h1 className="text-2xl md:text-3xl font-heading text-white mb-3">Page Not Found</h1>
-        <p className="text-slate-400 mb-8 max-w-md mx-auto">
+        <h1 className="text-2xl md:text-3xl font-heading text-ink dark:text-white mb-3">Page Not Found</h1>
+        <p className="text-ink-muted dark:text-slate-400 mb-8 max-w-md mx-auto">
           Looks like this page went back to campus and forgot to return. Let's get you back on track.
         </p>
         <Link to="/">

@@ -31,7 +31,7 @@ function CopyChip({ value, label }) {
       type="button"
       onClick={copy}
       title={`Copy ${label}`}
-      className="ml-2 text-[11px] px-2 py-0.5 rounded border border-white/10 text-slate-400 hover:text-white hover:border-white/30 transition"
+      className="ml-2 text-[11px] px-2 py-0.5 rounded border border-forest-500/15 text-ink-soft hover:text-ink hover:border-forest-500/40 transition"
     >
       {copied ? '✓ copied' : 'copy'}
     </button>
@@ -40,9 +40,9 @@ function CopyChip({ value, label }) {
 
 function DetailRow({ label, value, mono = false, copyable = false }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-2 py-2 border-b border-white/5 last:border-b-0">
-      <span className="text-xs text-slate-400 uppercase tracking-wider">{label}</span>
-      <span className={`text-sm text-white text-right break-all ${mono ? 'font-mono' : ''}`}>
+    <div className="flex flex-wrap items-center justify-between gap-2 py-2 border-b border-forest-500/15 last:border-b-0">
+      <span className="text-xs text-ink-soft uppercase tracking-wider">{label}</span>
+      <span className={`text-sm text-ink text-right break-all ${mono ? 'font-mono' : ''}`}>
         {value}
         {copyable && <CopyChip value={value} label={label} />}
       </span>
@@ -109,11 +109,11 @@ export default function MyPaymentsPage() {
         <GlassCard>
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="text-xs uppercase tracking-wider text-slate-400">Registration Fee</p>
-              <p className="text-2xl font-heading font-bold text-gold-400">
+              <p className="text-xs uppercase tracking-wider text-ink-soft">Registration Fee</p>
+              <p className="text-2xl font-heading font-bold text-gold-700">
                 ₹{totalDue.toLocaleString('en-IN')}
               </p>
-              <p className="text-[11px] text-slate-500 mt-1">
+              <p className="text-[11px] text-ink-muted mt-1">
                 ₹{selfFee.toLocaleString('en-IN')} self
                 {familyCount > 0 && ` + ₹${EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')} × ${familyCount} family`}
               </p>
@@ -126,14 +126,14 @@ export default function MyPaymentsPage() {
             </Link>
           )}
           {status.key === 'awaiting' && (
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-ink-soft">
               Registered ✅ — transfer the fee to the batch account below and paste the transaction
               reference in Step 4.
             </p>
           )}
           {status.key === 'pending' && (
-            <p className="text-xs text-slate-400">
-              Payment UID on file: <span className="text-gold-400 font-mono break-all">{user?.paymentUid}</span>. The
+            <p className="text-xs text-ink-soft">
+              Payment UID on file: <span className="text-gold-700 font-mono break-all">{user?.paymentUid}</span>. The
               Finance Committee is reconciling with the bank statement — status flips to Paid
               once matched.
             </p>
@@ -160,7 +160,7 @@ export default function MyPaymentsPage() {
                 ? 'border-red-500/30 bg-red-500/5 text-red-200'
                 : status.key === 'paid'
                   ? 'border-emerald-500/25 bg-emerald-500/5 text-emerald-100'
-                  : 'border-white/10 bg-white/5 text-slate-300'
+                  : 'border-forest-500/15 bg-white text-ink-soft'
             }`}>
               <p className="text-[10px] uppercase tracking-wider opacity-70 mb-1">
                 Note from Finance Committee
@@ -178,15 +178,15 @@ export default function MyPaymentsPage() {
         <GlassCard className="border-emerald-500/20">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="text-xs uppercase tracking-wider text-slate-400">Give Back (Optional)</p>
-              <p className="text-lg font-heading font-bold text-white leading-tight">
+              <p className="text-xs uppercase tracking-wider text-ink-soft">Give Back (Optional)</p>
+              <p className="text-lg font-heading font-bold text-ink leading-tight">
                 {healthCentreProject.name}
               </p>
-              <p className="text-[11px] text-slate-500 mt-1">New Health Centre at NIT Calicut</p>
+              <p className="text-[11px] text-ink-muted mt-1">New Health Centre at NIT Calicut</p>
             </div>
             <Badge size="sm">Voluntary</Badge>
           </div>
-          <p className="text-xs text-slate-400 mb-3">
+          <p className="text-xs text-ink-soft mb-3">
             Separate from your registration fee. Contributions route through the NITCAA project
             account. Wall of Honor recognition at ₹1 lakh+.
           </p>
@@ -197,10 +197,10 @@ export default function MyPaymentsPage() {
       </div>
 
       {/* ─── Sequential registration checklist ───────────────────────── */}
-      <h2 className="text-xl font-heading font-bold text-white mb-1">
+      <h2 className="text-xl font-heading font-bold text-ink mb-1">
         Step-by-step: pay your registration fee
       </h2>
-      <p className="text-slate-400 text-sm mb-6">
+      <p className="text-ink-soft text-sm mb-6">
         Do these in order. You can pause after any step and come back — nothing here is time-boxed
         beyond the reunion date.
       </p>
@@ -213,11 +213,11 @@ export default function MyPaymentsPage() {
           title="Complete your profile"
           body={
             status.step > 1 ? (
-              <p className="text-sm text-slate-300">
-                Registered as <span className="text-gold-400">{user?.registrationId || user?.email}</span>. ✓
+              <p className="text-sm text-ink-soft">
+                Registered as <span className="text-gold-700">{user?.registrationId || user?.email}</span>. ✓
               </p>
             ) : (
-              <div className="text-sm text-slate-300 space-y-2">
+              <div className="text-sm text-ink-soft space-y-2">
                 <p>Registration isn't complete yet. Finish that first so we know how many family
                   members you're bringing (it affects the amount).</p>
                 <Link to="/register">
@@ -234,8 +234,8 @@ export default function MyPaymentsPage() {
           active={status.step === 2}
           title="Confirm the amount you owe"
           body={
-            <div className="text-sm text-slate-300 space-y-2">
-              <div className="rounded-lg border border-white/10 bg-white/3 p-3">
+            <div className="text-sm text-ink-soft space-y-2">
+              <div className="rounded-lg border border-forest-500/15 bg-white p-3">
                 <div className="flex items-center justify-between">
                   <span>Self ({user?.name || 'you'})</span>
                   <span className="font-mono">₹{selfFee.toLocaleString('en-IN')}</span>
@@ -246,14 +246,14 @@ export default function MyPaymentsPage() {
                     <span className="font-mono">₹{familyFee.toLocaleString('en-IN')}</span>
                   </div>
                 )}
-                <div className="flex items-center justify-between mt-2 pt-2 border-t border-white/5 text-white font-semibold">
+                <div className="flex items-center justify-between mt-2 pt-2 border-t border-forest-500/15 text-ink font-semibold">
                   <span>Total due</span>
-                  <span className="font-mono text-gold-400">₹{totalDue.toLocaleString('en-IN')}</span>
+                  <span className="font-mono text-gold-700">₹{totalDue.toLocaleString('en-IN')}</span>
                 </div>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-ink-muted">
                 If your family count is wrong, fix it in{' '}
-                <Link to="/profile/edit" className="text-gold-400 hover:text-gold-300 underline">
+                <Link to="/profile/edit" className="text-gold-700 hover:text-gold-300 underline">
                   Edit Profile
                 </Link>{' '}
                 before paying — the Finance Committee reconciles against this number.
@@ -268,7 +268,7 @@ export default function MyPaymentsPage() {
           active={status.step === 3}
           title="Transfer to the batch bank account"
           body={
-            <div className="text-sm text-slate-300 space-y-3">
+            <div className="text-sm text-ink-soft space-y-3">
               <div className="rounded-lg border border-gold-500/30 bg-gold-500/5 p-4">
                 <DetailRow label="Beneficiary" value={batchBankAccount.beneficiary} />
                 <DetailRow label="Account No" value={batchBankAccount.accountNumber} mono copyable />
@@ -277,17 +277,17 @@ export default function MyPaymentsPage() {
                 <DetailRow label="Address" value={batchBankAccount.branchAddress} />
                 <DetailRow label="Supports" value={batchBankAccount.supports.join(' · ')} />
               </div>
-              <p className="text-xs text-slate-400">
-                <span className="font-semibold text-gold-400">Important:</span>{' '}
+              <p className="text-xs text-ink-soft">
+                <span className="font-semibold text-gold-700">Important:</span>{' '}
                 {batchBankAccount.paymentReferenceHint}
                 {user?.registrationId && (
                   <>
-                    {' '}Yours is <span className="font-mono text-white">{user.registrationId}</span>
+                    {' '}Yours is <span className="font-mono text-ink">{user.registrationId}</span>
                     <CopyChip value={user.registrationId} label="Registration ID" />.
                   </>
                 )}
               </p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-ink-muted">
                 NEFT / RTGS / IMPS credit within a few hours. UPI is instant but has a daily cap
                 (usually ₹1 lakh) — plan accordingly if your family total exceeds that.
               </p>
@@ -301,10 +301,10 @@ export default function MyPaymentsPage() {
           active={status.step === 4}
           title="Paste your transaction reference here"
           body={
-            <div className="text-sm text-slate-300 space-y-3">
+            <div className="text-sm text-ink-soft space-y-3">
               <p>
                 After the transfer, your bank / UPI app will show a{' '}
-                <span className="text-white">transaction reference</span> (also called UTR / RRN /
+                <span className="text-ink">transaction reference</span> (also called UTR / RRN /
                 Txn ID). Paste it below so the Finance Committee can match your payment.
               </p>
               <div className="flex flex-col sm:flex-row gap-2">
@@ -323,8 +323,8 @@ export default function MyPaymentsPage() {
                 </Button>
               </div>
               {user?.paymentUid && (
-                <p className="text-xs text-slate-500">
-                  Current on file: <span className="text-slate-300 font-mono">{user.paymentUid}</span>
+                <p className="text-xs text-ink-muted">
+                  Current on file: <span className="text-ink-soft font-mono">{user.paymentUid}</span>
                 </p>
               )}
             </div>
@@ -342,7 +342,7 @@ export default function MyPaymentsPage() {
                 ✓ Verified. Your Registration Fee is fully settled. Thank you!
               </p>
             ) : (
-              <p className="text-sm text-slate-300">
+              <p className="text-sm text-ink-soft">
                 The Finance Committee reconciles bank statements periodically (usually within
                 48 hours). You'll see the status card at the top flip to <span className="text-emerald-300">Paid &amp; Verified</span> once matched — no further action from your side.
               </p>
@@ -352,10 +352,10 @@ export default function MyPaymentsPage() {
       </ol>
 
       {/* ─── Give Back — condensed ───────────────────────────────────── */}
-      <h2 className="text-xl font-heading font-bold text-white mb-1">
+      <h2 className="text-xl font-heading font-bold text-ink mb-1">
         Give Back — optional contribution
       </h2>
-      <p className="text-slate-400 text-sm mb-6">
+      <p className="text-ink-soft text-sm mb-6">
         Independent of your registration fee. Our batch is rallying behind NITCAA's flagship
         project — the new on-campus Health Centre.
       </p>
@@ -363,11 +363,11 @@ export default function MyPaymentsPage() {
       <div className="grid md:grid-cols-3 gap-4 mb-6">
         <MiniStep n={1} title="Transfer to NITCAA">
           Use the domestic (Indian) or FCRA (international) channel on the Give Back page. Quote
-          the purpose <span className="text-gold-400">"REC 2001 Batch — Health Centre"</span>.
+          the purpose <span className="text-gold-700">"REC 2001 Batch — Health Centre"</span>.
         </MiniStep>
         <MiniStep n={2} title="Submit your details">
           Fill the batch Google Form (circulated by the Finance Committee) OR email{' '}
-          <span className="text-gold-400">{healthCentreProject.contactEmail}</span>. Include name,
+          <span className="text-gold-700">{healthCentreProject.contactEmail}</span>. Include name,
           branch, phone, amount, txn ref, PAN (for 80G) or passport (NRI).
         </MiniStep>
         <MiniStep n={3} title="Receipt & recognition">
@@ -385,14 +385,14 @@ export default function MyPaymentsPage() {
       </Link>
 
       {/* ─── Help ────────────────────────────────────────────────────── */}
-      <GlassCard className="mt-12 border-white/10">
+      <GlassCard className="mt-12 border-forest-500/15">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-lg bg-white border border-forest-500/15 flex items-center justify-center flex-shrink-0">
             🙋
           </div>
           <div className="text-sm">
-            <h4 className="text-white font-semibold mb-1">Need help with a payment?</h4>
-            <p className="text-slate-400">
+            <h4 className="text-ink font-semibold mb-1">Need help with a payment?</h4>
+            <p className="text-ink-soft">
               If your payment doesn't get verified within 48 hours, or the amount / family count
               looks wrong, reach out to the Finance Committee on the volunteers WhatsApp group
               (Shyam / Mahroof) with your Registration ID and transaction reference. We'll sort
@@ -415,7 +415,7 @@ function Step({ n, done, active, title, body }) {
             ? 'border-emerald-500/25 bg-emerald-500/[0.03]'
             : active
               ? 'border-gold-500/40 bg-gold-500/[0.04]'
-              : 'border-white/5'
+              : 'border-forest-500/15'
         }`}
       >
         <div className="flex items-start gap-4">
@@ -425,14 +425,14 @@ function Step({ n, done, active, title, body }) {
                 ? 'bg-emerald-500 text-navy-950'
                 : active
                   ? 'bg-gold-500 text-navy-950'
-                  : 'bg-white/10 text-slate-400'
+                  : 'bg-cream-200 text-ink-soft'
             }`}
           >
             {done ? '✓' : n}
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap mb-2">
-              <h3 className="text-white font-semibold">{title}</h3>
+              <h3 className="text-ink font-semibold">{title}</h3>
               {active && !done && <Badge variant="gold" size="sm">Current step</Badge>}
               {done && <Badge variant="success" size="sm">Done</Badge>}
             </div>
@@ -448,12 +448,12 @@ function MiniStep({ n, title, children }) {
   return (
     <GlassCard>
       <div className="flex items-start gap-3">
-        <div className="w-7 h-7 rounded-full bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-xs font-semibold text-gold-300 flex-shrink-0">
+        <div className="w-7 h-7 rounded-full bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-xs font-semibold text-gold-700 flex-shrink-0">
           {n}
         </div>
         <div>
-          <h4 className="text-white font-semibold text-sm mb-1">{title}</h4>
-          <p className="text-slate-400 text-sm leading-relaxed">{children}</p>
+          <h4 className="text-ink font-semibold text-sm mb-1">{title}</h4>
+          <p className="text-ink-soft text-sm leading-relaxed">{children}</p>
         </div>
       </div>
     </GlassCard>
