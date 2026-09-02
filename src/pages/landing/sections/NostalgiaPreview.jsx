@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import ProtectedImage from '../../../components/shared/ProtectedImage';
-import { galleryPhotos } from '../../../data/galleryPhotos';
+import { galleryPhotos, scanThumb } from '../../../data/galleryPhotos';
 
 // "Alumni Vault" — rect1an's two-row drifting photo wall of college-day
 // photos. Rows move in opposite directions.
@@ -23,7 +23,7 @@ function Row({ urls, reverse }) {
 }
 
 export default function NostalgiaPreview() {
-  const urls = galleryPhotos.map((p) => p.url);
+  const urls = galleryPhotos.map((p) => scanThumb(p.url));
   const half = Math.ceil(urls.length / 2);
   const rowA = urls.slice(0, half);
   const rowB = urls.slice(half).length ? urls.slice(half) : urls;

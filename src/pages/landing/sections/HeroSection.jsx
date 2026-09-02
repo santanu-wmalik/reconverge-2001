@@ -12,8 +12,8 @@ import { staggerContainer, staggerItem } from '../../../utils/animationVariants'
 //     its own block directly beneath the panel.
 // Both images are fixed (no rotation).
 
-const RIGHT_IMAGE = '/images/campus/Admin-building.png';
-const LEFT_IMAGE  = '/images/campus/Rajpath.png';
+const RIGHT_IMAGE = '/images/campus/Admin-building-web.jpg'; // 1600px web build of the 3 MB PNG
+const LEFT_IMAGE  = '/images/campus/Rajpath-web.jpg';
 
 export default function HeroSection() {
   const daysLeft = Math.max(0, Math.ceil((EARLY_BIRD_DEADLINE - Date.now()) / 86400000));

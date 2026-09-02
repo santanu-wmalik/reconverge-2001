@@ -102,3 +102,11 @@ export const galleryCategories = [
   { id: 'events', label: 'Events' },
   { id: 'campus', label: 'Campus' },
 ];
+
+// Low-bandwidth thumbnail for a local scan (public/gallery-scans/thumbs/*,
+// 480px JPEGs generated offline). External URLs pass through unchanged. Use
+// for the drifting landing-page strips; full-size stays for the gallery.
+export const scanThumb = (url) =>
+  url.startsWith(SCANS) && !url.includes('/thumbs/')
+    ? url.replace(SCANS, `${SCANS}thumbs/`).replace(/\.(jpe?g|png)(?=$|\?)/i, '.jpg')
+    : url;

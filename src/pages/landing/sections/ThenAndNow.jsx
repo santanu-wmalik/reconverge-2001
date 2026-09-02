@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { galleryPhotos } from '../../../data/galleryPhotos';
+import { galleryPhotos, scanThumb } from '../../../data/galleryPhotos';
 import { publicApi } from '../../../services/api';
 import ProtectedImage from '../../../components/shared/ProtectedImage';
 import { useAuth } from '../../../context/AuthContext';
@@ -57,7 +57,7 @@ export default function ThenAndNow() {
     return () => { cancelled = true; };
   }, []);
 
-  const thenUrls = [...galleryPhotos.map((p) => p.url), ...data.then.map((p) => p.url)];
+  const thenUrls = [...galleryPhotos.map((p) => scanThumb(p.url)), ...data.then.map((p) => p.url)];
   const nowUrls = data.now.map((p) => p.url);
 
   return (

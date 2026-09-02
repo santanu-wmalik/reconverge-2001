@@ -130,17 +130,53 @@ export function mountPublic(app) {
     }
   });
 
+  // GET /api/public/photo/:id — a bandwidth-friendly thumbnail of a gallery
+  // photo (stored as a full-size data URL in Postgres). Downscaled to ≤480px
+  // wide JPEG (quality 70) with sharp, memoised in-process, and served with a
+  // long client cache. ?w=960 serves a 2× variant for hi-dpi screens.
+  const thumbCache = new Map(); // `${id}:${w}` -> { type, buf }
+  const THUMB_CACHE_MAX = 80;
+  app.get('/api/public/photo/:id', async (req, res, next) => {
+    try {
+      const w = Math.min(960, Math.max(120, parseInt(req.query.w, 10) || 480));
+      const key = `${req.params.id}:${w}`;
+      let hit = thumbCache.get(key);
+      if (!hit) {
+        const r = await query('SELECT url FROM photos WHERE id = $1', [req.params.id]);
+        const raw = r.rows[0]?.url || '';
+        const m = /^data:[\w/+.-]+;base64,(.+)$/s.exec(raw);
+        if (!m) return res.status(404).end();
+        const { default: sharp } = await import('sharp');
+        const buf = await sharp(Buffer.from(m[1], 'base64'))
+          .rotate() // honour EXIF orientation
+          .resize({ width: w, withoutEnlargement: true })
+          .jpeg({ quality: 70, mozjpeg: true })
+          .toBuffer();
+        hit = { type: 'image/jpeg', buf };
+        if (thumbCache.size >= THUMB_CACHE_MAX) thumbCache.delete(thumbCache.keys().next().value);
+        thumbCache.set(key, hit);
+      }
+      res.set('Cache-Control', 'public, max-age=86400');
+      res.type(hit.type);
+      res.send(hit.buf);
+    } catch (err) {
+      next(err);
+    }
+  });
+
   // GET /api/public/then-and-now — the two landing-page photo strips.
-  // Only url/caption/era leave the server (no uploader identity). Capped per
-  // era because photos are stored as data URLs: 12 × ~300 KB is already a
-  // few MB, and this is unauthenticated traffic on a metered host.
+  // Only id/caption/era leave the server (no uploader identity). The `url` is
+  // a pointer at the thumbnail endpoint below, NOT the stored data URL —
+  // photos average ~250 KB each, so inlining 24 of them made this one JSON
+  // response several MB and unusable on mobile data. The thumbnails are
+  // ~10-30 KB each and lazy-load per image instead.
   app.get('/api/public/then-and-now', async (_req, res, next) => {
     try {
       const LIMIT = 12;
-      const pick = (rows) => rows.map((p) => ({ id: p.id, url: p.url, caption: p.caption || '', era: p.era }));
+      const pick = (rows) => rows.map((p) => ({ id: p.id, url: `/api/public/photo/${p.id}`, caption: p.caption || '', era: p.era }));
       const [now, then] = await Promise.all([
-        query(`SELECT id, url, caption, era FROM photos WHERE era = 'now' ORDER BY created_at DESC LIMIT $1`, [LIMIT]),
-        query(`SELECT id, url, caption, era FROM photos WHERE era IS DISTINCT FROM 'now' ORDER BY created_at DESC LIMIT $1`, [LIMIT]),
+        query(`SELECT id, caption, era FROM photos WHERE era = 'now' ORDER BY created_at DESC LIMIT $1`, [LIMIT]),
+        query(`SELECT id, caption, era FROM photos WHERE era IS DISTINCT FROM 'now' ORDER BY created_at DESC LIMIT $1`, [LIMIT]),
       ]);
       res.set('Cache-Control', 'public, max-age=300');
       res.json({ then: pick(then.rows), now: pick(now.rows) });
