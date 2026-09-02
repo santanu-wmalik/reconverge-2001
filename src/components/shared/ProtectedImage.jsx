@@ -8,7 +8,7 @@
  * 4. CSS user-select: none and pointer-events: none on the <img>
  * 5. Image wrapped so the <img> src isn't the direct click target
  */
-export default function ProtectedImage({ src, alt, className, imgClassName, onClick, ...rest }) {
+export default function ProtectedImage({ src, alt, className, imgClassName, onClick, loading = 'lazy', ...rest }) {
   const handleContextMenu = (e) => {
     e.preventDefault();
     return false;
@@ -36,7 +36,7 @@ export default function ProtectedImage({ src, alt, className, imgClassName, onCl
         onContextMenu={handleContextMenu}
         onDragStart={handleDragStart}
         style={{ WebkitUserDrag: 'none', pointerEvents: 'none' }}
-        loading="lazy"
+        loading={loading}
       />
       {/* Transparent overlay — blocks "Save Image As" on right-click */}
       <div className="absolute inset-0 z-[1]" aria-hidden="true" />

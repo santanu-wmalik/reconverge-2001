@@ -32,11 +32,11 @@ function Strip({ label, sub, urls, reverse = false, empty }) {
       <div className="film-strip-h py-5">
         <div
           className={`flex items-center gap-4 w-max px-4 ${reverse ? 'animate-marquee-reverse' : 'animate-marquee'}`}
-          style={{ animationDuration: `${Math.max(40, urls.length * 6)}s` }}
+          style={{ animationDuration: `${Math.min(70, Math.max(20, urls.length * 2.5))}s` }}
         >
           {loop.map((url, i) => (
             <div key={i} className="flex-shrink-0 border border-white/10 bg-black p-1">
-              <ProtectedImage src={url} alt="" imgClassName="h-28 md:h-32 w-auto object-cover" />
+              <ProtectedImage src={url} alt="" loading="eager" imgClassName="h-28 md:h-32 w-auto object-cover" />
             </div>
           ))}
         </div>

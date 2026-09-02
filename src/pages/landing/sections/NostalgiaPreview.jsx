@@ -10,11 +10,11 @@ function Row({ urls, reverse }) {
     <div className="overflow-hidden">
       <div
         className={`flex gap-3 w-max ${reverse ? 'animate-marquee-reverse' : 'animate-marquee'}`}
-        style={{ animationDuration: '110s' }}
+        style={{ animationDuration: '55s' }}
       >
         {loop.map((u, i) => (
           <div key={i} className="flex-shrink-0 bg-white p-1 shadow-md border border-forest-500/10">
-            <ProtectedImage src={u} alt="" imgClassName="h-32 md:h-36 w-auto object-cover" />
+            <ProtectedImage src={u} alt="" loading="eager" imgClassName="h-32 md:h-36 w-auto object-cover" />
           </div>
         ))}
       </div>
