@@ -33,7 +33,7 @@ function useCountdown(target) {
   };
 }
 
-function CopyChip({ value, label }) {
+function CopyChip({ value, label, className = '' }) {
   const [copied, setCopied] = useState(false);
   const copy = async () => {
     try {
@@ -47,7 +47,7 @@ function CopyChip({ value, label }) {
       type="button"
       onClick={copy}
       title={`Copy ${label}`}
-      className="ml-2 text-[11px] px-2 py-0.5 rounded border border-forest-500/15 text-ink-soft hover:text-ink hover:border-forest-500/40 transition"
+      className={`ml-2 text-[11px] px-2 py-0.5 rounded border transition ${className || 'border-forest-500/15 text-ink-soft hover:text-ink hover:border-forest-500/40'}`}
     >
       {copied ? '✓ copied' : 'copy'}
     </button>
@@ -277,13 +277,13 @@ export default function EarlyBirdPage() {
         <Row label="Address" value={batchBankAccount.branchAddress} />
         <Row label="Supports" value={batchBankAccount.supports.join(' · ')} />
       </GlassCard>
-      <p className="text-sm text-gold-700 mb-10">
-        <span className="font-semibold">Important:</span>{' '}
+      <p className="text-sm md:text-base text-ink bg-red-100 border border-red-300 rounded-xl px-4 py-3 mb-10">
+        <span className="font-semibold text-red-700">Important:</span>{' '}
         {batchBankAccount.paymentReferenceHint}
         {user?.registrationId && (
           <>
-            {' '}Yours is <span className="font-mono text-ink">{user.registrationId}</span>
-            <CopyChip value={user.registrationId} label="Registration ID" />.
+            {' '}Yours is <span className="font-mono font-semibold text-emerald-700">{user.registrationId}</span>
+            <CopyChip value={user.registrationId} label="Registration ID" className="bg-emerald-500 border-emerald-600 text-white font-semibold hover:bg-emerald-600" />
           </>
         )}
       </p>
