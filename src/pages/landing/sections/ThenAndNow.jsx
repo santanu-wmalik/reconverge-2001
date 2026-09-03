@@ -11,7 +11,7 @@ import { useAuth } from '../../../context/AuthContext';
 //   NOW  — uploads tagged 'now' (recent photos)
 // Every upload defaults to 'then'; admins re-tag from the gallery lightbox.
 
-function Strip({ label, sub, urls, reverse = false, empty }) {
+function Strip({ label, sub, urls, reverse = false, empty, secondsPerPhoto = 2.5, maxDuration = 70 }) {
   if (urls.length === 0) {
     return (
       <div className="px-4">
@@ -32,7 +32,7 @@ function Strip({ label, sub, urls, reverse = false, empty }) {
       <div className="film-strip-h py-5">
         <div
           className={`flex items-center gap-4 w-max px-4 ${reverse ? 'animate-marquee-reverse' : 'animate-marquee'}`}
-          style={{ animationDuration: `${Math.min(70, Math.max(20, urls.length * 2.5))}s` }}
+          style={{ animationDuration: `${Math.min(maxDuration, Math.max(20, urls.length * secondsPerPhoto))}s` }}
         >
           {loop.map((url, i) => (
             <div key={i} className="flex-shrink-0 border border-white/10 bg-black p-1">
@@ -78,6 +78,8 @@ export default function ThenAndNow() {
           label="Then · 2001"
           sub="the college days"
           urls={thenUrls}
+          secondsPerPhoto={5}
+          maxDuration={200}
           empty="No photos yet."
         />
         <Strip

@@ -114,7 +114,7 @@ export default function RollOfHonour() {
       {/* Medal cards */}
       <div className="text-center mb-4">
         <span className="eyebrow">Branch Leaderboard</span>
-        <p className="font-serif italic text-ink-muted text-sm mt-1">Top departments by sign-ups</p>
+        <p className="font-serif italic text-ink-muted text-sm mt-1">Top departments by paid registrations</p>
       </div>
       <motion.div
         initial={{ opacity: 0, y: 12 }}
@@ -122,7 +122,7 @@ export default function RollOfHonour() {
         viewport={{ once: true }}
         className="grid sm:grid-cols-3 gap-3 mb-8"
       >
-        {byBranch.slice(0, 3).map((b, i) => (
+        {[...byBranch].sort((p, q) => q.paid - p.paid || q.signedUp - p.signedUp).slice(0, 3).map((b, i) => (
           <div
             key={b.branch}
             className={`flex items-center justify-between px-5 py-4 bg-[#fbf7ea] border ${
@@ -136,7 +136,7 @@ export default function RollOfHonour() {
                 <p className="font-heading text-ink text-sm">{b.branch}</p>
               </div>
             </div>
-            <p className="font-heading text-3xl text-gold-600">{b.signedUp}</p>
+            <p className="font-heading text-3xl text-gold-600" title="Paid / signed up">{b.paid}<span className="text-lg text-ink-muted">/{b.signedUp}</span></p>
           </div>
         ))}
       </motion.div>

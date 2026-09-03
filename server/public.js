@@ -75,12 +75,13 @@ export function mountPublic(app) {
         if (row) {
           row.signedUp += 1;
           row.heads += 1 + fam;
-          if (isPaid(x.payment_status)) row.paid += 1;
+          if (PAID_ANY.has(x.payment_status)) row.paid += 1; // paid incl. pending verification
         }
       }
 
+      // Leaderboard ranks by PAID first, then sign-ups.
       const byBranch = Array.from(byBranchMap.values()).sort(
-        (p, q) => q.signedUp - p.signedUp || p.branch.localeCompare(q.branch)
+        (p, q) => q.paid - p.paid || q.signedUp - p.signedUp || p.branch.localeCompare(q.branch)
       );
 
       const roster = registered
