@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { EVENT_CONFIG, STATS, EARLY_BIRD_DEADLINE } from '../../../data/constants';
 import AnimatedCounter from '../../../components/shared/AnimatedCounter';
 import { staggerContainer, staggerItem } from '../../../utils/animationVariants';
+import { useAuth } from '../../../context/AuthContext';
 
 // rect1an-style hero.
 //   Desktop (md+): split — Rajpath under a forest tint on the left with a
@@ -16,6 +17,7 @@ const RIGHT_IMAGE = '/images/campus/Admin-building-web.jpg'; // 1600px web build
 const LEFT_IMAGE  = '/images/campus/Rajpath-web.jpg';
 
 export default function HeroSection() {
+  const { isAuthenticated } = useAuth();
   const daysLeft = Math.max(0, Math.ceil((EARLY_BIRD_DEADLINE - Date.now()) / 86400000));
   const earlyBirdOver = daysLeft === 0;
 
@@ -92,12 +94,14 @@ export default function HeroSection() {
               variants={staggerItem}
               className="w-full sm:w-auto flex flex-col sm:flex-row items-center justify-center md:justify-start gap-3 mb-3 md:mb-4"
             >
-              <Link
-                to="/register"
-                className="nav-caps w-[78%] max-w-[320px] sm:w-auto sm:max-w-none px-8 py-4 text-center border-2 border-transparent bg-gradient-to-b from-[#f7f9fb] via-[#cfd6de] to-[#9aa5b1] text-[#16202b] shadow-lg shadow-black/30 ring-1 ring-white/70 hover:from-white hover:via-[#dde3e9] hover:to-[#aab4bf] transition"
-              >
-                Sign Up
-              </Link>
+              {!isAuthenticated && (
+                <Link
+                  to="/register"
+                  className="nav-caps w-[78%] max-w-[320px] sm:w-auto sm:max-w-none px-8 py-4 text-center border-2 border-transparent bg-gradient-to-b from-[#f7f9fb] via-[#cfd6de] to-[#9aa5b1] text-[#16202b] shadow-lg shadow-black/30 ring-1 ring-white/70 hover:from-white hover:via-[#dde3e9] hover:to-[#aab4bf] transition"
+                >
+                  Sign Up
+                </Link>
+              )}
               <a
                 href="#event-highlights"
                 onClick={(e) => {
@@ -110,6 +114,7 @@ export default function HeroSection() {
               </a>
             </motion.div>
 
+            {!isAuthenticated && (
             <motion.div variants={staggerItem} className="mb-3 md:mb-4">
               <Link
                 to="/rsvp"
@@ -118,11 +123,12 @@ export default function HeroSection() {
                 Show Interest
               </Link>
             </motion.div>
+          )}
 
             {!earlyBirdOver && (
               <motion.div variants={staggerItem}>
                 <Link
-                  to="/register"
+                  to={isAuthenticated ? '/early-bird' : '/register'}
                   className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 min-h-[44px] sm:min-h-0 text-[11px] font-semibold bg-cream-50/10 border border-gold-400/50 text-gold-200 hover:bg-cream-50/15"
                 >
                   <span>🎟</span>
