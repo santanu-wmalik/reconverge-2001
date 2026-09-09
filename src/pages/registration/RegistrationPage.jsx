@@ -275,10 +275,10 @@ export default function RegistrationPage() {
             </div>
 
             <Input
-              label="Payment UID (transaction / UPI ref)"
+              label="Payment UID (transaction reference)"
               value={form.paymentUid}
               onChange={(e) => update('paymentUid', e.target.value)}
-              placeholder="Paste after bank / UPI transfer — or add later from your Profile"
+              placeholder="Paste after your bank transfer — or add later from your Profile"
             />
             <p className="text-xs text-ink-muted dark:text-slate-500 -mt-2">
               Payment goes direct to the REConverge 2001 batch bank account (the website does not collect payments). You can register first and add the Payment UID later from your Profile; status will stay "Unpaid" until the Finance Committee verifies.

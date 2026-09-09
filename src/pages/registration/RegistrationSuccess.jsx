@@ -19,7 +19,7 @@ export default function RegistrationSuccess() {
           <li className="flex gap-2"><span className="text-gold-700 dark:text-gold-400 mt-0.5">›</span><span>Your profile is live — head to <b>My Profile</b> to update any field at any time.</span></li>
           <li className="flex gap-2"><span className="text-gold-700 dark:text-gold-400 mt-0.5">›</span><span>Registration payment goes via bank transfer / SWIFT (not on the site). Paste the Payment UID onto your profile once you've paid; the Finance Committee verifies and flips your status to <b>Paid</b>.</span></li>
           <li className="flex gap-2"><span className="text-gold-700 dark:text-gold-400 mt-0.5">›</span><span>Accommodation is booked separately with Gokulam Grand via the AFC. See the <b>Stay</b> page for room types, rates and the booking contact.</span></li>
-          <li className="flex gap-2"><span className="text-gold-700 dark:text-gold-400 mt-0.5">›</span><span>Giving Back contributions are separate and routed through NITCAA — see the <b>Give Back</b> page.</span></li>
+          <li className="flex gap-2"><span className="text-gold-700 dark:text-gold-400 mt-0.5">›</span><span>Give Back: we're planning something new for the batch — details coming soon.</span></li>
         </ul>
       </GlassCard>
 

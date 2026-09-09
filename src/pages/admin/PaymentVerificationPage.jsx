@@ -351,7 +351,7 @@ export default function PaymentVerificationPage() {
                     placeholder={
                       actionKind === 'rejected'
                         ? 'e.g. UTR could not be matched on the bank statement — please double-check and update.'
-                        : 'e.g. Received ₹15,000 — ₹1,500 above the fee will be receipted as Give Back.'
+                        : 'e.g. Received ₹15,000 — ₹1,500 above the fee; we will adjust it later.'
                     }
                     className="w-full bg-white border border-forest-500/15 rounded-xl px-4 py-2.5 text-sm text-ink placeholder-ink-muted outline-none focus:border-gold-400/50 focus:ring-2 focus:ring-gold-400/20 focus:bg-white transition-all"
                   />

@@ -269,14 +269,16 @@ function StatPill({ label, value, active = false, onClick }) {
   );
 }
 
-function KindBadge({ kind }) {
+function TierBadge({ tier }) {
   const cfg =
-    kind === 'registered'
-      ? { label: 'Registered', cls: 'bg-emerald-500/15 text-emerald-300 border-emerald-400/30' }
-      : { label: 'RSVP', cls: 'bg-sky-500/15 text-sky-300 border-sky-400/30' };
+    tier === 'paid'
+      ? { label: 'Paid & Attending', cls: 'bg-emerald-500/15 text-emerald-700 border-emerald-500/40' }
+      : tier === 'signedUp'
+        ? { label: 'Signed Up', cls: 'bg-amber-500/15 text-amber-700 border-amber-500/40' }
+        : { label: 'Shown Interest', cls: 'bg-sky-500/15 text-sky-700 border-sky-500/40' };
   return (
     <span
-      className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${cfg.cls} flex-shrink-0`}
+      className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full border ${cfg.cls} flex-shrink-0 whitespace-nowrap`}
     >
       {cfg.label}
     </span>
@@ -297,7 +299,7 @@ function AttendeeCard({ a }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
             <p className="text-ink font-semibold leading-tight truncate">{a.name || '—'}</p>
-            <KindBadge kind={a.kind} />
+            <TierBadge tier={tierOf(a)} />
           </div>
           <p className="text-xs text-ink-soft mt-0.5 truncate">
             {a.branch || '—'}

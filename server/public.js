@@ -135,25 +135,38 @@ export function mountPublic(app) {
   // photo (stored as a full-size data URL in Postgres). Downscaled to ≤480px
   // wide JPEG (quality 70) with sharp, memoised in-process, and served with a
   // long client cache. ?w=960 serves a 2× variant for hi-dpi screens.
-  const thumbCache = new Map(); // `${id}:${w}` -> { type, buf }
+  const thumbCache = new Map(); // `id:w` -> { type, buf }
   const THUMB_CACHE_MAX = 80;
+  const inFlight = new Map(); // `id:w` -> Promise — dedupes a first-load burst
+
   app.get('/api/public/photo/:id', async (req, res, next) => {
     try {
       const w = Math.min(960, Math.max(120, parseInt(req.query.w, 10) || 480));
       const key = `${req.params.id}:${w}`;
       let hit = thumbCache.get(key);
       if (!hit) {
-        const r = await query('SELECT url FROM photos WHERE id = $1', [req.params.id]);
-        const raw = r.rows[0]?.url || '';
-        const m = /^data:[\w/+.-]+;base64,(.+)$/s.exec(raw);
-        if (!m) return res.status(404).end();
-        const { default: sharp } = await import('sharp');
-        const buf = await sharp(Buffer.from(m[1], 'base64'))
-          .rotate() // honour EXIF orientation
-          .resize({ width: w, withoutEnlargement: true })
-          .jpeg({ quality: 70, mozjpeg: true })
-          .toBuffer();
-        hit = { type: 'image/jpeg', buf };
+        // A cold landing page fires ~24 of these at once; each pulls a large
+        // row over the WAN link to Postgres. Share one generation per key so
+        // the burst can't exhaust the connection pool.
+        let job = inFlight.get(key);
+        if (!job) {
+          job = (async () => {
+            const r = await query('SELECT url FROM photos WHERE id = $1', [req.params.id]);
+            const raw = r.rows[0]?.url || '';
+            const m = /^data:[\w/+.-]+;base64,(.+)$/s.exec(raw);
+            if (!m) return null;
+            const { default: sharp } = await import('sharp');
+            const buf = await sharp(Buffer.from(m[1], 'base64'))
+              .rotate() // honour EXIF orientation
+              .resize({ width: w, withoutEnlargement: true })
+              .jpeg({ quality: 70, mozjpeg: true })
+              .toBuffer();
+            return { type: 'image/jpeg', buf };
+          })().finally(() => inFlight.delete(key));
+          inFlight.set(key, job);
+        }
+        hit = await job;
+        if (!hit) return res.status(404).end();
         if (thumbCache.size >= THUMB_CACHE_MAX) thumbCache.delete(thumbCache.keys().next().value);
         thumbCache.set(key, hit);
       }

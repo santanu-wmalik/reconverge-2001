@@ -266,7 +266,8 @@ export default function EarlyBirdPage() {
       {/* How to pay */}
       <h2 className="text-xl font-heading font-bold text-ink mb-1">How to pay</h2>
       <p className="text-ink-soft text-sm mb-4">
-        Direct bank transfer to the batch account. NEFT / RTGS / IMPS / UPI all work.
+        Direct bank transfer to the batch account. NEFT / RTGS / IMPS all work. We're working on
+        getting a UPI ID — until then, please send payments to the account below.
       </p>
       <GlassCard className="mb-6 border-gold-500/30 bg-gold-500/[0.03]">
         <Row label="Beneficiary" value={batchBankAccount.beneficiary} />
@@ -286,6 +287,12 @@ export default function EarlyBirdPage() {
             <CopyChip value={user.registrationId} label="Registration ID" className="bg-emerald-500 border-emerald-600 text-white font-semibold hover:bg-emerald-600" />
           </>
         )}
+      </p>
+      <p className="text-xs text-ink-soft rounded-lg border border-forest-500/20 bg-white px-3 py-2 -mt-6 mb-10">
+        <span className="font-semibold text-forest-700">Missed the remark?</span> If you couldn't
+        quote <span className="font-mono">SJ-2026-####</span> in the transfer note, that's
+        completely fine — just save your transaction reference on My Payments and the Finance
+        Committee will verify from that.
       </p>
 
       {/* Handoff to My Payments */}

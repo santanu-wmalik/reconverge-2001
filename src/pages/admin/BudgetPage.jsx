@@ -57,7 +57,7 @@ export default function BudgetPage() {
             <li>• Traditional Sadhya lunch</li>
             <li>• Campus day activities</li>
           </ul>
-          <p className="text-xs text-ink-muted mt-3 italic">Excludes: accommodation, travel, giving back</p>
+          <p className="text-xs text-ink-muted mt-3 italic">Excludes: accommodation, travel, Give Back (coming soon)</p>
         </GlassCard>
 
         <GlassCard>
@@ -141,8 +141,8 @@ export default function BudgetPage() {
               </div>
             </div>
             <p className="mt-3 text-xs text-ink-soft italic">
-              This account is for the REConverge 2001 registration fee only. Give Back
-              donations route through the NITCAA project account — see the Give Back page.
+              This account is for the REConverge 2001 registration fee only. Give Back is
+              being re-planned — details coming soon.
             </p>
           </div>
         )}

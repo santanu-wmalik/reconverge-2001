@@ -33,7 +33,7 @@ export const batchBankAccount = {
   branchPhones: ['9188937176', '9447788838'],
   accountType: 'SAVINGS / Association of Persons',
   openedOn: '2026-08-01',
-  supports: ['NEFT', 'RTGS', 'IMPS', 'UPI'],
+  supports: ['NEFT', 'RTGS', 'IMPS'],
   paymentReferenceHint: 'Quote your Registration ID (SJ-2026-####) in the transfer remarks.',
 };
 

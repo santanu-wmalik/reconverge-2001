@@ -90,7 +90,6 @@ async function main() {
   // Bind FIRST so port detection on Render passes even if DB is slow.
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`[server] REConverge 2001 listening on 0.0.0.0:${PORT}`);
-    console.log(`[server] DB target: postgres://${dbInfo.user}@${dbInfo.host}:${dbInfo.port}/${dbInfo.database}`);
   });
 
   try {

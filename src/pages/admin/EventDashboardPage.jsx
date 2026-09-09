@@ -5,7 +5,6 @@ import { formatCurrency, formatNumber, formatPercentage } from '../../utils/form
 import { alumniApi, rsvpApi, orderApi, itineraryApi } from '../../services/api';
 import { sponsors } from '../../data/sponsors';
 import { eventSchedule, eventDays } from '../../data/events';
-import { giveBackInitiatives } from '../../data/donationCampaigns';
 import { EVENT_CONFIG } from '../../data/constants';
 import GlassCard from '../../components/ui/GlassCard';
 import Badge from '../../components/ui/Badge';
@@ -178,7 +177,7 @@ export default function EventDashboardPage() {
           { icon: '🛍️', label: 'Merchandise Revenue', value: formatCurrency(orderTotal), sub: `${orderCount} order${orderCount !== 1 ? 's' : ''}` },
           { icon: '🤝', label: 'Sponsorship Raised', value: formatCurrency(sponsorshipTotal), sub: `${sponsors.length} sponsors` },
           { icon: '📅', label: 'Events Scheduled', value: eventSchedule.length, sub: `across ${eventDays.length} days` },
-          { icon: '💛', label: 'Give Back Initiatives', value: giveBackInitiatives.length, sub: `${giveBackInitiatives.filter((g) => g.status === 'active').length} active` },
+          { icon: '💛', label: 'Give Back', value: '—', sub: 'Coming soon' },
         ].map((stat) => (
           <motion.div key={stat.label} variants={staggerItem}>
             <GlassCard>
@@ -379,30 +378,14 @@ export default function EventDashboardPage() {
         </GlassCard>
       </div>
 
-      {/* === Give Back Initiatives === */}
+      {/* === Give Back === */}
       <div className="mb-6">
         <h2 className="text-lg font-heading font-bold text-ink mb-4 flex items-center gap-2">
-          <span className="text-gold-700">✦</span> Give Back Initiatives
+          <span className="text-gold-700">✦</span> Give Back
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {giveBackInitiatives.map((initiative) => {
-            const statusCfg = giveBackStatusConfig[initiative.status] || giveBackStatusConfig.discussion;
-            return (
-              <GlassCard key={initiative.id}>
-                <div className="flex items-start gap-3">
-                  <span className="text-2xl shrink-0">{initiative.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="text-sm font-semibold text-ink truncate">{initiative.title}</h3>
-                      <Badge variant={statusCfg.variant} size="sm" className="shrink-0">{statusCfg.label}</Badge>
-                    </div>
-                    <p className="text-xs text-ink-soft line-clamp-2">{initiative.description}</p>
-                  </div>
-                </div>
-              </GlassCard>
-            );
-          })}
-        </div>
+        <GlassCard>
+          <p className="text-sm text-ink-soft">We're planning something new for the batch's Give Back initiative — details coming soon…</p>
+        </GlassCard>
       </div>
     </motion.div>
   );

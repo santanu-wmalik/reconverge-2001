@@ -326,10 +326,10 @@ export default function EditProfile() {
         {/* Payment & ID */}
         <Section title="Payment & ID">
           <Input
-            label="Payment UID (transaction / UPI ref)"
+            label="Payment UID (transaction reference)"
             value={form.paymentUid}
             onChange={(e) => update('paymentUid', e.target.value)}
-            placeholder="Paste after bank / UPI transfer"
+            placeholder="Paste after your bank transfer"
           />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Select

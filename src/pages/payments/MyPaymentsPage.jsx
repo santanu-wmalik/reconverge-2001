@@ -10,11 +10,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import SectionHeading from '../../components/shared/SectionHeading';
 import { EVENT_CONFIG } from '../../data/constants';
-import {
-  batchBankAccount,
-  healthCentreProject,
-  eightyGEligibilityNote,
-} from '../../data/donationCampaigns';
+import { batchBankAccount } from '../../data/donationCampaigns';
 
 // ── copy helper ─────────────────────────────────────────────────────────
 function CopyChip({ value, label, className = '' }) {
@@ -82,7 +78,7 @@ export default function MyPaymentsPage() {
   const handleSaveUid = async () => {
     const trimmed = uid.trim();
     if (!trimmed) {
-      showToast('Please paste the transaction reference from your bank / UPI receipt', 'error');
+      showToast('Please paste the transaction reference from your bank receipt', 'error');
       return;
     }
     setSaving(true);
@@ -101,7 +97,7 @@ export default function MyPaymentsPage() {
     <motion.div {...pageTransition} className="max-w-5xl mx-auto">
       <SectionHeading
         title="My Payments"
-        subtitle="Everything you need to complete your reunion payment — and, if you wish, contribute to Give Back."
+        subtitle="Everything you need to complete your reunion payment."
       />
 
       {/* ─── Status snapshot ─────────────────────────────────────────── */}
@@ -178,21 +174,15 @@ export default function MyPaymentsPage() {
         <GlassCard className="border-emerald-500/20">
           <div className="flex items-center justify-between mb-3">
             <div>
-              <p className="text-xs uppercase tracking-wider text-ink-soft">Give Back (Optional)</p>
-              <p className="text-lg font-heading font-bold text-ink leading-tight">
-                {healthCentreProject.name}
-              </p>
-              <p className="text-[11px] text-ink-muted mt-1">New Health Centre at NIT Calicut</p>
+              <p className="text-xs uppercase tracking-wider text-ink-soft">Give Back</p>
+              <p className="text-lg font-heading font-bold text-ink leading-tight">Coming Soon…</p>
             </div>
             <Badge size="sm">Voluntary</Badge>
           </div>
-          <p className="text-xs text-ink-soft mb-3">
-            Separate from your registration fee. Contributions route through the NITCAA project
-            account. Wall of Honor recognition at ₹1 lakh+.
+          <p className="text-xs text-ink-soft">
+            We're planning something new for the batch's Give Back initiative. Details will be
+            announced here — watch this space.
           </p>
-          <Link to="/give-back">
-            <Button size="sm" variant="ghost" fullWidth>Open Give Back page →</Button>
-          </Link>
         </GlassCard>
       </div>
 
@@ -288,8 +278,14 @@ export default function MyPaymentsPage() {
                 )}
               </p>
               <p className="text-xs text-ink-muted">
-                NEFT / RTGS / IMPS credit within a few hours. UPI is instant but has a daily cap
-                (usually ₹1 lakh) — plan accordingly if your family total exceeds that.
+                NEFT / RTGS / IMPS credit within a few hours. We're working on getting a UPI ID —
+                until then, please send payments to the bank account above.
+              </p>
+              <p className="text-xs text-ink-soft rounded-lg border border-forest-500/20 bg-white px-3 py-2">
+                <span className="font-semibold text-forest-700">Missed the remark?</span> If you
+                couldn't quote <span className="font-mono">SJ-2026-####</span> in the transfer
+                note, that's completely fine — just save your transaction reference in Step 4
+                below and the Finance Committee will verify from that.
               </p>
             </div>
           }
@@ -303,7 +299,7 @@ export default function MyPaymentsPage() {
           body={
             <div className="text-sm text-ink-soft space-y-3">
               <p>
-                After the transfer, your bank / UPI app will show a{' '}
+                After the transfer, your banking app will show a{' '}
                 <span className="text-ink">transaction reference</span> (also called UTR / RRN /
                 Txn ID). Paste it below so the Finance Committee can match your payment.
               </p>
@@ -311,7 +307,7 @@ export default function MyPaymentsPage() {
                 <Input
                   value={uid}
                   onChange={(e) => setUid(e.target.value)}
-                  placeholder="e.g. UTR 5142236617XXXX or UPI ref 428935847293"
+                  placeholder="e.g. UTR 5142236617XXXX"
                   className="flex-1"
                 />
                 <Button
@@ -351,38 +347,11 @@ export default function MyPaymentsPage() {
         />
       </ol>
 
-      {/* ─── Give Back — condensed ───────────────────────────────────── */}
-      <h2 className="text-xl font-heading font-bold text-ink mb-1">
-        Give Back — optional contribution
-      </h2>
-      <p className="text-ink-soft text-sm mb-6">
-        Independent of your registration fee. Our batch is rallying behind NITCAA's flagship
-        project — the new on-campus Health Centre.
+      {/* ─── Give Back — coming soon ─────────────────────────────────── */}
+      <h2 className="text-xl font-heading font-bold text-ink mb-1">Give Back</h2>
+      <p className="text-ink-soft text-sm mb-4">
+        We're planning something new — details coming soon…
       </p>
-
-      <div className="grid md:grid-cols-3 gap-4 mb-6">
-        <MiniStep n={1} title="Transfer to NITCAA">
-          Use the domestic (Indian) or FCRA (international) channel on the Give Back page. Quote
-          the purpose <span className="text-gold-700">"REC 2001 Batch — Health Centre"</span>.
-        </MiniStep>
-        <MiniStep n={2} title="Submit your details">
-          Fill the batch Google Form (circulated by the Finance Committee) OR email{' '}
-          <span className="text-gold-700">{healthCentreProject.contactEmail}</span>. Include name,
-          branch, phone, amount, txn ref, PAN (for 80G) or passport (NRI).
-        </MiniStep>
-        <MiniStep n={3} title="Receipt & recognition">
-          NITCAA reconciles, issues 80G receipt on request (if eligible), sends a thank-you email.
-          ₹1 lakh+ → Donor Wall at the new Health Centre.
-        </MiniStep>
-      </div>
-
-      <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 px-4 py-3 text-sm text-amber-100/90 mb-10">
-        <span className="font-semibold">80G eligibility:</span> {eightyGEligibilityNote}
-      </div>
-
-      <Link to="/give-back">
-        <Button variant="ghost">Full Give Back details →</Button>
-      </Link>
 
       {/* ─── Help ────────────────────────────────────────────────────── */}
       <GlassCard className="mt-12 border-forest-500/15">

@@ -24,7 +24,7 @@ const baseConnOpts = {
   user: PG_USER,
   password: PG_PASSWORD,
   ssl: false,
-  connectionTimeoutMillis: 10_000,
+  connectionTimeoutMillis: 30_000, // Render -> EC2 pg can stall under a burst of thumbnail queries
   statement_timeout: 30_000,
 };
 
