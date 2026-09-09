@@ -33,7 +33,8 @@ export const EVENT_CONFIG = {
     checkinDate: '2026-12-27',
     checkoutDate: '2026-12-29',
   },
-  registrationFee: 13500,
+  registrationFee: 13500, // early-bird rate (until 30 Sept)
+  standardFee: 15000,      // rate after 30 Sept — shown struck through next to the early-bird price
   familyMemberFee: 2500,
   registrationDeadline: 'Jun 30th, 2026',
   batchYear: 2001,
@@ -133,7 +134,7 @@ export const FAQ_DATA = [
   { id: 'f-evt-5', question: 'When will the event logo be revealed?', category: 'Event', answer: 'The logo is being designed by Vipin Chandran (from the batch). We decided not to rush it for the townhall — reveal will happen a week or so after, once the design is finalised. Title (REConverge 2001) stays constant.' },
 
   // === Fees & Payment ===
-  { id: 'f-fee-1', question: 'What does registration cost?', category: 'Fees', answer: 'Registration is ₹13,500 per alumnus and ₹2,500 per additional family member (partner, child, parent). Fee is locked. This excludes accommodation (paid to the hotel), travel to Calicut, and the Giving Back contribution (separate channel).' },
+  { id: 'f-fee-1', question: 'What does registration cost?', category: 'Fees', answer: 'Early-bird registration is ₹13,500 per alumnus (standard price ₹15,000 — the early-bird rate ends 30 September, after which it is ₹15,000 for everyone) and ₹2,500 per additional family member (partner, child, parent). This excludes accommodation (paid to the hotel) and travel to Calicut.' },
   { id: 'f-fee-2', question: 'How do I pay the registration fee?', category: 'Fees', answer: 'Payment is made via direct bank transfer to the REConverge 2001 batch bank account — the website itself does not collect payments (batch decision, MoM 1 March 2026). Account: CREC Alumni Association 2001 Batch, A/c 45429696620, IFSC SBIN0002207, SBI NIT Calicut Campus (Branch 02207). NEFT / RTGS / IMPS supported; we are working on getting a UPI ID — until then please send payments to the account. Quote your Registration ID (SJ-2026-####) in the remarks if you can — and if you couldn’t, that’s completely fine: just paste the transaction reference as your Payment UID on your profile and the Finance Committee will verify from that and flip the status to "Payment Confirmed".' },
   { id: 'f-fee-3', question: 'What is the "Give Back" program?', category: 'Fees', answer: 'We’re planning something new for the batch’s Give Back initiative — details are coming soon. It will be entirely separate from (and in addition to) your registration fee. Watch the Give Back page and the WhatsApp groups for the announcement.' },
 

@@ -22,7 +22,9 @@ export default function CTASection() {
         </p>
         <div className="flex justify-center">
           <Link to="/register" className="btn-silver-glitter nav-caps px-7 py-3.5">
-            Buy Tickets — {formatCurrency(EVENT_CONFIG.registrationFee)}
+            Buy Tickets —{' '}
+            <span className="line-through opacity-60">{formatCurrency(EVENT_CONFIG.standardFee)}</span>{' '}
+            <span className="font-bold">{formatCurrency(EVENT_CONFIG.registrationFee)}</span>
           </Link>
         </div>
       </motion.div>

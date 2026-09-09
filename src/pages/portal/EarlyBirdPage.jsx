@@ -100,8 +100,14 @@ export default function EarlyBirdPage() {
               Offer ends 30 September
             </p>
             <p className="text-4xl md:text-5xl font-heading font-bold text-ink">
+              <span className="text-2xl md:text-3xl font-normal text-ink-muted line-through mr-2 align-middle">
+                ₹{EVENT_CONFIG.standardFee.toLocaleString('en-IN')}
+              </span>
               ₹{selfFee.toLocaleString('en-IN')}{' '}
               <span className="text-lg font-normal text-ink-soft">/ alumnus</span>
+            </p>
+            <p className="text-xs text-ink-muted mt-1">
+              After 30 September it's ₹{EVENT_CONFIG.standardFee.toLocaleString('en-IN')} for everyone.
             </p>
             <p className="text-sm text-ink-soft mt-1">
               + ₹{EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')} per additional family member
