@@ -23,6 +23,7 @@ import { existsSync } from 'fs';
 import { ensureDatabase, ensureSchema, dbInfo, query } from './server/db.js';
 import { mountAuth, authMiddleware } from './server/auth.js';
 import { mountResource } from './server/resources.js';
+import { rowToJson } from './server/columns.js';
 import { mountPaymentVerification } from './server/paymentVerification.js';
 import { mountReminders } from './server/reminders.js';
 import { mountPublic } from './server/public.js';
@@ -130,6 +131,27 @@ async function main() {
   mountResource(app, 'groupPolls', {
     defaultSort: { column: 'created_at', direction: 'DESC' },
   });
+  // Lightweight photo LIST: registered before the generic resource so it wins
+  // for GET /api/photos. The stored data-URLs made the old list response
+  // ~57 MB for 210 photos — browsers choked and rendered only part of the
+  // gallery. We omit `url` and hand back thumb/full pointers served by the
+  // sharp-backed /api/public/photo endpoint instead.
+  app.get('/api/photos', async (_req, res, next) => {
+    try {
+      const r = await query(
+        `SELECT id, caption, category, era, uploader_id, uploader_name, created_at
+           FROM photos ORDER BY created_at DESC`
+      );
+      res.json(r.rows.map((row) => ({
+        ...rowToJson('photos', row),
+        thumbUrl: `/api/public/photo/${row.id}`,
+        fullUrl: `/api/public/photo/${row.id}?w=960`,
+      })));
+    } catch (err) {
+      next(err);
+    }
+  });
+
   mountResource(app, 'photos', {
     defaultSort: { column: 'created_at', direction: 'DESC' },
   });

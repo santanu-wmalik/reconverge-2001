@@ -11,7 +11,7 @@ import { useAuth } from '../../../context/AuthContext';
 //   NOW  — uploads tagged 'now' (recent photos)
 // Every upload defaults to 'then'; admins re-tag from the gallery lightbox.
 
-function Strip({ label, sub, urls, reverse = false, empty, secondsPerPhoto = 2.5, maxDuration = 70 }) {
+function Strip({ label, sub, urls, reverse = false, empty, secondsPerPhoto = 4, maxDuration = 999 }) {
   if (urls.length === 0) {
     return (
       <div className="px-4">
@@ -79,7 +79,7 @@ export default function ThenAndNow() {
           sub="the college days"
           urls={thenUrls}
           secondsPerPhoto={5}
-          maxDuration={200}
+          maxDuration={999}
           empty="No photos yet."
         />
         <Strip

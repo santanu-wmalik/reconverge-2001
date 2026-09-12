@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { pageTransition } from '../../utils/animationVariants';
 import { alumniApi, rsvpApi } from '../../services/api';
-import { BRANCHES } from '../../data/constants';
+import { BRANCHES, BRANCH_SHORT } from '../../data/constants';
 import GlassCard from '../../components/ui/GlassCard';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
@@ -78,6 +78,11 @@ const fromAlumni = (a) => ({
 });
 
 // Normalise a public RSVP submission. Few fields, so the card auto-collapses.
+// RSVPs store the SHORT branch code ('Mech.', 'CSE', …) while registered
+// profiles and the Branch filter use the full name — normalise here so the
+// filter catches both kinds of entries.
+const fullBranchOf = (b) => BRANCHES[BRANCH_SHORT.indexOf(b)] || b || '';
+
 const fromRsvp = (r) => {
   // `familyJoining` was historically a free-text field; sometimes the literal
   // string '[object Object]' from a buggy old client. Try to coerce a number,
@@ -88,7 +93,7 @@ const fromRsvp = (r) => {
     id: `rsvp:${r.id}`,
     name: (r.fullName || '').trim(),
     email: (r.email || '').trim().toLowerCase(),
-    branch: r.branch || '',
+    branch: fullBranchOf(r.branch),
     hostel: '',
     avatar: '',
     designation: '',
@@ -109,10 +114,16 @@ export default function WhosComingPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [branch, setBranch] = useState('');
-  const [hostel, setHostel] = useState('');
   const [kind, setKind] = useState('all'); // all | registered | rsvp
-  // Engagement tier chosen by clicking a stat card: all | interest | signedUp | paid
-  const [tier, setTier] = useState('all');
+  // Engagement tiers chosen by clicking stat cards — MULTI-select (e.g.
+  // Shown Interest + Signed Up together). Empty set = no tier filter.
+  const [tiers, setTiers] = useState(() => new Set());
+  const toggleTier = (t) =>
+    setTiers((prev) => {
+      const next = new Set(prev);
+      if (next.has(t)) next.delete(t); else next.add(t);
+      return next;
+    });
 
   useEffect(() => {
     Promise.allSettled([alumniApi.getAll(), rsvpApi.getAll()])
@@ -142,18 +153,12 @@ export default function WhosComingPage() {
     return [...byEmail.values()];
   }, [registered, rsvps]);
 
-  const hostelOptions = useMemo(() => {
-    const set = new Set(entries.map((a) => a.hostel).filter(Boolean));
-    return [...set].sort().map((h) => ({ value: h, label: `Hostel ${h}` }));
-  }, [entries]);
-
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
     return entries.filter((a) => {
-      if (tier !== 'all' && tierOf(a) !== tier) return false;
+      if (tiers.size > 0 && !tiers.has(tierOf(a))) return false;
       if (kind !== 'all' && a.kind !== kind) return false;
       if (branch && a.branch !== branch) return false;
-      if (hostel && a.hostel !== hostel) return false;
       if (!q) return true;
       const hay = [a.name, a.currentCity, a.state, a.company, a.designation]
         .filter(Boolean)
@@ -161,7 +166,12 @@ export default function WhosComingPage() {
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [entries, search, branch, hostel, kind, tier]);
+  }, [entries, search, branch, kind, tiers]);
+
+  const filteredFamily = useMemo(
+    () => filtered.reduce((n, e) => n + (Number(e.family) || 0), 0),
+    [filtered]
+  );
 
   const stats = useMemo(() => {
     // Three-tier engagement model — see utils/interestState.js and tierOf().
@@ -187,17 +197,31 @@ export default function WhosComingPage() {
         </p>
       </div>
 
-      {/* Stats — click a tier card to filter the roster below; click again to clear */}
+      {/* Stats — click tier cards to filter the roster below; multi-select
+          (e.g. Shown Interest + Signed Up). Click again to deselect; the
+          headcount card clears every tier. */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-        <StatPill label="Shown Interest" value={stats.interest} active={tier === 'interest'} onClick={() => setTier((t) => (t === 'interest' ? 'all' : 'interest'))} />
-        <StatPill label="Signed Up (Not Paid)" value={stats.signedUp} active={tier === 'signedUp'} onClick={() => setTier((t) => (t === 'signedUp' ? 'all' : 'signedUp'))} />
-        <StatPill label="Paid & Attending" value={stats.paid} active={tier === 'paid'} onClick={() => setTier((t) => (t === 'paid' ? 'all' : 'paid'))} />
-        <StatPill label="Total headcount (incl. family)" value={stats.headcount} active={tier === 'all'} onClick={() => setTier('all')} />
+        <StatPill label="Shown Interest" value={stats.interest} active={tiers.has('interest')} onClick={() => toggleTier('interest')} />
+        <StatPill label="Signed Up (Not Paid)" value={stats.signedUp} active={tiers.has('signedUp')} onClick={() => toggleTier('signedUp')} />
+        <StatPill label="Paid & Attending" value={stats.paid} active={tiers.has('paid')} onClick={() => toggleTier('paid')} />
+        <StatPill
+          label="Total headcount (incl. family)"
+          value={stats.headcount}
+          active={tiers.size === 0 || tiers.size === 3}
+          onClick={() => setTiers(new Set(['interest', 'signedUp', 'paid']))}
+        />
       </div>
+
+      {/* Live tally of the current selection, incl. the family plus-ones */}
+      <p className="text-sm text-ink-soft mb-6 -mt-2">
+        Showing <span className="font-semibold text-ink">{filtered.length}</span> alumni
+        {' '}+ <span className="font-semibold text-ink">{filteredFamily}</span> family
+        {' '}= <span className="font-semibold text-gold-700">{filtered.length + filteredFamily} heads</span>
+      </p>
 
       {/* Filters */}
       <GlassCard hover={false} className="mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <Input
             label="Search"
             placeholder="Name, city, company…"
@@ -220,13 +244,6 @@ export default function WhosComingPage() {
             onChange={(e) => setBranch(e.target.value)}
             options={BRANCHES}
             placeholder="All branches"
-          />
-          <Select
-            label="Hostel"
-            value={hostel}
-            onChange={(e) => setHostel(e.target.value)}
-            options={hostelOptions}
-            placeholder="All hostels"
           />
         </div>
       </GlassCard>

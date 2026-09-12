@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { galleryPhotos, galleryCategories } from '../../data/galleryPhotos';
+import { galleryPhotos, galleryCategories, scanThumb } from '../../data/galleryPhotos';
 import { pageTransition } from '../../utils/animationVariants';
 import PhotoGrid from '../../components/shared/PhotoGrid';
 import Tabs from '../../components/ui/Tabs';
@@ -28,7 +28,8 @@ export default function PhotoGalleryPage() {
   }, []);
 
   // Alumni uploads come first so a fresh contribution is immediately visible.
-  const all = [...uploads, ...galleryPhotos];
+  // Curated scans get their pre-generated 480px thumbs for the grid too.
+  const all = [...uploads, ...galleryPhotos.map((p) => ({ ...p, thumbUrl: scanThumb(p.url) }))];
   const filtered = category === 'all' ? all : all.filter((p) => p.category === category);
 
   // Only alumni uploads (those with an id that maps to our uploads list) and

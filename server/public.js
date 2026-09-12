@@ -136,40 +136,45 @@ export function mountPublic(app) {
   // wide JPEG (quality 70) with sharp, memoised in-process, and served with a
   // long client cache. ?w=960 serves a 2× variant for hi-dpi screens.
   const thumbCache = new Map(); // `id:w` -> { type, buf }
-  const THUMB_CACHE_MAX = 80;
+  const THUMB_CACHE_MAX = 400; // ~15 KB each → a few MB; covers every photo at both sizes
   const inFlight = new Map(); // `id:w` -> Promise — dedupes a first-load burst
+
+  // Generate (or reuse) one thumbnail. Shared by the route and the boot-time
+  // warm-up; a single in-flight job per key so a burst can't exhaust the pool.
+  const getThumb = async (id, w) => {
+    const key = `${id}:${w}`;
+    const cached = thumbCache.get(key);
+    if (cached) return cached;
+    let job = inFlight.get(key);
+    if (!job) {
+      job = (async () => {
+        const r = await query('SELECT url FROM photos WHERE id = $1', [id]);
+        const raw = r.rows[0]?.url || '';
+        const m = /^data:[\w/+.-]+;base64,(.+)$/s.exec(raw);
+        if (!m) return null;
+        const { default: sharp } = await import('sharp');
+        const buf = await sharp(Buffer.from(m[1], 'base64'))
+          .rotate() // honour EXIF orientation
+          .resize({ width: w, withoutEnlargement: true })
+          .jpeg({ quality: 70, mozjpeg: true })
+          .toBuffer();
+        return { type: 'image/jpeg', buf };
+      })().finally(() => inFlight.delete(key));
+      inFlight.set(key, job);
+    }
+    const hit = await job;
+    if (hit) {
+      if (thumbCache.size >= THUMB_CACHE_MAX) thumbCache.delete(thumbCache.keys().next().value);
+      thumbCache.set(key, hit);
+    }
+    return hit;
+  };
 
   app.get('/api/public/photo/:id', async (req, res, next) => {
     try {
       const w = Math.min(960, Math.max(120, parseInt(req.query.w, 10) || 480));
-      const key = `${req.params.id}:${w}`;
-      let hit = thumbCache.get(key);
-      if (!hit) {
-        // A cold landing page fires ~24 of these at once; each pulls a large
-        // row over the WAN link to Postgres. Share one generation per key so
-        // the burst can't exhaust the connection pool.
-        let job = inFlight.get(key);
-        if (!job) {
-          job = (async () => {
-            const r = await query('SELECT url FROM photos WHERE id = $1', [req.params.id]);
-            const raw = r.rows[0]?.url || '';
-            const m = /^data:[\w/+.-]+;base64,(.+)$/s.exec(raw);
-            if (!m) return null;
-            const { default: sharp } = await import('sharp');
-            const buf = await sharp(Buffer.from(m[1], 'base64'))
-              .rotate() // honour EXIF orientation
-              .resize({ width: w, withoutEnlargement: true })
-              .jpeg({ quality: 70, mozjpeg: true })
-              .toBuffer();
-            return { type: 'image/jpeg', buf };
-          })().finally(() => inFlight.delete(key));
-          inFlight.set(key, job);
-        }
-        hit = await job;
-        if (!hit) return res.status(404).end();
-        if (thumbCache.size >= THUMB_CACHE_MAX) thumbCache.delete(thumbCache.keys().next().value);
-        thumbCache.set(key, hit);
-      }
+      const hit = await getThumb(req.params.id, w);
+      if (!hit) return res.status(404).end();
       res.set('Cache-Control', 'public, max-age=86400');
       res.type(hit.type);
       res.send(hit.buf);
@@ -178,15 +183,38 @@ export function mountPublic(app) {
     }
   });
 
+  // Boot-time warm-up: the cache is memory-only, so after every restart the
+  // landing page's ~200 thumbnail requests would each wait on a fresh sharp
+  // generation over the WAN DB link — strips looked half-empty for a minute.
+  // Pre-generate every 480px thumb in the background (3 at a time), newest
+  // first so fresh uploads appear immediately. Failures are ignored; the
+  // on-demand path still covers anything missed.
+  (async () => {
+    try {
+      const r = await query(`SELECT id FROM photos ORDER BY created_at DESC LIMIT ${THUMB_CACHE_MAX}`);
+      const ids = r.rows.map((x) => x.id);
+      let i = 0;
+      const worker = async () => {
+        while (i < ids.length) {
+          const id = ids[i++];
+          await getThumb(id, 480).catch(() => {});
+        }
+      };
+      await Promise.all([worker(), worker(), worker()]);
+      console.log(`[photos] Thumbnail cache warmed: ${thumbCache.size} entries.`);
+    } catch (err) {
+      console.warn('[photos] Thumbnail warm-up skipped:', err.message);
+    }
+  })();
+
   // GET /api/public/then-and-now — the two landing-page photo strips.
   // Only id/caption/era leave the server (no uploader identity). The `url` is
-  // a pointer at the thumbnail endpoint below, NOT the stored data URL —
-  // photos average ~250 KB each, so inlining 24 of them made this one JSON
-  // response several MB and unusable on mobile data. The thumbnails are
-  // ~10-30 KB each and lazy-load per image instead.
+  // a pointer at the thumbnail endpoint (~10-30 KB each), so the strips can
+  // carry EVERY photo — the old 12-per-era cap existed only because photos
+  // used to be inlined as full-size data URLs.
   app.get('/api/public/then-and-now', async (_req, res, next) => {
     try {
-      const LIMIT = 12;
+      const LIMIT = 500; // effectively unlimited; sanity ceiling only
       const pick = (rows) => rows.map((p) => ({ id: p.id, url: `/api/public/photo/${p.id}`, caption: p.caption || '', era: p.era }));
       const [now, then] = await Promise.all([
         query(`SELECT id, caption, era FROM photos WHERE era = 'now' ORDER BY created_at DESC LIMIT $1`, [LIMIT]),

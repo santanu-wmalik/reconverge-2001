@@ -67,7 +67,7 @@ export default function PhotoGrid({ photos, columns = 3, canDelete, onDelete, ca
             onClick={() => setSelectedPhoto(photo)}
           >
             <ProtectedImage
-              src={photo.url}
+              src={photo.thumbUrl || photo.url}
               alt={photo.caption}
               imgClassName="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
@@ -110,7 +110,7 @@ export default function PhotoGrid({ photos, columns = 3, canDelete, onDelete, ca
               onClick={(e) => e.stopPropagation()}
             >
               <ProtectedImage
-                src={selectedPhoto.url}
+                src={selectedPhoto.fullUrl || selectedPhoto.url}
                 alt={selectedPhoto.caption}
                 imgClassName="max-w-full max-h-[70vh] object-contain rounded-xl"
               />
