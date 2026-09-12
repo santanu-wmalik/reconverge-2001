@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
@@ -22,11 +22,14 @@ function RequiredMark() {
 export default function RegistrationPage() {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  // The RSVP page hands over name / email / branch so a "Shown Interest"
+  // alumnus doesn't retype them when upgrading to a full sign-up.
+  const prefill = useLocation().state?.prefill || {};
   const [form, setForm] = useState({
     // Personal
-    name: '', email: '', phone: '', password: '', currentCity: '', state: '', company: '', designation: '',
+    name: prefill.name || '', email: prefill.email || '', phone: '', password: '', currentCity: '', state: '', company: '', designation: '',
     // Academic
-    branch: '', hostel: '', rollNumber: '',
+    branch: prefill.branch || '', hostel: '', rollNumber: '',
     // Travel & Stay
     travelMode: '',
     arrivalDate: '2026-12-27', arrivalTime: '',
@@ -186,7 +189,7 @@ export default function RegistrationPage() {
             </div>
 
             <div className="pt-4 border-t border-forest-500/15 dark:border-white/5">
-              <p className="text-xs text-gold-700 dark:text-gold-400 uppercase tracking-wider font-semibold mb-3">Accommodation (Gokulam Grand)</p>
+              <p className="text-xs text-gold-700 dark:text-gold-400 uppercase tracking-wider font-semibold mb-3">Accommodation (Gokulam block fully booked — backups on the Stay page)</p>
               <Select
                 label="Room Preference"
                 value={form.roomPreference}

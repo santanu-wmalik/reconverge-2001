@@ -92,6 +92,7 @@ const RoomingPage = lazyWithReload(() => import('./pages/admin/RoomingPage'));
 const MeetingsPage = lazyWithReload(() => import('./pages/admin/MeetingsPage'));
 const UsersPage = lazyWithReload(() => import('./pages/admin/UsersPage'));
 const RemindersPage = lazyWithReload(() => import('./pages/admin/RemindersPage'));
+const AlumniRegistrationsPage = lazyWithReload(() => import('./pages/admin/AlumniRegistrationsPage'));
 
 function PageLoader() {
   return (
@@ -178,6 +179,7 @@ export const router = createBrowserRouter([
             element: <PermissionRoute permission="finance" />,
             children: [
               { path: 'admin/payments', element: <SuspenseWrapper><PaymentVerificationPage /></SuspenseWrapper> },
+              { path: 'admin/registrations', element: <SuspenseWrapper><AlumniRegistrationsPage /></SuspenseWrapper> },
             ],
           },
           {

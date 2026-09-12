@@ -22,8 +22,9 @@ const BASE_ADMIN_NAV = [
 // Permission-gated tabs. Rendered when the signed-in admin holds the named
 // permission (super-admin implicitly holds all).
 const PERMISSION_NAV = [
-  { label: 'Payments',  path: '/admin/payments',  icon: '🧾', permission: 'finance'   },
-  { label: 'Reminders', path: '/admin/reminders', icon: '📣', permission: 'marketing' },
+  { label: 'Payments',            path: '/admin/payments',      icon: '🧾', permission: 'finance'   },
+  { label: 'Alumni Registration', path: '/admin/registrations', icon: '🗂️', permission: 'finance'   },
+  { label: 'Reminders',           path: '/admin/reminders',     icon: '📣', permission: 'marketing' },
 ];
 
 // Super-admin-only extras. Rendered only when `isSuperAdmin`.

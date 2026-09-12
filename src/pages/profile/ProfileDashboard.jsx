@@ -6,6 +6,7 @@ import GlassCard from '../../components/ui/GlassCard';
 import Button from '../../components/ui/Button';
 import Badge from '../../components/ui/Badge';
 import Avatar from '../../components/ui/Avatar';
+import { RegistrationTracker, paymentTierOf } from '../../components/shared/PaymentNudge';
 
 export default function ProfileDashboard() {
   const { user } = useAuth();
@@ -13,6 +14,7 @@ export default function ProfileDashboard() {
   return (
     <motion.div {...pageTransition}>
       <h1 className="text-3xl font-heading font-bold text-ink mb-8">My Profile</h1>
+      <RegistrationTracker />
       <div className="grid md:grid-cols-3 gap-6">
         <GlassCard className="md:col-span-1 text-center" hover={false}>
           <Avatar src={user?.avatar} name={user?.name} size="xl" className="mx-auto mb-4" />
@@ -20,7 +22,13 @@ export default function ProfileDashboard() {
           <p className="text-gold-700 text-sm">Batch of {user?.batch}</p>
           <p className="text-ink-soft text-sm mt-1">{user?.designation}</p>
           <p className="text-ink-soft text-sm">{user?.company}</p>
-          <Badge variant="gold" className="mt-3">Registered</Badge>
+          {paymentTierOf(user) === 'paid' ? (
+            <Badge variant="success" className="mt-3">Paid &amp; Attending</Badge>
+          ) : paymentTierOf(user) === 'pending' ? (
+            <Badge variant="gold" className="mt-3">Signed Up — Under Verification</Badge>
+          ) : (
+            <Badge variant="warning" className="mt-3">Signed Up — Payment Pending</Badge>
+          )}
           <div className="mt-6 space-y-2">
             <Link to="/profile/edit"><Button variant="outline" size="sm" fullWidth>Edit Profile</Button></Link>
           </div>

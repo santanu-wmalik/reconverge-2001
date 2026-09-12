@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { EVENT_CONFIG, BRANCH_SHORT, FAMILY_OPTIONS, DIETARY_OPTIONS } from '../../data/constants';
+import { EVENT_CONFIG, BRANCHES, BRANCH_SHORT, FAMILY_OPTIONS, DIETARY_OPTIONS } from '../../data/constants';
 import { rsvpApi } from '../../services/api';
 import { pageTransition } from '../../utils/animationVariants';
 import SectionHeading from '../../components/shared/SectionHeading';
@@ -9,7 +10,40 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 
+// The three engagement tiers, used to show visitors where this form actually
+// gets them (the bottom rung) — and to push toward Sign Up + payment.
+function TierLadder() {
+  const tiers = [
+    { label: 'Shown Interest', note: 'this form — no seat held', here: true },
+    { label: 'Signed Up', note: 'account created' },
+    { label: 'Paid & Attending', note: 'seat secured 🎉' },
+  ];
+  return (
+    <div className="mb-6">
+      <ol className="flex items-stretch gap-2">
+        {tiers.map((t, i) => (
+          <li key={t.label} className={`flex-1 rounded-xl border px-3 py-2.5 text-center ${
+            t.here ? 'border-amber-400 bg-amber-50' : 'border-forest-500/15 bg-white'
+          }`}>
+            <p className={`text-[11px] sm:text-xs font-semibold uppercase tracking-wider ${t.here ? 'text-amber-800' : 'text-forest-700'}`}>
+              {i + 1}. {t.label}
+            </p>
+            <p className="text-[10px] sm:text-[11px] text-ink-muted mt-0.5">{t.note}</p>
+          </li>
+        ))}
+      </ol>
+      <p className="text-center text-xs text-amber-800 mt-2">
+        ▲ You are here with this form — only <b>Sign Up + payment</b> secures your seat.
+      </p>
+    </div>
+  );
+}
+
+// RSVP branch is stored as the short code; registration uses the full name.
+const fullBranchOf = (shortCode) => BRANCHES[BRANCH_SHORT.indexOf(shortCode)] || '';
+
 export default function RSVPPage() {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     fullName: '',
     email: '',
@@ -74,7 +108,23 @@ export default function RSVPPage() {
 
   return (
     <motion.div {...pageTransition} className="max-w-3xl mx-auto px-4 py-12">
-      <SectionHeading title="RSVP" subtitle="Join the grand homecoming" />
+      <SectionHeading title="Show Interest" subtitle="Join the grand homecoming" />
+
+      <TierLadder />
+
+      {/* Primary path: full sign-up */}
+      <div className="mb-6 rounded-2xl border-2 border-gold-500/60 bg-[#fbf7ea] px-5 py-4 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-ink font-semibold">Ready to commit? Sign up now.</p>
+          <p className="text-sm text-ink-soft">
+            Early bird <span className="line-through text-ink-muted">₹{EVENT_CONFIG.standardFee.toLocaleString('en-IN')}</span>{' '}
+            <b>₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')}</b> — ends 30 September.
+          </p>
+        </div>
+        <Link to="/register" className="nav-caps shrink-0 px-5 py-3 bg-gradient-to-b from-gold-400 to-gold-600 text-forest-900 shadow hover:from-gold-300 hover:to-gold-500">
+          Sign Up →
+        </Link>
+      </div>
 
       <div>
         <div>
@@ -82,11 +132,12 @@ export default function RSVPPage() {
             {!submitted ? (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <h3 className="text-lg font-semibold text-ink dark:text-white mb-2">
-                  Registration Details
+                  Not sure yet? Leave your interest
                 </h3>
                 <p className="text-ink-muted dark:text-slate-400 text-sm mb-6">
-                  Fill in your details to confirm your attendance at{' '}
-                  <span className="text-gold-700 dark:text-gold-400 font-medium">{EVENT_CONFIG.eventName}</span>
+                  We'll keep you in the loop about{' '}
+                  <span className="text-gold-700 dark:text-gold-400 font-medium">{EVENT_CONFIG.eventName}</span> —
+                  but note this does <b>not</b> hold a seat or the early-bird price.
                 </p>
 
                 {/* Full Name */}
@@ -184,21 +235,43 @@ export default function RSVPPage() {
                 transition={{ duration: 0.4, ease: 'easeOut' }}
                 className="text-center py-8"
               >
-                <div className="text-6xl mb-6">🎉</div>
+                <div className="text-6xl mb-6">🙌</div>
                 <h3 className="text-2xl md:text-3xl font-heading font-bold text-ink dark:text-white mb-4">
-                  See You There!
+                  Interest noted — now secure your seat
                 </h3>
-                <p className="text-ink-soft dark:text-slate-300 text-base leading-relaxed max-w-md mx-auto mb-8">
-                  Your registration for{' '}
-                  <span className="text-gold-700 dark:text-gold-400 font-semibold">{EVENT_CONFIG.eventName}</span>{' '}
-                  is confirmed. We&apos;ve sent a detailed itinerary to{' '}
-                  <span className="text-gold-700 dark:text-gold-400 font-medium">{form.email}</span>.
+                <p className="text-ink-soft dark:text-slate-300 text-base leading-relaxed max-w-md mx-auto mb-5">
+                  Thanks, <span className="text-gold-700 dark:text-gold-400 font-medium">{form.fullName.trim() || 'batchmate'}</span>!
+                  Showing interest doesn&apos;t hold a seat — only <b>Sign Up + payment</b> makes you{' '}
+                  <i>Paid &amp; Attending</i>.
                 </p>
+                <div className="max-w-md mx-auto rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 mb-6 text-sm text-amber-900 text-left">
+                  ⏰ Early bird{' '}
+                  <span className="line-through opacity-60">₹{EVENT_CONFIG.standardFee.toLocaleString('en-IN')}</span>{' '}
+                  <b>₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')}</b> ends <b>30 September</b> — after that
+                  it&apos;s ₹{EVENT_CONFIG.standardFee.toLocaleString('en-IN')} for everyone.
+                </div>
+                <Button
+                  size="lg"
+                  onClick={() =>
+                    navigate('/register', {
+                      state: {
+                        prefill: {
+                          name: form.fullName.trim(),
+                          email: form.email.trim(),
+                          branch: fullBranchOf(form.branch),
+                        },
+                      },
+                    })
+                  }
+                >
+                  Sign Up now — ₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')} →
+                </Button>
+                <p className="text-xs text-ink-muted mt-3 mb-6">Your name, email and branch carry over — no retyping.</p>
                 <button
                   onClick={handleReset}
                   className="text-gold-700 dark:text-gold-400 hover:text-gold-800 dark:hover:text-gold-300 font-medium text-sm underline underline-offset-4 transition-colors"
                 >
-                  Register another member
+                  Show interest for another batchmate
                 </button>
               </motion.div>
             )}

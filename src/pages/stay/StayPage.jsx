@@ -79,7 +79,7 @@ export default function StayPage() {
                 <div>
                   <Badge variant="gold" size="sm" className="mb-2">{primary.badge}</Badge>
                   <h2 className="text-2xl md:text-3xl font-heading font-bold text-ink">{primary.name}</h2>
-                  <p className="text-sm text-emerald-400 mt-1">{primary.status}</p>
+                  <p className={`text-sm mt-1 ${/full/i.test(primary.status) ? 'text-red-600 font-semibold' : 'text-emerald-400'}`}>{primary.status}</p>
                   {primary.tagline && <p className="text-xs text-ink-soft mt-1 italic">{primary.tagline}</p>}
                   {primary.website && (
                     <a
@@ -185,7 +185,7 @@ export default function StayPage() {
 
       {/* Backup hotels */}
       <div className="mb-12">
-        <SectionHeading title="Backup Hotels" subtitle="If the Gokulam block fills up" />
+        <SectionHeading title="Backup Hotels" subtitle="The Gokulam block is fully booked — book one of these instead (or ask AFC for the cancellation waitlist)" />
         <div className="grid md:grid-cols-2 gap-5">
           {backups.map((h) => (
             <GlassCard key={h.id}>

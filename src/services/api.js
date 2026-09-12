@@ -118,6 +118,7 @@ export const publicApi = {
 // Forwards the WHOLE payload verbatim — do NOT destructure known fields
 // here or new fields (senderName, attachment, …) get silently dropped.
 export const adminApi = {
+  verifierNames: () => request('/admin/verifier-names'),
   sendReminder: (payload) =>
     request('/admin/send-reminder', {
       method: 'POST',

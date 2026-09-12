@@ -29,6 +29,27 @@ import { sessionCan } from './auth.js';
 const ALLOWED_STATUS = new Set(['confirmed', 'rejected', 'reset']);
 
 export function mountPaymentVerification(app) {
+  // GET /api/admin/verifier-names — { userId: displayName } for translating the
+  // payment_verified_by internal ids into real names in the Excel export.
+  // The stored value stays the internal id (audit trail unchanged).
+  app.get('/api/admin/verifier-names', async (req, res, next) => {
+    try {
+      const session = req.auth;
+      if (!session) return res.status(401).json({ error: 'Authentication required' });
+      if (!sessionCan(session, 'finance')) {
+        return res.status(403).json({ error: 'Finance permission required' });
+      }
+      const r = await query(
+        `SELECT u.id, COALESCE(NULLIF(TRIM(a.name), ''), u.email) AS display_name
+           FROM users u LEFT JOIN alumni a ON a.id = u.alumni_id`
+      );
+      res.json(Object.fromEntries(r.rows.map((x) => [x.id, x.display_name])));
+    } catch (err) {
+      next(err);
+    }
+  });
+
+
   app.post('/api/admin/verify-payment', async (req, res, next) => {
     try {
       const session = req.auth;

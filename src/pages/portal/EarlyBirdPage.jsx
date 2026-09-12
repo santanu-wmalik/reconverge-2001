@@ -255,7 +255,7 @@ export default function EarlyBirdPage() {
         <h3 className="text-ink font-semibold mb-2">Not included (billed separately)</h3>
         <ul className="space-y-1.5 pl-4 text-sm text-ink-soft">
           <li className="list-disc">
-            Hotel accommodation — book directly with Gokulam Grand or your preferred partner hotel
+            Hotel accommodation — the Gokulam Grand block is fully booked; see the Stay page for backup hotels and the waitlist
             (see <Link to="/stay" className="text-gold-700 hover:text-gold-300 underline">Stay</Link>).
           </li>
           <li className="list-disc">Travel to Calicut (flights / trains / cabs).</li>

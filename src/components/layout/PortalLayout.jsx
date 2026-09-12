@@ -3,6 +3,7 @@ import Header from './Header';
 import Footer from './Footer';
 import ImpersonationBanner from './ImpersonationBanner';
 import BinderTabs from './BinderTabs';
+import PaymentNudgeBanner from '../shared/PaymentNudge';
 import BackToTop from '../shared/BackToTop';
 import AnnouncementsBanner from '../shared/AnnouncementsBanner';
 import { NAV_LINKS_PROTECTED } from '../../data/constants';
@@ -23,6 +24,7 @@ export default function PortalLayout() {
         <AnnouncementsBanner />
         <main className="flex-1 relative z-[1]">
           <BinderTabs label="My Portal" links={NAV_LINKS_PROTECTED} isActive={isActive} />
+          <PaymentNudgeBanner />
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
             <Outlet />
