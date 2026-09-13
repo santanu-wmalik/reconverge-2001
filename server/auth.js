@@ -132,12 +132,17 @@ export function mountAuth(app) {
       }
 
       // Allocate registration_id + ids before the transaction; cheap and
-      // avoids holding a SELECT-COUNT under a write lock.
-      const totalRes = await query('SELECT COUNT(*) AS c FROM alumni');
-      const total = parseInt(totalRes.rows[0].c, 10) || 0;
+      // avoids holding the lookup under a write lock. MAX(numeric suffix)+1,
+      // NOT COUNT(*)+1 — after a row deletion a count-based id would collide
+      // with a number that is already assigned.
+      const maxRes = await query(
+        String.raw`SELECT COALESCE(MAX(substring(registration_id from '\d+$')::int), 0) AS m
+                     FROM alumni WHERE registration_id ~ '\d+$'`
+      );
+      const nextNum = (parseInt(maxRes.rows[0].m, 10) || 0) + 1;
       const alumniId = `alum-${Date.now().toString(36)}`;
       const userId = `user-${Date.now().toString(36)}`;
-      const registrationId = body.registrationId || `SJ-2026-${String(total + 1).padStart(4, '0')}`;
+      const registrationId = body.registrationId || `SJ-2026-${String(nextNum).padStart(4, '0')}`;
 
       // Build alumni row from whatever the form submitted, then force the
       // sensitive fields server-side.
