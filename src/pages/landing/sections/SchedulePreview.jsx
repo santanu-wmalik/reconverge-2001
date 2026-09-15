@@ -4,7 +4,7 @@ import { eventSchedule, eventDays } from '../../../data/events';
 import { staggerContainer, staggerItem } from '../../../utils/animationVariants';
 
 // "Event Highlights" — rect1an programme layout:
-//   Day 0 banner centred on top (single column), Day 1 / Day 2 side by side.
+//   Day 1 / Day 2 stacked; the 29th renders as a slim checkout banner.
 //   Each item is a cream tile: time · title · venue; featured ones get a
 //   gold left rule and ✦.
 
@@ -65,7 +65,7 @@ export default function SchedulePreview() {
         <h2 className="mt-3 text-4xl md:text-5xl lg:text-6xl font-heading font-medium italic text-forest-600">
           Event Highlights
         </h2>
-        <p className="mt-2 font-serif text-ink-muted">{d0.date.slice(8)}, {d1.date.slice(8)}, {d2.date.slice(8)} December 2026</p>
+        <p className="mt-2 font-serif text-ink-muted">{d0.date.slice(8)} & {d1.date.slice(8)} December 2026 · checkout {d2.date.slice(8)}th</p>
       </div>
 
             <div className="max-w-2xl mx-auto mb-8">

@@ -33,7 +33,7 @@ export default function EventSchedulePage() {
 
   return (
     <motion.div {...pageTransition}>
-      <SectionHeading title="Event Schedule" subtitle="Three days of reunions, celebrations, and memories" />
+      <SectionHeading title="Event Schedule" subtitle="Two days of reunions, celebrations, and memories — checkout on the 29th" />
 
       <Tabs tabs={eventDays.map((d) => ({ id: d.day, label: d.label, icon: d.subtitle }))} activeTab={activeDay} onChange={setActiveDay} className="mb-6" />
 

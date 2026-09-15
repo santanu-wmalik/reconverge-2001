@@ -230,17 +230,17 @@ export default function EarlyBirdPage() {
           ]}
         />
         <IncludedCard
-          badge="Day 3"
+          badge="Dec 29 · Checkout"
           title="One Last Coffee"
           items={[
-            'Check-out',
+            'Check-out by noon',
             'Goodbyes',
             'A few more photos',
             'Promises to not leave it another 25 years',
           ]}
         />
         <IncludedCard
-          badge="All 3 days"
+          badge="Both days"
           title="The Memories"
           items={[
             'Professional photography',
