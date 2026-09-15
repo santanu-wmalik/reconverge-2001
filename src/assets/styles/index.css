@@ -233,3 +233,14 @@
 @media (prefers-reduced-motion: reduce) {
   .btn-silver-glitter, .btn-silver-glitter::after { animation: none; }
 }
+
+/* Flashing nav tab (Event / 2nd Town Hall) — draws the eye without being a
+   full strobe. Respects reduced-motion. */
+@keyframes nav-flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.animate-nav-flash { animation: nav-flash 1.2s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-nav-flash { animation: none; }
+}

@@ -89,11 +89,15 @@ export default function TownhallsPage() {
 
                 {/* Join / Recording / Transcript actions */}
                 <div className="flex flex-wrap gap-2 mb-5">
-                  {upcoming && (
+                  {upcoming && (th.meet?.url ? (
                     <a href={th.meet.url} target="_blank" rel="noopener noreferrer">
                       <Button size="sm">🎥 Join via Google Meet</Button>
                     </a>
-                  )}
+                  ) : (
+                    <a href="/event">
+                      <Button size="sm">🎥 Join link — scan the poster QR</Button>
+                    </a>
+                  ))}
 
                   {/* Recording — always visible, disabled until URL is published */}
                   {th.recordingUrl ? (

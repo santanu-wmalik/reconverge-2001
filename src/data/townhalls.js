@@ -68,3 +68,52 @@ export const townhalls = [
     recordingNotes: 'Auto-record enabled on the Meet invite; recording will be posted here after the session.',
   },
 ];
+
+// ── Townhall #2 · September 2026 ─────────────────────────────────────────
+// Two sessions again for time zones. Join links are on the poster QR codes
+// (see /event); paste the Meet URLs into `meet.url` when Rajasimha posts the
+// invites, and attach `recordingUrl` after each session wraps.
+townhalls.push(
+  {
+    id: 'townhall-sep19-s1',
+    title: 'REConverge ’26 — 2nd Town Hall · Session 1',
+    session: 'Session 1 of 2',
+    tagline: 'More updates · plans taking shape · see what’s next',
+    date: '2026-09-19',
+    startTime: '20:00',
+    endTime: '21:00',
+    timezone: 'Asia/Kolkata (IST)',
+    regionHint: 'India / APAC friendly · Saturday evening',
+    organiser: 'Organising Committee',
+    meet: { url: null },
+    agenda: [
+      'Registration & payment status — early bird ends 30 Sept',
+      'Stay update (Gokulam full, backups)',
+      'Programme & entertainment plans',
+      'Open floor Q&A',
+    ],
+    recordingUrl: null,
+    recordingNotes: 'Forthcoming — recording will be posted here after the session.',
+  },
+  {
+    id: 'townhall-sep20-s2',
+    title: 'REConverge ’26 — 2nd Town Hall · Session 2',
+    session: 'Session 2 of 2',
+    tagline: 'US / Europe friendly slot — same agenda, different time',
+    date: '2026-09-20',
+    startTime: '10:00',
+    endTime: '11:00',
+    timezone: 'Asia/Kolkata (IST)',
+    regionHint: 'US / Europe friendly · Sunday morning IST',
+    organiser: 'Organising Committee',
+    meet: { url: null },
+    agenda: [
+      'Registration & payment status — early bird ends 30 Sept',
+      'Stay update (Gokulam full, backups)',
+      'Programme & entertainment plans',
+      'Open floor Q&A',
+    ],
+    recordingUrl: null,
+    recordingNotes: 'Forthcoming — recording will be posted here after the session.',
+  }
+);

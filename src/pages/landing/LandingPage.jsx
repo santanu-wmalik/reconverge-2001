@@ -17,9 +17,11 @@ import CTASection from './sections/CTASection';
 //   Sponsors → CTA
 //
 // BatchPulse + BranchLeaderboard were folded into RollOfHonour.
+import TownhallPopup from '../../components/shared/TownhallPopup';
 export default function LandingPage() {
   return (
     <div>
+      <TownhallPopup />
       <HeroSection />
       <SchedulePreview />
       <RollOfHonour />

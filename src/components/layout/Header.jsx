@@ -49,7 +49,11 @@ export default function Header() {
             {/* Desktop nav */}
             <nav className="hidden lg:flex items-center gap-1 flex-1 justify-center">
               {NAV_LINKS.map((link) => (
-                <Link key={link.path} to={link.path} className={navLinkClass(link.path)}>
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={cn(navLinkClass(link.path), link.flash && 'animate-nav-flash text-gold-700 font-bold')}
+                >
                   {link.label}
                 </Link>
               ))}
@@ -174,6 +178,7 @@ export default function Header() {
                   onClick={() => setMobileOpen(false)}
                   className={cn(
                     'nav-caps px-4 py-3 rounded-xl transition-colors',
+                    link.flash && 'animate-nav-flash text-gold-700 font-bold',
                     isActive(link.path)
                       ? 'text-forest-700 bg-forest-600/8 dark:text-gold-400 dark:bg-gold-400/10'
                       : 'text-ink-soft hover:text-forest-700 dark:text-slate-300 dark:hover:text-white dark:hover:bg-white/5'

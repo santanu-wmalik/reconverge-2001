@@ -79,6 +79,7 @@ const WhenWherePage = lazyWithReload(() => import('./pages/whenwhere/WhenWherePa
 const FAQPage = lazyWithReload(() => import('./pages/faq/FAQPage'));
 const CommitteesPage = lazyWithReload(() => import('./pages/committees/CommitteesPage'));
 const OurJourneyPage = lazyWithReload(() => import('./pages/journey/OurJourneyPage'));
+const EventPosterPage = lazyWithReload(() => import('./pages/event/EventPosterPage'));
 const StayPage = lazyWithReload(() => import('./pages/stay/StayPage'));
 
 // Admin pages
@@ -123,6 +124,7 @@ export const router = createBrowserRouter([
       { path: 'committees', element: <SuspenseWrapper><CommitteesPage /></SuspenseWrapper> },
       { path: 'our-journey', element: <SuspenseWrapper><OurJourneyPage /></SuspenseWrapper> },
       { path: 'rsvp', element: <SuspenseWrapper><RSVPPage /></SuspenseWrapper> },
+      { path: 'event', element: <SuspenseWrapper><EventPosterPage /></SuspenseWrapper> },
     ],
   },
 
