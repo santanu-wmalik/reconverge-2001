@@ -71,7 +71,9 @@ export default function EventSchedulePage() {
                 </div>
                 <p className="text-ink-soft text-sm mt-1 line-clamp-2">{evt.description}</p>
                 <div className="flex flex-wrap gap-3 mt-2 text-xs text-ink-muted">
-                  <span>🕐 {formatTime(evt.startTime)} – {formatTime(evt.endTime)}</span>
+                  {evt.startTime && (
+                    <span>🕐 {formatTime(evt.startTime)}{evt.endTime ? ` – ${formatTime(evt.endTime)}` : ''}</span>
+                  )}
                   <span>📍 {evt.venue}</span>
                 </div>
               </div>

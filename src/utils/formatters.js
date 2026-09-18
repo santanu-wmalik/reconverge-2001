@@ -24,6 +24,7 @@ export function formatDate(dateStr, options = {}) {
 }
 
 export function formatTime(timeStr) {
+  if (!timeStr) return ''; // untimed items (e.g. hotel check-in) render without a clock
   const [hours, minutes] = timeStr.split(':');
   const h = parseInt(hours);
   const ampm = h >= 12 ? 'PM' : 'AM';
