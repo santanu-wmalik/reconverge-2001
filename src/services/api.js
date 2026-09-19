@@ -119,6 +119,7 @@ export const publicApi = {
 // here or new fields (senderName, attachment, …) get silently dropped.
 export const pledgeApi = {
   mine: () => request('/pledges/mine'),
+  all: () => request('/pledges'), // admin + giveback permission
   submit: (data) =>
     request('/pledges', { method: 'POST', body: JSON.stringify(data) }),
 };

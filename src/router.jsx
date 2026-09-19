@@ -94,6 +94,7 @@ const MeetingsPage = lazyWithReload(() => import('./pages/admin/MeetingsPage'));
 const UsersPage = lazyWithReload(() => import('./pages/admin/UsersPage'));
 const RemindersPage = lazyWithReload(() => import('./pages/admin/RemindersPage'));
 const AlumniRegistrationsPage = lazyWithReload(() => import('./pages/admin/AlumniRegistrationsPage'));
+const AdminPledgesPage = lazyWithReload(() => import('./pages/admin/AdminPledgesPage'));
 
 function PageLoader() {
   return (
@@ -182,6 +183,12 @@ export const router = createBrowserRouter([
             children: [
               { path: 'admin/payments', element: <SuspenseWrapper><PaymentVerificationPage /></SuspenseWrapper> },
               { path: 'admin/registrations', element: <SuspenseWrapper><AlumniRegistrationsPage /></SuspenseWrapper> },
+            ],
+          },
+          {
+            element: <PermissionRoute permission="giveback" />,
+            children: [
+              { path: 'admin/pledges', element: <SuspenseWrapper><AdminPledgesPage /></SuspenseWrapper> },
             ],
           },
           {

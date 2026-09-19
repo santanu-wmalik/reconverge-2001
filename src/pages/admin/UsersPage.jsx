@@ -277,6 +277,13 @@ export default function UsersPage() {
                             busy={busyId === u.id}
                             onToggle={handlePermToggle}
                           />
+                          <PermChip
+                            label="Give Back"
+                            name="giveback"
+                            row={u}
+                            busy={busyId === u.id}
+                            onToggle={handlePermToggle}
+                          />
                         </div>
                       )}
                     </div>

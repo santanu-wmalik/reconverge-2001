@@ -4,9 +4,10 @@
 //                              re-submitting updates the existing pledge.
 //                              alumni_id always comes from the session.
 //   GET  /api/pledges/mine   — the caller's own pledge (or null).
-//   GET  /api/pledges        — finance permission only (amounts + contact
+//   GET  /api/pledges        — admins holding the 'giveback' permission only
+//                              (super-admin implicitly). Amounts + contact
 //                              details are sensitive; `anonymous` rows must
-//                              never reach a public surface).
+//                              never reach a public surface.
 
 import { query } from './db.js';
 import { sessionCan } from './auth.js';
@@ -71,8 +72,9 @@ export function mountPledges(app) {
     try {
       const session = req.auth;
       if (!session) return res.status(401).json({ error: 'Authentication required' });
-      if (!sessionCan(session, 'finance')) {
-        return res.status(403).json({ error: 'Finance permission required' });
+      const isAdmin = session.role === 'admin' || session.role === 'super-admin';
+      if (!isAdmin || !sessionCan(session, 'giveback')) {
+        return res.status(403).json({ error: 'Give Back permission (admin) required' });
       }
       const r = await query('SELECT * FROM pledges ORDER BY created_at DESC');
       res.json(r.rows.map(toJson));

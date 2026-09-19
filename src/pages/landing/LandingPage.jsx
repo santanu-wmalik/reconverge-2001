@@ -25,12 +25,14 @@ export default function LandingPage() {
       <HeroSection />
       <SchedulePreview />
       <RollOfHonour />
+      {/* Give Back sits right after the Roll of Honour per the fundraising
+          committee — high on the page without displacing the schedule. */}
+      <GiveBackPreview />
       <ThenAndNow />
       <NostalgiaPreview />
       <TestimonialsSection />
       <VenueDates />
       <CoordinatorsStrip />
-      <GiveBackPreview />
       <InMemoriamPreview />
       <SponsorsSection />
       <CTASection />

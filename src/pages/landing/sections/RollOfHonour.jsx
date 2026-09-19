@@ -23,7 +23,7 @@ const PAID_ANY = new Set(['paid', 'pending-verification', 'confirmed']);
 const shortOf = (branch) => BRANCH_SHORT[BRANCHES.indexOf(branch)] || branch;
 
 const EMPTY = { totals: { signedUp: 0, paid: 0, paidAny: 0, interestOnly: 0, heads: 0 }, byBranch: [], roster: [] };
-const PAGE_SIZES = [25, 50, 100, 200];
+const PAGE_SIZES = [10, 25, 50, 100, 200];
 
 const pagerBtn =
   'nav-caps px-1 sm:px-3 py-2 text-[9px] sm:text-[11px] tracking-[0.06em] sm:tracking-caps border border-forest-500/20 bg-white text-forest-700 hover:border-forest-500/50 disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap';
