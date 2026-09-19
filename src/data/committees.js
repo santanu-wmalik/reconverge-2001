@@ -76,7 +76,7 @@ export const committees = [
     lead: 'Asif ETV',
     coLead: 'Prith Barman · Dheeraj Buduru',
     members: ['Santanu Malik', 'Anuratha Kalai Chelvain'],
-    description: 'NITC liaison, giving-back project selection and execution. Current focus: rallying the batch behind NITCAA\u2019s flagship Health Centre project (Susrutha Swastya Kendram).',
+    description: 'NITC liaison, giving-back project selection and execution. Current focus: Project Cornerstone \u2014 funding the Alumni Guest House at NITC (\u20b92 Cr goal). Make your pledge from the Give Back tab in My Portal.',
   },
   {
     id: 'br',

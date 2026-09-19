@@ -245,3 +245,28 @@ CREATE TABLE IF NOT EXISTS password_resets (
 );
 CREATE INDEX IF NOT EXISTS password_resets_user_idx ON password_resets (user_id);
 CREATE INDEX IF NOT EXISTS password_resets_token_idx ON password_resets (token_hash);
+
+-- ─── pledges (Project Cornerstone — Alumni Guest House fundraising) ──────
+-- One pledge per alumnus (upserted on re-submit). Written only through
+-- server/pledges.js: POST forces alumni_id from the session; the full list
+-- is finance-permission-gated.
+CREATE TABLE IF NOT EXISTS pledges (
+  id                 TEXT PRIMARY KEY,
+  alumni_id          TEXT UNIQUE REFERENCES alumni(id) ON DELETE CASCADE,
+  name               TEXT,
+  email              TEXT,
+  phone              TEXT,
+  location           TEXT,
+  linkedin           TEXT,
+  branch             TEXT,
+  tier               TEXT,
+  amount             NUMERIC,
+  company_match      BOOLEAN DEFAULT FALSE,
+  company_name       TEXT,
+  tax_interest       BOOLEAN DEFAULT FALSE,
+  anonymous          BOOLEAN DEFAULT FALSE,
+  volunteer_interest BOOLEAN DEFAULT FALSE,
+  message            TEXT,
+  created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
