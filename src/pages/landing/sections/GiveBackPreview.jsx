@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 // the signed-in alumnus.
 export default function GiveBackPreview() {
   return (
-    <section className="py-16 md:py-20">
+    <section id="giving" className="scroll-mt-24 py-16 md:py-20">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
         <span className="eyebrow">Project Cornerstone · Legacy</span>
         <h2 className="mt-3 text-4xl md:text-5xl lg:text-6xl font-heading font-medium italic text-forest-600">

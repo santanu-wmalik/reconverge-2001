@@ -18,7 +18,29 @@ import CTASection from './sections/CTASection';
 //
 // BatchPulse + BranchLeaderboard were folded into RollOfHonour.
 import TownhallPopup from '../../components/shared/TownhallPopup';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
+// Deep links like /#giving (shared in WhatsApp) should land on their section.
+// Sections mount lazily and shift as data loads, so retry the scroll a few
+// times instead of relying on the browser's one-shot anchor jump.
+function useHashScroll() {
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (!hash) return;
+    const id = hash.slice(1);
+    let tries = 0;
+    const tick = () => {
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: tries === 0 ? 'auto' : 'smooth', block: 'start' });
+      if (++tries < 5) setTimeout(tick, 400);
+    };
+    tick();
+  }, [hash]);
+}
+
 export default function LandingPage() {
+  useHashScroll();
   return (
     <div>
       <TownhallPopup />

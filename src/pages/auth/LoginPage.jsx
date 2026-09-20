@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { getSavedCredentials, saveCredentials, clearSavedCredentials } from '../../context/AuthContext';
@@ -17,6 +17,9 @@ export default function LoginPage() {
   const { login } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
+  // Where to land after login: the page the visitor was headed to (set by
+  // ProtectedRoute), else Give Back — the campaign is the default landing.
+  const returnTo = useLocation().state?.from || '/give-back';
 
   // Load saved credentials from cookies on mount
   useEffect(() => {
@@ -51,7 +54,7 @@ export default function LoginPage() {
         clearSavedCredentials();
       }
       showToast(`Welcome back, ${result.user.name}!`, 'success');
-      navigate('/early-bird');
+      navigate(returnTo);
     } else {
       showToast(result.error || 'Login failed', 'error');
     }
