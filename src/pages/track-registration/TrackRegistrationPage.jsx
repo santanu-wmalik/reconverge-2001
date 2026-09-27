@@ -192,7 +192,9 @@ export default function TrackRegistrationPage() {
       if (!e.email || byEmail.has(e.email)) continue;
       byEmail.set(e.email, e);
     }
-    return [...byEmail.values()];
+    // Give-back-only profiles are excluded from this page entirely — they
+    // are tracked on the admin Pledges tab instead.
+    return [...byEmail.values()].filter((e) => tierOf(e) !== 'giveback');
   }, [registered, rsvps]);
 
   const filtered = useMemo(() => {
@@ -248,12 +250,11 @@ export default function TrackRegistrationPage() {
     const paid = entries.filter((e) => tierOf(e) === 'paid').length;
     const signedUp = entries.filter((e) => tierOf(e) === 'signedUp').length;
     const interest = entries.filter((e) => tierOf(e) === 'interest').length;
-    const giveback = entries.filter((e) => tierOf(e) === 'giveback').length;
     const headcount = entries.reduce(
       (n, e) => n + 1 + (Number(e.family) || 0),
       0
     );
-    return { interest, signedUp, paid, giveback, headcount };
+    return { interest, signedUp, paid, headcount };
   }, [entries]);
 
   return (
@@ -271,11 +272,10 @@ export default function TrackRegistrationPage() {
       {/* Stats — click tier cards to filter the roster below; multi-select
           (e.g. Shown Interest + Signed Up). Click again to deselect; the
           headcount card clears every tier. */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         <StatPill label="Shown Interest" value={stats.interest} active={tiers.has('interest')} onClick={() => toggleTier('interest')} />
         <StatPill label="Signed Up (Not Paid)" value={stats.signedUp} active={tiers.has('signedUp')} onClick={() => toggleTier('signedUp')} />
         <StatPill label="Paid & Attending" value={stats.paid} active={tiers.has('paid')} onClick={() => toggleTier('paid')} />
-        <StatPill label="Give Back Only" value={stats.giveback} active={tiers.has('giveback')} onClick={() => toggleTier('giveback')} />
         <StatPill
           label="Total headcount (incl. family)"
           value={stats.headcount}
@@ -394,7 +394,7 @@ export default function TrackRegistrationPage() {
             </table>
           </div>
           <p className="px-4 py-2.5 border-t border-forest-500/15 text-[11px] text-ink-muted flex flex-wrap gap-x-4 gap-y-1">
-            {Object.values(TIER_BADGE).map((b) => (
+            {['paid', 'signedUp', 'interest'].map((k) => TIER_BADGE[k]).map((b) => (
               <span key={b.label}>{b.icon} {b.label}</span>
             ))}
           </p>
