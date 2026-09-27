@@ -56,6 +56,7 @@ const ProfileDashboard = lazyWithReload(() => import('./pages/profile/ProfileDas
 const EditProfile = lazyWithReload(() => import('./pages/profile/EditProfile'));
 const EventSchedulePage = lazyWithReload(() => import('./pages/itinerary/EventSchedulePage'));
 const WhosComingPage = lazyWithReload(() => import('./pages/whos-coming/WhosComingPage'));
+const TrackRegistrationPage = lazyWithReload(() => import('./pages/track-registration/TrackRegistrationPage'));
 const MyItineraryPage = lazyWithReload(() => import('./pages/itinerary/MyItineraryPage'));
 const GroupsListPage = lazyWithReload(() => import('./pages/groups/GroupsListPage'));
 const GroupDetailPage = lazyWithReload(() => import('./pages/groups/GroupDetailPage'));
@@ -80,6 +81,8 @@ const FAQPage = lazyWithReload(() => import('./pages/faq/FAQPage'));
 const CommitteesPage = lazyWithReload(() => import('./pages/committees/CommitteesPage'));
 const OurJourneyPage = lazyWithReload(() => import('./pages/journey/OurJourneyPage'));
 const EventPosterPage = lazyWithReload(() => import('./pages/event/EventPosterPage'));
+const TermsPage = lazyWithReload(() => import('./pages/policies/PolicyPage'));
+const PrivacyPolicyPage = lazyWithReload(() => import('./pages/policies/PolicyPage').then((m) => ({ default: m.PrivacyPolicyPage })));
 const StayPage = lazyWithReload(() => import('./pages/stay/StayPage'));
 
 // Admin pages
@@ -126,6 +129,8 @@ export const router = createBrowserRouter([
       { path: 'our-journey', element: <SuspenseWrapper><OurJourneyPage /></SuspenseWrapper> },
       { path: 'rsvp', element: <SuspenseWrapper><RSVPPage /></SuspenseWrapper> },
       { path: 'event', element: <SuspenseWrapper><EventPosterPage /></SuspenseWrapper> },
+      { path: 'terms', element: <SuspenseWrapper><TermsPage /></SuspenseWrapper> },
+      { path: 'privacy-policy', element: <SuspenseWrapper><PrivacyPolicyPage /></SuspenseWrapper> },
     ],
   },
 
@@ -140,6 +145,12 @@ export const router = createBrowserRouter([
           { path: 'profile/edit', element: <SuspenseWrapper><EditProfile /></SuspenseWrapper> },
           { path: 'agenda', element: <SuspenseWrapper><EventSchedulePage /></SuspenseWrapper> },
           { path: 'whos-coming', element: <SuspenseWrapper><WhosComingPage /></SuspenseWrapper> },
+          {
+            element: <PermissionRoute permission="details" redirect="/profile" />,
+            children: [
+              { path: 'track-registration', element: <SuspenseWrapper><TrackRegistrationPage /></SuspenseWrapper> },
+            ],
+          },
           { path: 'events', element: <SuspenseWrapper><EventSchedulePage /></SuspenseWrapper> },
           { path: 'events/my-plan', element: <SuspenseWrapper><MyItineraryPage /></SuspenseWrapper> },
           { path: 'groups', element: <SuspenseWrapper><GroupsListPage /></SuspenseWrapper> },

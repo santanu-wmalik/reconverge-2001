@@ -135,6 +135,7 @@ export default function RemindersPage() {
             branch: a.branch || '',
             city: a.currentCity || '',
             isRegistered: Boolean(a.isRegistered),
+            participation: a.participation || 'attending',
             paymentStatus: a.paymentStatus || null,
             paymentUid: a.paymentUid || null,
             registrationId: a.registrationId || null,
@@ -189,7 +190,7 @@ export default function RemindersPage() {
       switch (filter) {
         case 'registered': return r.isRegistered;
         case 'rsvp_only':  return !r.isRegistered && r.hasRsvped;
-        case 'unpaid':     return r.isRegistered && r.paymentStatus !== 'paid' && r.paymentStatus !== 'confirmed';
+        case 'unpaid':     return r.isRegistered && r.participation !== 'giveback-only' && r.paymentStatus !== 'paid' && r.paymentStatus !== 'confirmed';
         case 'paid':       return r.paymentStatus === 'paid' || r.paymentStatus === 'confirmed';
         default:           return true;
       }
@@ -201,7 +202,7 @@ export default function RemindersPage() {
     registered: rows.filter((r) => r.isRegistered).length,
     rsvpOnly: rows.filter((r) => !r.isRegistered && r.hasRsvped).length,
     paid: rows.filter((r) => r.paymentStatus === 'paid' || r.paymentStatus === 'confirmed').length,
-    unpaid: rows.filter((r) => r.isRegistered && r.paymentStatus !== 'paid' && r.paymentStatus !== 'confirmed').length,
+    unpaid: rows.filter((r) => r.isRegistered && r.participation !== 'giveback-only' && r.paymentStatus !== 'paid' && r.paymentStatus !== 'confirmed').length,
   }), [rows]);
 
   const allFilteredSelected = filtered.length > 0 && filtered.every((r) => selected.has(r.email));
@@ -526,7 +527,7 @@ export default function RemindersPage() {
                       {r.hasRsvped && r.source === 'registered' && (
                         <Badge variant="gold" size="sm">RSVP ✓</Badge>
                       )}
-                      <PaymentPill status={r.paymentStatus} isRegistered={r.isRegistered} />
+                      <PaymentPill status={r.paymentStatus} isRegistered={r.isRegistered} participation={r.participation} />
                     </div>
                     <div className="text-xs text-ink-soft truncate">
                       {r.email}
@@ -632,7 +633,10 @@ function StatCard({ label, value, tone, active = false, onClick }) {
 
 // Row-level engagement pill — mirrors the 3-tier language used in Stats +
 // Filter chips + the public Who's Registered page.
-function PaymentPill({ status, isRegistered }) {
+function PaymentPill({ status, isRegistered, participation }) {
+  if (participation === 'giveback-only') {
+    return <Badge variant="gold" size="sm">Give Back Only</Badge>;
+  }
   if (status === 'paid' || status === 'confirmed') {
     return <Badge variant="success" size="sm">Paid & Attending</Badge>;
   }

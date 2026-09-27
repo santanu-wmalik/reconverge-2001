@@ -1,6 +1,8 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { EVENT_CONFIG } from '../../data/constants';
+import { pledgeApi } from '../../services/api';
 
 // Shared payment-completion helpers + the persistent portal banner.
 //
@@ -11,6 +13,8 @@ import { EVENT_CONFIG } from '../../data/constants';
 
 export function paymentTierOf(user) {
   if (!user?.isRegistered) return null;
+  // Give-back-only supporters are their own category — never nudged to pay.
+  if (user.participation === 'giveback-only') return 'giveback';
   const s = user.paymentStatus;
   if (s === 'paid' || s === 'confirmed') return 'paid';
   if (s === 'pending-verification' || user.paymentUid) return 'pending';
@@ -31,10 +35,40 @@ export const inr = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
 
 // Slim strip under the portal binder tabs. Rendered on every My Portal page
 // for a signed-in, registered, not-yet-verified user.
+// Shared hook: does the signed-in user have a pledge on file? null = loading.
+export function useMyPledge(enabled) {
+  const [pledge, setPledge] = useState(null);
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    if (!enabled) return;
+    pledgeApi.mine()
+      .then(({ pledge: p }) => setPledge(p || null))
+      .catch(() => setPledge(null))
+      .finally(() => setLoaded(true));
+  }, [enabled]);
+  return { pledge, loaded };
+}
+
 export default function PaymentNudgeBanner() {
   const { user } = useAuth();
   const tier = paymentTierOf(user);
+  const { pledge, loaded } = useMyPledge(tier === 'giveback');
   if (!tier || tier === 'paid') return null;
+
+  // Give Back supporter: remind about the pledge instead of payment.
+  if (tier === 'giveback') {
+    if (!loaded || pledge) return null; // quiet once pledged
+    return (
+      <div className="bg-[#fbf7ea] border-b border-gold-500/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2 text-sm text-ink">
+          <span>🏛️ You're here for <b>Give Back</b> — make your Project Cornerstone pledge to complete your part.</span>
+          <Link to="/give-back" className="nav-caps shrink-0 px-3 py-1.5 rounded-md bg-gold-500 text-white hover:bg-gold-600 shadow-sm">
+            Make your pledge →
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (tier === 'pending') {
     return (
@@ -70,7 +104,28 @@ export default function PaymentNudgeBanner() {
 export function RegistrationTracker() {
   const { user } = useAuth();
   const tier = paymentTierOf(user);
+  const { pledge, loaded } = useMyPledge(tier === 'giveback');
   if (!tier) return null;
+
+  if (tier === 'giveback') {
+    return (
+      <div className="rounded-2xl border border-gold-500/40 bg-[#fbf7ea] p-5 mb-6 flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="nav-caps text-gold-700">Give Back Supporter</p>
+          <p className="text-sm text-ink-soft mt-1">
+            {pledge
+              ? `Pledge on file: ${pledge.tier === 'Custom' ? '' : pledge.tier + ' — '}₹${Number(pledge.amount || 0).toLocaleString('en-IN')}. Thank you!`
+              : 'No registration fee for you — your one step is the Project Cornerstone pledge.'}
+          </p>
+        </div>
+        {loaded && !pledge && (
+          <Link to="/give-back" className="nav-caps px-3 py-1.5 rounded-md bg-gold-500 text-white hover:bg-gold-600 shadow-sm">
+            Make your pledge →
+          </Link>
+        )}
+      </div>
+    );
+  }
 
   const steps = [
     { label: 'Signed Up', done: true },

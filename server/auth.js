@@ -158,6 +158,8 @@ export function mountAuth(app) {
       alumniData.batch = 2001;
       alumniData.is_registered = true;
       alumniData.registration_id = registrationId;
+      // participation is a controlled vocabulary — anything else falls back.
+      alumniData.participation = body.participation === 'giveback-only' ? 'giveback-only' : 'attending';
       alumniData.role = 'alumni';
       alumniData.created_at = new Date().toISOString();
 
@@ -458,7 +460,7 @@ export function mountAuth(app) {
   // Unknown keys are silently dropped so the JSON blob stays clean. Every live
   // session for that user has its cached `permissions` refreshed in place so
   // the grant takes effect immediately without forcing a re-login.
-  const KNOWN_PERMISSIONS = new Set(['finance', 'marketing', 'giveback']);
+  const KNOWN_PERMISSIONS = new Set(['finance', 'marketing', 'giveback', 'details']);
   app.patch('/api/users/:id/permissions', async (req, res, next) => {
     try {
       const callerToken = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');

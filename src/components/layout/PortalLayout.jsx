@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
+import PolicyConsentModal from '../shared/PolicyConsent';
 import Footer from './Footer';
 import ImpersonationBanner from './ImpersonationBanner';
 import BinderTabs from './BinderTabs';
@@ -7,12 +8,17 @@ import PaymentNudgeBanner from '../shared/PaymentNudge';
 import BackToTop from '../shared/BackToTop';
 import AnnouncementsBanner from '../shared/AnnouncementsBanner';
 import { NAV_LINKS_PROTECTED } from '../../data/constants';
+import { useAuth } from '../../context/AuthContext';
 
 // Authenticated portal shell — same cream / forest / gold look as the public
 // site (no `dark` root class), so signed-in pages match the home page.
 // Section navigation is a binder-tab strip under the header.
 export default function PortalLayout() {
   const location = useLocation();
+  const { hasPermission } = useAuth();
+  // Permission-tagged tabs (e.g. Track Registration) only render for users
+  // holding that grant; everything else shows for every signed-in user.
+  const navLinks = NAV_LINKS_PROTECTED.filter((l) => !l.permission || hasPermission(l.permission));
   const isActive = (link) =>
     location.pathname === link.path || location.pathname.startsWith(link.path + '/');
 
@@ -21,9 +27,10 @@ export default function PortalLayout() {
       <div className="flex flex-col min-h-screen">
         <ImpersonationBanner />
         <Header />
+        <PolicyConsentModal />
         <AnnouncementsBanner />
         <main className="flex-1 relative z-[1]">
-          <BinderTabs label="My Portal" links={NAV_LINKS_PROTECTED} isActive={isActive} />
+          <BinderTabs label="My Portal" links={navLinks} isActive={isActive} />
           <PaymentNudgeBanner />
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-8">

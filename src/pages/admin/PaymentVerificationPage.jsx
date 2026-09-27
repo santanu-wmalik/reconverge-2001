@@ -76,7 +76,9 @@ export default function PaymentVerificationPage() {
   // are excluded from every count and row so bucket numbers reflect real
   // alumni only.
   const registered = useMemo(
-    () => alumni.filter((a) => a.isRegistered && !isDemoUser(a)),
+    // Give-back-only supporters owe no fee — they are not verification
+    // candidates and must not appear in any bucket here.
+    () => alumni.filter((a) => a.isRegistered && a.participation !== 'giveback-only' && !isDemoUser(a)),
     [alumni]
   );
 

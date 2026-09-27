@@ -22,7 +22,9 @@ export default function ProfileDashboard() {
           <p className="text-gold-700 text-sm">Batch of {user?.batch}</p>
           <p className="text-ink-soft text-sm mt-1">{user?.designation}</p>
           <p className="text-ink-soft text-sm">{user?.company}</p>
-          {paymentTierOf(user) === 'paid' ? (
+          {paymentTierOf(user) === 'giveback' ? (
+            <Badge variant="gold" className="mt-3">Give Back Supporter</Badge>
+          ) : paymentTierOf(user) === 'paid' ? (
             <Badge variant="success" className="mt-3">Paid &amp; Attending</Badge>
           ) : paymentTierOf(user) === 'pending' ? (
             <Badge variant="gold" className="mt-3">Signed Up — Under Verification</Badge>
@@ -57,9 +59,7 @@ export default function ProfileDashboard() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { label: 'My Events', path: '/events/my-plan', icon: '📅' },
-                { label: 'My Groups', path: '/groups', icon: '👥' },
                 { label: 'Store', path: '/store', icon: '🛍️' },
-                { label: 'Travel', path: '/travel', icon: '✈️' },
               ].map((link) => (
                 <Link key={link.path} to={link.path} className="glass p-4 text-center hover:bg-forest-600/8 transition-colors rounded-xl">
                   <div className="text-2xl mb-1">{link.icon}</div>

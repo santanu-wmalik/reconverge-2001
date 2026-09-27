@@ -40,7 +40,7 @@ export function mountPublic(app) {
     try {
       const [a, r] = await Promise.all([
         query(
-          `SELECT id, name, email, branch, current_city, is_registered, payment_status,
+          `SELECT id, name, email, branch, current_city, is_registered, payment_status, participation,
                   adults, children_under_10, children_10_plus,
                   (avatar IS NOT NULL AND avatar <> '') AS has_avatar
              FROM alumni`
@@ -49,7 +49,10 @@ export function mountPublic(app) {
       ]);
 
       const alumni = a.rows.filter((x) => !DEMO_EMAILS.has(String(x.email || '').toLowerCase()));
-      const registered = alumni.filter((x) => x.is_registered);
+      // Give-back-only supporters are their own category — kept out of the
+      // attending roster, sign-up counts and paid totals.
+      const givebackOnly = alumni.filter((x) => x.is_registered && x.participation === 'giveback-only').length;
+      const registered = alumni.filter((x) => x.is_registered && x.participation !== 'giveback-only');
       const registeredEmails = new Set(registered.map((x) => String(x.email || '').toLowerCase()));
 
       const interestOnly = r.rows.filter((x) => {
@@ -98,7 +101,7 @@ export function mountPublic(app) {
 
       res.set('Cache-Control', 'public, max-age=60');
       res.json({
-        totals: { signedUp: registered.length, paid, paidAny, interestOnly, heads },
+        totals: { signedUp: registered.length, paid, paidAny, interestOnly, heads, givebackOnly },
         byBranch,
         roster,
       });

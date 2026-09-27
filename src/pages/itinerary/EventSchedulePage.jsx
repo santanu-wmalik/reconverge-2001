@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useItinerary } from '../../context/ItineraryContext';
 import { useToast } from '../../context/ToastContext';
-import { eventSchedule, eventCategories, eventDays } from '../../data/events';
+import { eventSchedule, eventCategories, eventDays, galaSpotlight } from '../../data/events';
 import { pageTransition, staggerContainer, staggerItem } from '../../utils/animationVariants';
 import { formatTime } from '../../utils/formatters';
 import GlassCard from '../../components/ui/GlassCard';
@@ -91,6 +91,29 @@ export default function EventSchedulePage() {
           <div className="text-center py-12 text-ink-muted">No events in this category for Day {activeDay}</div>
         )}
       </motion.div>
+
+      {/* ── Gala Night spotlight — theme + artist announcement ── */}
+      <div className="mt-14 space-y-6">
+        <div className="text-center">
+          <span className="eyebrow">Gala Night Spotlight</span>
+        </div>
+        {[galaSpotlight.theme, galaSpotlight.artist].map((block) => (
+          <GlassCard key={block.title} hover={false} className="border-gold-500/30">
+            <h3 className="font-heading text-xl md:text-2xl font-bold text-forest-700 mb-4">
+              {block.title.startsWith('Gala') ? '✨ ' : '🎤 '}{block.title}
+            </h3>
+            <div className="space-y-3 text-[15px] leading-relaxed text-ink-soft font-serif">
+              {block.paragraphs.map((p, i) => (
+                <p key={i}>
+                  {p.split('**').map((chunk, j) =>
+                    j % 2 === 1 ? <b key={j} className="text-ink">{chunk}</b> : chunk
+                  )}
+                </p>
+              ))}
+            </div>
+          </GlassCard>
+        ))}
+      </div>
     </motion.div>
   );
 }

@@ -12,8 +12,10 @@ import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 import GlassCard from '../../components/ui/GlassCard';
 import Stepper from '../../components/ui/Stepper';
+import { ConsentFields } from '../../components/shared/PolicyConsent';
+import { POLICY_VERSION } from '../../data/policies';
 
-const steps = ['Personal', 'Academic', 'Travel & Stay', 'Preferences', 'Payment', 'Review'];
+const ALL_STEPS = ['Personal', 'Academic', 'Travel & Stay', 'Preferences', 'Payment', 'Review'];
 
 function RequiredMark() {
   return <span className="text-red-700 dark:text-red-400 ml-0.5" aria-hidden="true">*</span>;
@@ -22,6 +24,9 @@ function RequiredMark() {
 export default function RegistrationPage() {
   const [step, setStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  // Privacy & Event Terms consent (mandatory) + directory opt-in (optional)
+  const [policyAgreed, setPolicyAgreed] = useState(false);
+  const [directoryOptIn, setDirectoryOptIn] = useState(false);
   // The RSVP page hands over name / email / branch so a "Shown Interest"
   // alumnus doesn't retype them when upgrading to a full sign-up.
   const prefill = useLocation().state?.prefill || {};
@@ -43,6 +48,8 @@ export default function RegistrationPage() {
     children10Plus: 0,
     specialRequests: '',
     notes: '',
+    // Participation: 'attending' | 'giveback-only' (skips the Payment step)
+    participation: 'attending',
     // Payment
     paymentUid: '',
     idType: '', idNumber: '',
@@ -52,6 +59,11 @@ export default function RegistrationPage() {
   const navigate = useNavigate();
 
   const update = (field, value) => setForm((prev) => ({ ...prev, [field]: value }));
+
+  // Give-back-only supporters skip the Payment step entirely.
+  const givebackOnly = form.participation === 'giveback-only';
+  const steps = givebackOnly ? ALL_STEPS.filter((x) => x !== 'Payment') : ALL_STEPS;
+  const stepName = steps[step];
 
   // Registration fee: self (13500) + each additional family member (2500).
   // Family = extra adults + all children (both buckets).
@@ -69,6 +81,10 @@ export default function RegistrationPage() {
       showToast('Please set a password (minimum 6 characters)', 'error');
       return;
     }
+    if (!policyAgreed) {
+      showToast('Please agree to the Terms & Conditions and Privacy Policy to complete sign-up', 'error');
+      return;
+    }
     setLoading(true);
     try {
       // Single-shot atomic registration. The server handles uniqueness, role
@@ -80,8 +96,11 @@ export default function RegistrationPage() {
         ...form,
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(form.name || form.email)}`,
         familyMembers: familyCount,
-        registrationFee,
-        paymentStatus: form.paymentUid ? 'pending-verification' : 'unpaid',
+        registrationFee: givebackOnly ? 0 : registrationFee,
+        paymentStatus: givebackOnly ? null : (form.paymentUid ? 'pending-verification' : 'unpaid'),
+        policyVersion: POLICY_VERSION,
+        policyAcceptedAt: new Date().toISOString(),
+        directoryOptIn,
         groups: [],
       });
       // Re-use the standard login flow so AuthContext + token storage end up
@@ -90,7 +109,7 @@ export default function RegistrationPage() {
       // restart.)
       await login(form.email, form.password);
       showToast('Registration successful! Welcome to the reunion!', 'success');
-      navigate('/register/success');
+      navigate(givebackOnly ? '/give-back' : '/register/success');
     } catch (error) {
       console.error('Registration error:', error);
       const msg =
@@ -129,13 +148,39 @@ export default function RegistrationPage() {
       </p>
 
       <div className="mb-8">
-        <Stepper steps={steps} currentStep={step} />
+        <Stepper steps={steps} currentStep={Math.min(step, steps.length - 1)} />
       </div>
 
       <GlassCard hover={false}>
-        {step === 0 && (
+        {stepName === 'Personal' && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-ink dark:text-white mb-4">Personal Information</h3>
+            {/* Attending vs Give-Back-only — drives fee + payment steps */}
+            <div className="grid sm:grid-cols-2 gap-3 mb-2">
+              {[
+                { id: 'attending', title: "I'm attending the reunion", desc: 'Registration fee applies — payment details in the later steps.' },
+                { id: 'giveback-only', title: "Can't attend — here for Give Back", desc: 'No registration fee. After sign-up we’ll take you straight to the pledge form.' },
+              ].map((opt) => (
+                <label
+                  key={opt.id}
+                  className={`border rounded-xl px-4 py-3 cursor-pointer transition ${
+                    form.participation === opt.id
+                      ? 'bg-[#fbf7ea] border-gold-500/70'
+                      : 'bg-white border-forest-500/15 hover:border-gold-500/50'
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="participation"
+                    className="sr-only"
+                    checked={form.participation === opt.id}
+                    onChange={() => { update('participation', opt.id); setStep(0); }}
+                  />
+                  <span className={`block text-sm font-semibold ${form.participation === opt.id ? 'text-forest-700' : 'text-ink'}`}>{opt.title}</span>
+                  <span className="block text-xs text-ink-muted mt-0.5">{opt.desc}</span>
+                </label>
+              ))}
+            </div>
             <Input label="Full Name" value={form.name} onChange={(e) => update('name', e.target.value)} placeholder="Enter your full name" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Input
@@ -165,7 +210,7 @@ export default function RegistrationPage() {
           </div>
         )}
 
-        {step === 1 && (
+        {stepName === 'Academic' && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-ink dark:text-white mb-4">Academic Details</h3>
             <Select label="Branch / Department" value={form.branch} onChange={(e) => update('branch', e.target.value)} options={BRANCHES} placeholder="Select your branch" />
@@ -174,7 +219,7 @@ export default function RegistrationPage() {
           </div>
         )}
 
-        {step === 2 && (
+        {stepName === 'Travel & Stay' && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-ink dark:text-white mb-4">Travel & Stay</h3>
             <Select label="Mode of Travel" value={form.travelMode} onChange={(e) => update('travelMode', e.target.value)} options={TRAVEL_MODES} placeholder="How will you travel?" />
@@ -208,7 +253,7 @@ export default function RegistrationPage() {
           </div>
         )}
 
-        {step === 3 && (
+        {stepName === 'Preferences' && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-ink dark:text-white mb-4">Family & Preferences</h3>
             <Select label="T-Shirt Size" value={form.tshirtSize} onChange={(e) => update('tshirtSize', e.target.value)} options={TSHIRT_SIZES} placeholder="Select size" />
@@ -250,7 +295,7 @@ export default function RegistrationPage() {
           </div>
         )}
 
-        {step === 4 && (
+        {stepName === 'Payment' && (
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-ink dark:text-white mb-4">Payment & ID</h3>
 
@@ -298,9 +343,17 @@ export default function RegistrationPage() {
           </div>
         )}
 
-        {step === 5 && (
+        {stepName === 'Review' && (
           <div>
             <h3 className="text-lg font-semibold text-ink dark:text-white mb-4">Review Your Details</h3>
+            <div className="mb-6">
+              <ConsentFields
+                agreed={policyAgreed}
+                setAgreed={setPolicyAgreed}
+                directoryOptIn={directoryOptIn}
+                setDirectoryOptIn={setDirectoryOptIn}
+              />
+            </div>
             <div className="space-y-3 text-sm">
               {[
                 ['Name', form.name || '-'],
@@ -341,7 +394,7 @@ export default function RegistrationPage() {
           {step < steps.length - 1 ? (
             <Button onClick={() => setStep((s) => Math.min(steps.length - 1, s + 1))}>Continue</Button>
           ) : (
-            <Button loading={loading} onClick={handleSubmit}>Complete Sign Up</Button>
+            <Button loading={loading} disabled={!policyAgreed} onClick={handleSubmit}>Complete Sign Up</Button>
           )}
         </div>
       </GlassCard>

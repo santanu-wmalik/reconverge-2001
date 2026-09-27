@@ -91,14 +91,14 @@ export const NAV_LINKS_PROTECTED = [
   { label: 'Agenda', path: '/agenda', icon: '📅' },
   { label: 'Early Bird', path: '/early-bird', icon: '🎟' },
   { label: 'My Payments', path: '/payments', icon: '💳' },
+  { label: 'Give Back', path: '/give-back', icon: '💛' },
   { label: "Who's Registered", path: '/whos-coming', icon: '🙋' },
   { label: 'My Events', path: '/events/my-plan', icon: '📋' },
   { label: 'Stay', path: '/stay', icon: '🏨' },
-  { label: 'Travel', path: '/travel', icon: '🚐' },
   { label: 'Townhalls', path: '/townhalls', icon: '🎙️' },
   { label: 'Yearbook', path: '/yearbook', icon: '📖' },
-  { label: 'Groups', path: '/groups', icon: '👥' },
-  { label: 'Give Back', path: '/give-back', icon: '💛' },
+  // Only shown to users holding the 'details' permission (PortalLayout filters).
+  { label: 'Track Registration', path: '/track-registration', icon: '📊', permission: 'details' },
 ];
 
 // Legacy alias kept for any external imports; equivalent to the merged list.

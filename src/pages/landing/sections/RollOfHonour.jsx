@@ -22,7 +22,7 @@ const PAID_ANY = new Set(['paid', 'pending-verification', 'confirmed']);
 
 const shortOf = (branch) => BRANCH_SHORT[BRANCHES.indexOf(branch)] || branch;
 
-const EMPTY = { totals: { signedUp: 0, paid: 0, paidAny: 0, interestOnly: 0, heads: 0 }, byBranch: [], roster: [] };
+const EMPTY = { totals: { signedUp: 0, paid: 0, paidAny: 0, interestOnly: 0, heads: 0, givebackOnly: 0 }, byBranch: [], roster: [] };
 const PAGE_SIZES = [10, 25, 50, 100, 200];
 
 const pagerBtn =
@@ -46,7 +46,7 @@ export default function RollOfHonour() {
           if (cancelled) return;
           setFullRoster(
             (all || [])
-              .filter((x) => x.isRegistered && !isDemoUser(x))
+              .filter((x) => x.isRegistered && x.participation !== 'giveback-only' && !isDemoUser(x))
               .map((x) => ({ id: x.id, name: (x.name || '').trim(), branch: x.branch || '', city: x.currentCity || '', avatar: x.avatar || '', paid: PAID_ANY.has(x.paymentStatus), verified: x.paymentStatus === 'confirmed' }))
               // Records with no saved name sort last and read "Batchmate".
               .sort((p, r) => (p.name ? 0 : 1) - (r.name ? 0 : 1) || p.name.localeCompare(r.name))
@@ -246,7 +246,10 @@ export default function RollOfHonour() {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-3 mt-3 text-xs text-ink-muted font-serif">
-        <span>✅ Paid &amp; coming · {totals.interestOnly} more have shown interest but not signed up yet.</span>
+        <span>
+          ✅ Paid &amp; coming · {totals.interestOnly} more have shown interest but not signed up yet.
+          {totals.givebackOnly > 0 && ` · ${totals.givebackOnly} supporting from afar via Give Back.`}
+        </span>
         {!isAuthenticated && (
           <Link to="/login" className="nav-caps text-forest-700 hover:text-gold-700">Sign in for travel plans &amp; more →</Link>
         )}

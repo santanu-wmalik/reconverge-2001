@@ -1,5 +1,8 @@
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { photoApi } from '../../services/api';
+import ProtectedImage from '../../components/shared/ProtectedImage';
 import { pageTransition, staggerContainer, staggerItem } from '../../utils/animationVariants';
 import GlassCard from '../../components/ui/GlassCard';
 import SectionHeading from '../../components/shared/SectionHeading';
@@ -14,6 +17,16 @@ const sections = [
 const memories = [];
 
 export default function NostalgiaPage() {
+  // A random taste of the batch's uploads — different photos each visit.
+  const [uploads, setUploads] = useState([]);
+  useEffect(() => {
+    photoApi.getAll().then((list) => setUploads(Array.isArray(list) ? list : [])).catch(() => {});
+  }, []);
+  const snippet = useMemo(
+    () => [...uploads].sort(() => Math.random() - 0.5).slice(0, 8),
+    [uploads]
+  );
+
   return (
     <motion.div {...pageTransition}>
       <SectionHeading
@@ -34,6 +47,29 @@ export default function NostalgiaPage() {
           </motion.div>
         ))}
       </motion.div>
+
+      {/* Random snippet of uploaded photos */}
+      {snippet.length > 0 && (
+        <div className="max-w-3xl mx-auto mb-12">
+          <div className="flex items-baseline justify-between mb-4">
+            <h3 className="text-xl font-heading font-bold text-ink">From the Batch's Uploads</h3>
+            <Link to="/nostalgia/photos" className="nav-caps text-forest-700 hover:text-gold-700 text-xs">
+              See all {uploads.length} →
+            </Link>
+          </div>
+          <div className="grid grid-cols-4 gap-2">
+            {snippet.map((p) => (
+              <Link key={p.id} to="/nostalgia/photos" className="block bg-white p-1 border border-forest-500/10 shadow-sm hover:border-gold-500/50 transition">
+                <ProtectedImage
+                  src={p.thumbUrl || p.url}
+                  alt={p.caption || 'Batch photo'}
+                  imgClassName="aspect-square w-full object-cover"
+                />
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Shared Echoes */}
       <div className="max-w-3xl mx-auto">

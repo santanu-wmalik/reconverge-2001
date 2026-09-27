@@ -270,3 +270,16 @@ CREATE TABLE IF NOT EXISTS pledges (
   created_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at         TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- ─── participation (Sept 2026) ───────────────────────────────────────────
+-- 'attending' (default) or 'giveback-only': registered only to contribute to
+-- Project Cornerstone. Give-back-only profiles are a separate category —
+-- never counted as paid or chased as "signed up, not paid".
+ALTER TABLE alumni ADD COLUMN IF NOT EXISTS participation TEXT NOT NULL DEFAULT 'attending';
+
+-- ─── policy consent (DPDP audit trail, Sept 2026) ────────────────────────
+-- Which policy version each alumnus accepted, when, and the optional
+-- reunion-directory contact-sharing opt-in.
+ALTER TABLE alumni ADD COLUMN IF NOT EXISTS policy_version TEXT;
+ALTER TABLE alumni ADD COLUMN IF NOT EXISTS policy_accepted_at TIMESTAMPTZ;
+ALTER TABLE alumni ADD COLUMN IF NOT EXISTS directory_opt_in BOOLEAN DEFAULT FALSE;

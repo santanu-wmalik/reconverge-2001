@@ -1,5 +1,6 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from './Header';
+import PolicyConsentModal from '../shared/PolicyConsent';
 import Footer from './Footer';
 import BinderTabs from './BinderTabs';
 import BackToTop from '../shared/BackToTop';
@@ -51,6 +52,7 @@ export default function AdminLayout() {
       <div className="flex flex-col min-h-screen">
         <ImpersonationBanner />
         <Header />
+        <PolicyConsentModal />
         <AnnouncementsBanner />
         <main className="flex-1 relative z-[1]">
           <BinderTabs label="Admin" links={adminNavLinks} isActive={isActive} />

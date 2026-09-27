@@ -59,6 +59,7 @@ export default function EditProfile() {
     designation: user?.designation || '',
     // Academic
     branch: user?.branch || '',
+    participation: user?.participation || 'attending',
     hostel: user?.hostel || '',
     rollNumber: user?.rollNumber || '',
     // Travel & Stay
@@ -199,6 +200,15 @@ export default function EditProfile() {
 
         {/* Academic */}
         <Section title="Academic Details">
+          <Select
+            label="Participation"
+            value={form.participation}
+            onChange={(e) => update('participation', e.target.value)}
+            options={[
+              { value: 'attending', label: "Attending the reunion (fee applies)" },
+              { value: 'giveback-only', label: "Give Back only — can't attend, no fee" },
+            ]}
+          />
           <Select
             label="Branch / Department"
             value={form.branch}

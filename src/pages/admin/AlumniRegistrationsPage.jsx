@@ -21,10 +21,12 @@ const STATUS_FILTERS = [
   { id: 'awaiting_uid', label: 'Awaiting UID' },
   { id: 'under_review', label: 'Under Verification' },
   { id: 'paid',         label: 'Paid' },
+  { id: 'giveback',     label: 'Give Back Only' },
   { id: 'rejected',     label: 'Rejected' },
 ];
 
 function statusOf(a) {
+  if (a.participation === 'giveback-only') return 'giveback';
   const s = a.paymentStatus;
   if (s === 'confirmed' || s === 'paid') return 'paid';
   if (s === 'rejected') return 'rejected';
@@ -34,6 +36,7 @@ function statusOf(a) {
 }
 
 const STATUS_BADGE = {
+  giveback:     { label: 'Give Back Only',     variant: 'gold' },
   paid:         { label: 'Paid',               variant: 'success' },
   under_review: { label: 'Under Verification', variant: 'gold' },
   rejected:     { label: 'Rejected',           variant: 'danger' },

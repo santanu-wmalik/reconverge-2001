@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import Header from './Header';
+import PolicyConsentModal from '../shared/PolicyConsent';
 import Footer from './Footer';
 import BackToTop from '../shared/BackToTop';
 import AnnouncementsBanner from '../shared/AnnouncementsBanner';
@@ -18,6 +19,7 @@ export default function PublicLayout() {
       <div className="flex flex-col min-h-screen">
         <ImpersonationBanner />
         <Header />
+        <PolicyConsentModal />
         <AnnouncementsBanner />
         <main className="flex-1 relative z-[1]">
           <Outlet />

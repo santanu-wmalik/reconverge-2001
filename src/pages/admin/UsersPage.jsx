@@ -130,7 +130,9 @@ export default function UsersPage() {
   // effect without them re-logging.
   const handlePermToggle = async (row, permName) => {
     if (row.role === 'super-admin') { showToast('Super-admin holds every permission implicitly', 'info'); return; }
-    if (row.role !== 'admin') { showToast('Grant admin access first, then toggle permissions', 'info'); return; }
+    // 'details' is a user-level grant (portal Track Registration tab) — any
+    // role can hold it. The admin-portal permissions still need admin role.
+    if (permName !== 'details' && row.role !== 'admin') { showToast('Grant admin access first, then toggle permissions', 'info'); return; }
     const current = (row.permissions && row.permissions[permName]) || false;
     const nextPerms = { ...(row.permissions || {}), [permName]: !current };
     setBusyId(row.id);
@@ -286,6 +288,17 @@ export default function UsersPage() {
                           />
                         </div>
                       )}
+                      {/* 'Details' works for ANY role — it unlocks the
+                          portal's Track Registration tab, no admin needed. */}
+                      <div className="flex items-center gap-1.5">
+                        <PermChip
+                          label="Details"
+                          name="details"
+                          row={u}
+                          busy={busyId === u.id}
+                          onToggle={handlePermToggle}
+                        />
+                      </div>
                     </div>
                   </div>
                 </motion.li>

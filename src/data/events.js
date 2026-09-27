@@ -44,3 +44,32 @@ export const eventDays = [
   { day: 2, date: '2026-12-28', label: 'Day 2 - Dec 28', subtitle: 'Campus & Gala' },
   { day: 3, date: '2026-12-29', label: 'Checkout - Dec 29', subtitle: 'Departure only' },
 ];
+
+// ─── Gala Night spotlight (announced 20 Sept 2026) ───────────────────────
+// Wording supplied by the entertainment committee — shown under the event
+// list on the Event Schedule page.
+export const galaSpotlight = {
+  theme: {
+    title: 'Gala Dinner Theme | Lights, Camera 90s',
+    paragraphs: [
+      'The era of big stars, bigger songs, unforgettable movie moments and some seriously iconic fashion.',
+      'For one night, **leave the sensible adult at home.**',
+      'Think back to your favourite 90s icon, that film you loved, the look you still remember, the character you secretly thought you could pull off. **Bring it to the gala.**',
+      'Hindi, Tamil, Malayalam cinema, pick your inspiration and make it your own. A glam heroine. A Bollywood heartthrob. A classic movie character. A memorable song-and-dance look. Or just your own take on 90s style.',
+      'And don’t keep the fun to yourself. **Bring your spouse and family into the storyline too.**',
+      'Coming with your old gang? Even better. Get creative with a group theme. Come as the cast of a favourite film, a movie family, a legendary on-screen gang, or simply coordinate a look that says **we planned this together.**',
+      'You don’t have to go full costume. **A nod to the era is enough.** A saree, a statement shirt, the right jacket, the hair, the shades, the attitude… you get the idea.',
+      'So start rummaging through those old film stills and your own wardrobe.',
+      '**The 90s are making a comeback. And this time, you’re in the picture.**',
+    ],
+  },
+  artist: {
+    title: 'And Now, for the Voice of the Evening…',
+    paragraphs: [
+      'We’re thrilled to have **Zeba Tommy** bringing the music to our Gala Night!',
+      'A versatile singer and songwriter, Zeba has made her mark across contemporary, Carnatic and film music, with her voice featuring in films including **Kalki**, **Irul** and **Officer on Duty**. She’s also a **Kerala State Film Award winner for Best Female Singer**.',
+      'And now, she’s bringing that voice to our stage. 🎶',
+      '**✨ Zeba Tommy. Live at the Gala Night. ✨**',
+    ],
+  },
+};

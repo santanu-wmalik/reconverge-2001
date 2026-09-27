@@ -10,6 +10,8 @@ const LINKS = [
   { label: 'Committees', path: '/committees' },
   { label: 'FAQ', path: '/faq' },
   { label: 'Sign Up', path: '/register' },
+  { label: 'Privacy', path: '/privacy-policy' },
+  { label: 'Terms', path: '/terms' },
 ];
 
 export default function Footer() {

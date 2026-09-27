@@ -75,7 +75,7 @@ export const townhalls = [
 // invites, and attach `recordingUrl` after each session wraps.
 townhalls.push(
   {
-    id: 'townhall-sep19-s1',
+    id: 'townhall-sep19-s1', // recording attached 27 Sept 2026
     title: 'REConverge ’26 — 2nd Town Hall · Session 1',
     session: 'Session 1 of 2',
     tagline: 'More updates · plans taking shape · see what’s next',
@@ -92,8 +92,10 @@ townhalls.push(
       'Programme & entertainment plans',
       'Open floor Q&A',
     ],
-    recordingUrl: null,
-    recordingNotes: 'Forthcoming — recording will be posted here after the session.',
+    recordingUrl: 'https://drive.google.com/file/d/1bTc629rFgU91cpraC5FCzfp8PF8ouEWH/view',
+    recordingEmbedUrl: 'https://drive.google.com/file/d/1bTc629rFgU91cpraC5FCzfp8PF8ouEWH/preview',
+    transcriptUrl: null,
+    recordingNotes: 'Full session recording — plays inline below.',
   },
   {
     id: 'townhall-sep20-s2',
