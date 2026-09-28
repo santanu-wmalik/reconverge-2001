@@ -56,19 +56,19 @@ export default function AdminPledgesPage() {
   return (
     <motion.div {...pageTransition}>
       <SectionHeading
-        title="Give Back Pledges"
-        subtitle="Project Cornerstone — who pledged what, and when. Anonymous pledges are visible here for payment follow-up but must never be published."
+        title="Give Back — Intents to Give"
+        subtitle="Project Cornerstone — who intends to give what, and when. Non-binding intents; anonymous entries are visible here for payment follow-up but must never be published."
       />
 
       {/* Summary */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <GlassCard padding="p-4" hover={false}>
-          <p className="text-[11px] uppercase tracking-wider text-ink-soft">Total pledged</p>
+          <p className="text-[11px] uppercase tracking-wider text-ink-soft">Total intended</p>
           <p className="text-2xl font-heading font-bold text-gold-700">{inr(stats.total)}</p>
           <p className="text-[11px] text-ink-muted mt-0.5">{stats.pct}% of the ₹2 Cr goal</p>
         </GlassCard>
         <GlassCard padding="p-4" hover={false}>
-          <p className="text-[11px] uppercase tracking-wider text-ink-soft">Pledges</p>
+          <p className="text-[11px] uppercase tracking-wider text-ink-soft">Intents</p>
           <p className="text-2xl font-heading font-bold text-ink">{stats.count}</p>
         </GlassCard>
         <GlassCard padding="p-4" hover={false}>
@@ -111,7 +111,7 @@ export default function AdminPledgesPage() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-forest-500/15 text-left">
-                {['Alumnus', 'Tier', 'Amount', 'Flags', 'Note', 'Pledged at', 'Updated'].map((h) => (
+                {['Alumnus', 'Tier', 'Amount', 'Flags', 'Note', 'Submitted at', 'Updated'].map((h) => (
                   <th key={h} className="px-4 py-3 text-[11px] uppercase tracking-wider text-ink-soft whitespace-nowrap">{h}</th>
                 ))}
               </tr>
@@ -120,7 +120,7 @@ export default function AdminPledgesPage() {
               {loading ? (
                 <tr><td colSpan={7} className="px-4 py-8 text-center text-ink-muted">Loading…</td></tr>
               ) : filtered.length === 0 ? (
-                <tr><td colSpan={7} className="px-4 py-8 text-center text-ink-muted">No pledges match.</td></tr>
+                <tr><td colSpan={7} className="px-4 py-8 text-center text-ink-muted">No intents match.</td></tr>
               ) : filtered.map((p) => (
                 <tr key={p.id} className="border-b border-forest-500/15 last:border-b-0 hover:bg-forest-600/5 align-top">
                   <td className="px-4 py-3">

@@ -159,7 +159,7 @@ export default function RegistrationPage() {
             <div className="grid sm:grid-cols-2 gap-3 mb-2">
               {[
                 { id: 'attending', title: "I'm attending the reunion", desc: 'Registration fee applies — payment details in the later steps.' },
-                { id: 'giveback-only', title: "Can't attend — here for Give Back", desc: 'No registration fee. After sign-up we’ll take you straight to the pledge form.' },
+                { id: 'giveback-only', title: "Can't attend — here for Give Back", desc: 'No registration fee. After sign-up we’ll take you straight to the intent-to-give form.' },
               ].map((opt) => (
                 <label
                   key={opt.id}

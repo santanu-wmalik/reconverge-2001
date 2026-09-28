@@ -31,7 +31,7 @@ export default function GiveBackPreview() {
             {[
               { num: '₹2 Cr', label: 'Campaign goal' },
               { num: '20', label: 'Rooms funded' },
-              { num: 'Dec 1', label: 'Pledges due by' },
+              { num: 'Dec 1', label: 'Intents due by' },
             ].map((g) => (
               <div key={g.label} className="text-center">
                 <p className="font-heading text-2xl md:text-3xl text-gold-600">{g.num}</p>
@@ -44,9 +44,9 @@ export default function GiveBackPreview() {
             to="/give-back"
             className="nav-caps inline-block mt-8 px-8 py-3.5 bg-gradient-to-b from-gold-400 to-gold-600 text-forest-900 shadow hover:from-gold-300 hover:to-gold-500"
           >
-            Make your pledge →
+            Share your intent to give →
           </Link>
-          <p className="text-xs text-ink-muted mt-3">Sign in required — your pledge is saved to your profile.</p>
+          <p className="text-xs text-ink-muted mt-3">Sign in required — your intent to give is saved to your profile.</p>
         </motion.div>
       </div>
     </section>

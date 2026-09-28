@@ -61,9 +61,9 @@ export default function PaymentNudgeBanner() {
     return (
       <div className="bg-[#fbf7ea] border-b border-gold-500/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex flex-wrap items-center justify-between gap-2 text-sm text-ink">
-          <span>🏛️ You're here for <b>Give Back</b> — make your Project Cornerstone pledge to complete your part.</span>
+          <span>🏛️ You're here for <b>Give Back</b> — share your Project Cornerstone intent to give to complete your part.</span>
           <Link to="/give-back" className="nav-caps shrink-0 px-3 py-1.5 rounded-md bg-gold-500 text-white hover:bg-gold-600 shadow-sm">
-            Make your pledge →
+            Share your intent →
           </Link>
         </div>
       </div>
@@ -114,13 +114,13 @@ export function RegistrationTracker() {
           <p className="nav-caps text-gold-700">Give Back Supporter</p>
           <p className="text-sm text-ink-soft mt-1">
             {pledge
-              ? `Pledge on file: ${pledge.tier === 'Custom' ? '' : pledge.tier + ' — '}₹${Number(pledge.amount || 0).toLocaleString('en-IN')}. Thank you!`
-              : 'No registration fee for you — your one step is the Project Cornerstone pledge.'}
+              ? `Intent to give on file: ${pledge.tier === 'Custom' ? '' : pledge.tier + ' — '}₹${Number(pledge.amount || 0).toLocaleString('en-IN')}. Thank you!`
+              : 'No registration fee for you — your one step is the Project Cornerstone intent to give.'}
           </p>
         </div>
         {loaded && !pledge && (
           <Link to="/give-back" className="nav-caps px-3 py-1.5 rounded-md bg-gold-500 text-white hover:bg-gold-600 shadow-sm">
-            Make your pledge →
+            Share your intent →
           </Link>
         )}
       </div>

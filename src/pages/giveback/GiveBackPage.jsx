@@ -30,7 +30,7 @@ function GoalStrip() {
       {[
         { num: '₹2 Cr', label: 'Campaign goal' },
         { num: '20', label: 'Rooms funded' },
-        { num: 'Dec 1', label: 'Pledges due by' },
+        { num: 'Dec 1', label: 'Intents due by' },
       ].map((g) => (
         <div key={g.label} className="text-center">
           <p className="font-heading text-2xl md:text-3xl text-gold-600">{g.num}</p>
@@ -96,9 +96,9 @@ export default function GiveBackPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.tier) { showToast('Please choose a pledge tier', 'error'); return; }
+    if (!form.tier) { showToast('Please choose a contribution tier', 'error'); return; }
     if (form.tier === 'Custom' && !(Number(form.amount) > 0)) {
-      showToast('Please enter your pledge amount', 'error'); return;
+      showToast('Please enter your contribution amount', 'error'); return;
     }
     setSaving(true);
     try {
@@ -110,7 +110,7 @@ export default function GiveBackPage() {
       setSubmitted(true);
       setEditing(false);
     } catch (err) {
-      showToast(err.message || 'Could not save your pledge — please try again', 'error');
+      showToast(err.message || 'Could not save your intent to give — please try again', 'error');
     } finally {
       setSaving(false);
     }
@@ -124,7 +124,7 @@ export default function GiveBackPage() {
       <div className="text-center mb-8">
         <span className="eyebrow">Project Cornerstone · REConverge 2001</span>
         <h1 className="mt-3 text-4xl md:text-5xl font-heading font-medium italic text-forest-600">
-          Make your pledge to the Alumni Guest House
+          Share your intent to give to the Alumni Guest House
         </h1>
         <p className="mt-3 font-serif text-ink-muted max-w-lg mx-auto">
           Twenty-five years since we walked in as strangers. Let's give the Class of 2001 a place
@@ -140,7 +140,7 @@ export default function GiveBackPage() {
         <GlassCard hover={false} className="text-center">
           <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-forest-700 text-white flex items-center justify-center text-2xl">✓</div>
           <h2 className="text-2xl font-heading font-bold text-ink mb-2">
-            {submitted ? 'Pledge received' : 'Your pledge is on file'}
+            {submitted ? 'Intent to give received' : 'Your intent to give is on file'}
           </h2>
           <p className="text-ink-soft text-sm max-w-md mx-auto">
             {existing?.tier === 'Custom' ? inr(existing?.amount) : `${existing?.tier} — ${inr(existing?.amount)}`}
@@ -148,10 +148,10 @@ export default function GiveBackPage() {
           </p>
           <p className="text-ink-muted text-sm max-w-md mx-auto mt-3">
             Thank you — someone from the fundraising committee will reach out by email with payment
-            details. All pledges are due by December 1, 2026.
+            details. All intents to give are due by December 1, 2026.
           </p>
           <Button variant="outline" size="sm" className="mt-6" onClick={() => { setEditing(true); setSubmitted(false); }}>
-            Edit my pledge
+            Edit my intent to give
           </Button>
         </GlassCard>
       ) : showForm && (
@@ -160,7 +160,7 @@ export default function GiveBackPage() {
           <GlassCard hover={false} className="mb-6">
             <h3 className="text-lg font-heading font-semibold text-ink mb-1">Your details</h3>
             <p className="text-sm text-ink-muted mb-4">
-              Pre-filled from your profile — we'll use this to confirm your pledge and follow up on payment.
+              Pre-filled from your profile — we'll use this to confirm your intent to give and follow up on payment.
             </p>
             <div className="space-y-4">
               <Input label="Full name" value={form.name} onChange={(e) => set('name', e.target.value)} required />
@@ -190,7 +190,7 @@ export default function GiveBackPage() {
           <GlassCard hover={false} className="mb-6">
             <h3 className="text-lg font-heading font-semibold text-ink mb-1">Choose your tier</h3>
             <p className="text-sm text-ink-muted mb-4">Every contribution, of any size, helps build this together.</p>
-            <div className="space-y-2" role="radiogroup" aria-label="Pledge tier">
+            <div className="space-y-2" role="radiogroup" aria-label="Contribution tier">
               {TIERS.map((t) => {
                 const avail = availability[t.id];
                 const isMine = existing?.tier === t.id;
@@ -235,7 +235,7 @@ export default function GiveBackPage() {
             {chosenTier?.id === 'Custom' && (
               <div className="mt-4">
                 <Input
-                  label="Pledge amount (₹)"
+                  label="Amount (₹)"
                   type="number"
                   min="1"
                   placeholder="e.g. 50000"
@@ -265,14 +265,14 @@ export default function GiveBackPage() {
               <div>
                 <label className="flex items-start gap-2.5 cursor-pointer text-ink font-medium">
                   <input type="checkbox" className="mt-0.5 accent-[#b8922a]" checked={form.taxInterest} onChange={(e) => set('taxInterest', e.target.checked)} />
-                  I'd like to hear more about possible tax savings on this pledge
+                  I'd like to hear more about possible tax savings on this contribution
                 </label>
                 <p className="text-xs text-ink-muted mt-1 ml-6">General information only — please confirm what applies to you with your own tax advisor.</p>
               </div>
               <div>
                 <label className="flex items-start gap-2.5 cursor-pointer text-ink font-medium">
                   <input type="checkbox" className="mt-0.5 accent-[#b8922a]" checked={form.anonymous} onChange={(e) => set('anonymous', e.target.checked)} />
-                  I'd like this pledge to remain anonymous
+                  I'd like this intent to give to remain anonymous
                 </label>
                 <p className="text-xs text-ink-muted mt-1 ml-6">Your name won't appear on the donor wall or any public list — the committee will still have your details for payment follow-up.</p>
               </div>
@@ -297,11 +297,15 @@ export default function GiveBackPage() {
           </GlassCard>
 
           <Button type="submit" size="lg" fullWidth loading={saving}>
-            {existing ? 'Update my pledge' : 'Submit my pledge'}
+            {existing ? 'Update my intent to give' : 'Submit my intent to give'}
           </Button>
           <p className="text-xs text-ink-muted text-center mt-3 leading-relaxed">
             A committee member will follow up by email with payment details.<br />
-            All pledges are due by December 1, 2026.
+            All intents to give are due by December 1, 2026.
+          </p>
+          <p className="text-xs text-ink-muted text-center mt-2 leading-relaxed">
+            This submission records your intent to give and is non-binding — it is not a payment,
+            a pledge, or a legal commitment of any kind.
           </p>
         </form>
       )}
