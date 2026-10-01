@@ -256,7 +256,7 @@ export const budgetSummary = {
   totalEstimate: 2223982,           // ₹22.24 L (sheet TOTAL)
   perAlumniEstimate: 13577,          // (Total − family registration) / 150
   contingencyAmount: 100000,         // ₹1 L (sheet)
-  registrationFee: 13500,
+  registrationFee: 15000,
   familyMemberFee: 2500,
   familyRegistrationRevenue: 187500, // 75 × ₹2,500
   sponsorshipTarget: null,           // blank in sheet — awaiting FC target
@@ -264,7 +264,7 @@ export const budgetSummary = {
 };
 
 export const budgetItems = [
-  { category: 'Registration', item: 'Per person registration', amount: 13500, notes: 'Locked early-bird price. Covers Day-1 dinner, Day-2 Gala, Day-2 sadya, campus day activities, souvenir kit.' },
+  { category: 'Registration', item: 'Per person registration', amount: 15000, notes: 'Standard price (early-bird ₹13,500 ended 30 Sept). Covers Day-1 dinner, Day-2 Gala, Day-2 sadya, campus day activities, souvenir kit.' },
   { category: 'Registration', item: 'Additional family member', amount: 2500, notes: 'Per partner / child / parent. Locked.' },
 
   // ── Food & Beverage — pax basis 225 (150 alumni + 75 family) ───────────

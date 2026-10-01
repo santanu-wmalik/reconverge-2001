@@ -53,6 +53,12 @@ function familyOf(a) {
 }
 
 function amountDueFor(a) {
+  // Already paid → show what was actually received (or the fee locked at
+  // sign-up), not today's rate. Unpaid rows owe the current standard rate.
+  if (statusOf(a) === 'paid') {
+    const actual = Number(a.paymentAmount) || Number(a.registrationFee);
+    if (actual > 0) return actual;
+  }
   return EVENT_CONFIG.registrationFee + familyOf(a) * EVENT_CONFIG.familyMemberFee;
 }
 

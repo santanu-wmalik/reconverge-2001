@@ -65,7 +65,7 @@ export default function RegistrationPage() {
   const steps = givebackOnly ? ALL_STEPS.filter((x) => x !== 'Payment') : ALL_STEPS;
   const stepName = steps[step];
 
-  // Registration fee: self (13500) + each additional family member (2500).
+  // Registration fee: self (15000 standard) + each additional family member (2500).
   // Family = extra adults + all children (both buckets).
   const familyCount = Math.max(0, (form.adults - 1) + form.childrenUnder10 + form.children10Plus);
   const registrationFee = EVENT_CONFIG.registrationFee + familyCount * EVENT_CONFIG.familyMemberFee;

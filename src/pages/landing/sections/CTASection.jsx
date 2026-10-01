@@ -18,13 +18,11 @@ export default function CTASection() {
         <span className="eyebrow !text-gold-300">Rewind · Relive · Replay</span>
         <h2 className="mt-3 text-4xl md:text-5xl font-heading font-medium italic mb-4">Don't Miss the Reunion of a Lifetime</h2>
         <p className="font-serif text-lg text-cream-200/90 mb-8 max-w-xl mx-auto">
-          Early Bird pricing runs until 30 September. Registration closes {EVENT_CONFIG.registrationDeadline}.
+          Seats and hotel blocks are limited — sign up early.
         </p>
         <div className="flex justify-center">
           <Link to="/register" className="btn-silver-glitter nav-caps px-7 py-3.5">
-            Buy Tickets —{' '}
-            <span className="line-through opacity-60">{formatCurrency(EVENT_CONFIG.standardFee)}</span>{' '}
-            <span className="font-bold">{formatCurrency(EVENT_CONFIG.registrationFee)}</span>
+            Buy Tickets — <span className="font-bold">{formatCurrency(EVENT_CONFIG.registrationFee)}</span>
           </Link>
         </div>
       </motion.div>

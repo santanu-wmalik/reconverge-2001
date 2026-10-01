@@ -117,8 +117,8 @@ export default function RSVPPage() {
         <div>
           <p className="text-ink font-semibold">Ready to commit? Sign up now.</p>
           <p className="text-sm text-ink-soft">
-            Early bird <span className="line-through text-ink-muted">₹{EVENT_CONFIG.standardFee.toLocaleString('en-IN')}</span>{' '}
-            <b>₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')}</b> — ends 30 September.
+            Registration is <b>₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')}</b> per alumnus
+            (+ ₹{EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')} per family member).
           </p>
         </div>
         <Link to="/register" className="nav-caps shrink-0 px-5 py-3 bg-gradient-to-b from-gold-400 to-gold-600 text-forest-900 shadow hover:from-gold-300 hover:to-gold-500">
@@ -245,10 +245,8 @@ export default function RSVPPage() {
                   <i>Paid &amp; Attending</i>.
                 </p>
                 <div className="max-w-md mx-auto rounded-xl border border-amber-300 bg-amber-50 px-4 py-3 mb-6 text-sm text-amber-900 text-left">
-                  ⏰ Early bird{' '}
-                  <span className="line-through opacity-60">₹{EVENT_CONFIG.standardFee.toLocaleString('en-IN')}</span>{' '}
-                  <b>₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')}</b> ends <b>30 September</b> — after that
-                  it&apos;s ₹{EVENT_CONFIG.standardFee.toLocaleString('en-IN')} for everyone.
+                  ⏰ Registration is <b>₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')}</b> per alumnus —
+                  seats and hotel blocks are limited, so sign up and pay early.
                 </div>
                 <Button
                   size="lg"

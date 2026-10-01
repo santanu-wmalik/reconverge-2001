@@ -36,6 +36,12 @@ function statusOf(a) {
 }
 
 function amountDueFor(a) {
+  // Already paid → what was actually received (or the fee locked at
+  // sign-up), not today's rate.
+  if (a.paymentStatus === 'confirmed' || a.paymentStatus === 'paid') {
+    const actual = Number(a.paymentAmount) || Number(a.registrationFee);
+    if (actual > 0) return actual;
+  }
   const family = Math.max(
     0,
     (Number(a.adults || 1) - 1) +

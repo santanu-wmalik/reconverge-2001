@@ -33,7 +33,7 @@ export const EVENT_CONFIG = {
     checkinDate: '2026-12-27',
     checkoutDate: '2026-12-29',
   },
-  registrationFee: 13500, // early-bird rate (until 30 Sept)
+  registrationFee: 15000, // standard rate (early-bird ₹13,500 ended 30 Sept 2026)
   standardFee: 15000,      // rate after 30 Sept — shown struck through next to the early-bird price
   familyMemberFee: 2500,
   registrationDeadline: 'Jun 30th, 2026',
@@ -113,7 +113,7 @@ export const STATS = [
 
 export const FAQ_DATA = [
   // === Registration ===
-  { id: 'f-reg-1', question: 'When does registration open and close?', category: 'Registration', answer: 'Registration is OPEN now on this website. The early-bird rate of ₹13,500 runs until 30 September 2026 — from 1 October it is ₹15,000 for everyone. The hard cut-off will be announced closer to the event (targeting mid-November 2026) so the Stay and Food committees can lock final counts. You can update your details any time until then from your profile.' },
+  { id: 'f-reg-1', question: 'When does registration open and close?', category: 'Registration', answer: 'Registration is OPEN now on this website at the standard rate of ₹15,000 (the early-bird rate of ₹13,500 ended 30 September 2026). The hard cut-off will be announced closer to the event (targeting mid-November 2026) so the Stay and Food committees can lock final counts. You can update your details any time until then from your profile.' },
   { id: 'f-reg-2', question: 'How do I register on the website?', category: 'Registration', answer: 'Hit Sign Up in the header and work through the six-step form: Personal → Academic → Travel & Stay → Preferences → Payment → Review. Only your Email and Password are required; everything else is optional and can be added later from your profile.' },
   { id: 'f-reg-3', question: 'What happens right after I register?', category: 'Registration', answer: 'Your profile goes live — but your sign-up is NOT complete until payment is received. Head to My Payments for your exact amount due and the batch bank account, transfer the fee, and paste your transaction reference there so the Finance Committee can verify it and mark you Paid & Attending.' },
   { id: 'f-reg-4', question: 'Can I attend only one of the days?', category: 'Registration', answer: 'Yes. If you can only make Day 1 (27 Dec — Check-in & Ice-Breaker) or Day 2 (28 Dec — Campus & Gala), please still register and note the specifics in the "Special Requests" field. The single registration fee stays the same regardless of day count — the batch common costs are the same either way. The 29th is checkout only, with no planned activities.' },
@@ -137,7 +137,7 @@ export const FAQ_DATA = [
   { id: 'f-evt-5', question: 'When will the event logo be revealed?', category: 'Event', answer: 'The event identity — the REConverge 2001 logo you see across this site — was designed by Vipin Chandran from the batch. T-shirt and souvenir designs follow the same identity and are being finalised.' },
 
   // === Fees & Payment ===
-  { id: 'f-fee-1', question: 'What does registration cost?', category: 'Fees', answer: 'Early-bird registration is ₹13,500 per alumnus (standard price ₹15,000 — the early-bird rate ends 30 September, after which it is ₹15,000 for everyone) and ₹2,500 per additional family member (partner, child, parent). This excludes accommodation (paid to the hotel) and travel to Calicut.' },
+  { id: 'f-fee-1', question: 'What does registration cost?', category: 'Fees', answer: 'Registration is ₹15,000 per alumnus (the ₹13,500 early-bird rate ended 30 September 2026) and ₹2,500 per additional family member (partner, child, parent). This excludes accommodation (paid to the hotel) and travel to Calicut.' },
   { id: 'f-fee-2', question: 'How do I pay the registration fee?', category: 'Fees', answer: 'Payment is made via direct bank transfer to the REConverge 2001 batch bank account — the website itself does not collect payments (batch decision, MoM 1 March 2026). Account: CREC Alumni Association 2001 Batch, A/c 45429696620, IFSC SBIN0002207, SBI NIT Calicut Campus (Branch 02207). NEFT / RTGS / IMPS supported; we are working on getting a UPI ID — until then please send payments to the account. Quote your Registration ID (SJ-2026-####) in the remarks if you can — and if you couldn’t, that’s completely fine: just paste the transaction reference as your Payment UID on your profile and the Finance Committee will verify from that and flip the status to "Payment Confirmed".' },
   { id: 'f-fee-3', question: 'What is the Give Back / Project Cornerstone program?', category: 'Fees', answer: 'Project Cornerstone — the batch’s legacy initiative to fund the Alumni Guest House at NITC (₹2 Cr goal, 20 rooms). It is entirely separate from (and in addition to) your registration fee. Sign in and open the Give Back tab in My Portal to share your intent to give — tiers run from the Foundation Circle (₹2,00,000, donor wall) up to the Cornerstone Circle (₹25,00,000, common-area naming), or choose any amount of your own. Intents to give are non-binding and due by 1 December 2026; the fundraising committee follows up by email with payment details.' },
 

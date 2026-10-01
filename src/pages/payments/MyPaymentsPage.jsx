@@ -61,9 +61,15 @@ export default function MyPaymentsPage() {
       Number(user?.childrenUnder10 || 0) +
       Number(user?.children10Plus || 0)
   );
-  const selfFee = EVENT_CONFIG.registrationFee;
   const familyFee = familyCount * EVENT_CONFIG.familyMemberFee;
-  const totalDue = selfFee + familyFee;
+  // Already paid → show what was actually received (or the fee locked at
+  // sign-up), not today's rate — and back out the per-self rate they paid so
+  // the breakdown lines match the total.
+  const isPaid = user?.paymentStatus === 'confirmed' || user?.paymentStatus === 'paid';
+  const actualPaid = Number(user?.paymentAmount) || Number(user?.registrationFee) || 0;
+  const lockedIn = isPaid && actualPaid > 0;
+  const totalDue = lockedIn ? actualPaid : EVENT_CONFIG.registrationFee + familyFee;
+  const selfFee = lockedIn ? Math.max(0, actualPaid - familyFee) : EVENT_CONFIG.registrationFee;
 
   // Current registration payment state — derived from the alumnus profile.
   const status = useMemo(() => {

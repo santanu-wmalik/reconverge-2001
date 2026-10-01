@@ -22,6 +22,12 @@ export function paymentTierOf(user) {
 }
 
 export function totalDueFor(user) {
+  // Already paid → what was actually received (or the fee locked at
+  // sign-up), not today's rate.
+  if (user?.paymentStatus === 'confirmed' || user?.paymentStatus === 'paid') {
+    const actual = Number(user?.paymentAmount) || Number(user?.registrationFee);
+    if (actual > 0) return actual;
+  }
   const family = Math.max(
     0,
     (Number(user?.adults || 1) - 1) +

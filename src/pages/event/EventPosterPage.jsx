@@ -24,7 +24,7 @@ export default function EventPosterPage() {
       <div className="bg-white border border-forest-500/15 shadow-lg p-2 sm:p-3">
         <ProtectedImage
           src={POSTER}
-          alt="REConverge 2001 — 2nd Town Hall poster: Session 1 Saturday 19 September 8-9 PM IST, Session 2 Sunday 20 September 10-11 AM IST, join via Google Meet QR codes. Early bird ₹13,500 ends 30 September."
+          alt="REConverge 2001 — 2nd Town Hall poster: Session 1 Saturday 19 September 8-9 PM IST, Session 2 Sunday 20 September 10-11 AM IST, join via Google Meet QR codes. Early bird ₹13,500 ended 30 September."
           loading="eager"
           imgClassName="w-full h-auto"
         />
@@ -35,7 +35,7 @@ export default function EventPosterPage() {
           Past townhall recordings (sign in) →
         </Link>
         <Link to="/register" className="nav-caps px-6 py-3 bg-gradient-to-b from-gold-400 to-gold-600 text-forest-900 shadow hover:from-gold-300 hover:to-gold-500">
-          Sign Up — ₹13,500 before 30 Sept
+          Sign Up — ₹15,000
         </Link>
       </div>
     </motion.div>
