@@ -45,7 +45,7 @@ export function mountPublic(app) {
                   (avatar IS NOT NULL AND avatar <> '') AS has_avatar
              FROM alumni`
         ),
-        query(`SELECT email FROM rsvps`),
+        query(`SELECT email, full_name FROM rsvps`),
       ]);
 
       const alumni = a.rows.filter((x) => !DEMO_EMAILS.has(String(x.email || '').toLowerCase()));
@@ -54,10 +54,15 @@ export function mountPublic(app) {
       const givebackOnly = alumni.filter((x) => x.is_registered && x.participation === 'giveback-only').length;
       const registered = alumni.filter((x) => x.is_registered && x.participation !== 'giveback-only');
       const registeredEmails = new Set(registered.map((x) => String(x.email || '').toLowerCase()));
+      // Also match RSVPs to registrations by normalised full name — people
+      // often RSVP with one email address and later register with another.
+      const normName = (n) => String(n || '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
+      const registeredNames = new Set(registered.map((x) => normName(x.name)).filter(Boolean));
 
       const interestOnly = r.rows.filter((x) => {
         const e = String(x.email || '').toLowerCase();
-        return e && !registeredEmails.has(e) && !DEMO_EMAILS.has(e);
+        return e && !registeredEmails.has(e) && !DEMO_EMAILS.has(e)
+          && !registeredNames.has(normName(x.full_name));
       }).length;
 
       const famOf = (x) =>

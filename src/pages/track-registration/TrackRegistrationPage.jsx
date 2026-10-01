@@ -186,10 +186,19 @@ export default function TrackRegistrationPage() {
 
   // Merge + dedupe. Registered wins over RSVP for the same email.
   const entries = useMemo(() => {
+    // Also drop an RSVP when a registered profile shares its normalised full
+    // name — people often RSVP with one email and register with another.
+    const normName = (n) => String(n || '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
     const byEmail = new Map();
-    for (const e of registered) if (e.email) byEmail.set(e.email, e);
+    const registeredNames = new Set();
+    for (const e of registered) {
+      if (e.email) byEmail.set(e.email, e);
+      const n = normName(e.name);
+      if (n) registeredNames.add(n);
+    }
     for (const e of rsvps) {
       if (!e.email || byEmail.has(e.email)) continue;
+      if (registeredNames.has(normName(e.name))) continue;
       byEmail.set(e.email, e);
     }
     // Give-back-only profiles are excluded from this page entirely — they
