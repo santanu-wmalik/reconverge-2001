@@ -357,7 +357,7 @@ export default function RegistrationPage() {
                   <ul className="list-disc pl-5 mt-2 space-y-1.5">
                     <li><b>Who qualifies?</b> Any 2001 batchmate who hasn't paid yet. Someone already paid at early-bird can't be claimed as a buddy, and one person can't be in two groups.</li>
                     <li><b>Groups of 3+?</b> Welcome — everyone gets ₹{EVENT_CONFIG.buddyFee.toLocaleString('en-IN')}.</li>
-                    <li><b>Family members?</b> Stay at ₹{EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')} each and don't count as buddies (unless also a CREC 2001 alumnus).</li>
+                    <li><b>Family members?</b> Stay at ₹{EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')} each and don't count as buddies.</li>
                     <li><b>When am I confirmed?</b> When everyone in your group has paid. Payment must be initiated by {EVENT_CONFIG.buddyDeadlineLabel} with proof submitted — verification can follow.</li>
                     <li><b>Already registered, not paid?</b> Opt in from My Payments after signing in.</li>
                   </ul>
