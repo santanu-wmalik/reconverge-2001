@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { EVENT_CONFIG } from '../../../data/constants';
+import { EVENT_CONFIG, buddyOfferActive } from '../../../data/constants';
 import { fadeInUp } from '../../../utils/animationVariants';
 import { formatCurrency } from '../../../utils/formatters';
 
@@ -17,9 +17,15 @@ export default function CTASection() {
       >
         <span className="eyebrow !text-gold-300">Rewind · Relive · Replay</span>
         <h2 className="mt-3 text-4xl md:text-5xl font-heading font-medium italic mb-4">Don't Miss the Reunion of a Lifetime</h2>
-        <p className="font-serif text-lg text-cream-200/90 mb-8 max-w-xl mx-auto">
+        <p className={`font-serif text-lg text-cream-200/90 ${buddyOfferActive() ? 'mb-3' : 'mb-8'} max-w-xl mx-auto`}>
           Seats and hotel blocks are limited — sign up early.
         </p>
+        {buddyOfferActive() && (
+          <p className="text-sm text-gold-300 mb-8 max-w-xl mx-auto">
+            👯 Best Buddy Pricing — bring a buddy by 19 October and you both pay{' '}
+            <span className="font-bold whitespace-nowrap">₹{EVENT_CONFIG.buddyFee.toLocaleString('en-IN')} each</span>
+          </p>
+        )}
         <div className="flex justify-center">
           <Link to="/register" className="btn-silver-glitter nav-caps px-7 py-3.5">
             Buy Tickets — <span className="font-bold">{formatCurrency(EVENT_CONFIG.registrationFee)}</span>

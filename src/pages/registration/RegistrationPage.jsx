@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 import { pageTransition } from '../../utils/animationVariants';
-import { BRANCHES, TSHIRT_SIZES, DIETARY_OPTIONS, TRAVEL_MODES, ROOM_PREFERENCES, ID_TYPES, EVENT_CONFIG } from '../../data/constants';
+import { BRANCHES, TSHIRT_SIZES, DIETARY_OPTIONS, TRAVEL_MODES, ROOM_PREFERENCES, ID_TYPES, EVENT_CONFIG, buddyOfferActive } from '../../data/constants';
 import { batchBankAccount } from '../../data/donationCampaigns';
 import { authApi } from '../../services/api';
 import Button from '../../components/ui/Button';
@@ -50,6 +50,10 @@ export default function RegistrationPage() {
     notes: '',
     // Participation: 'attending' | 'giveback-only' (skips the Payment step)
     participation: 'attending',
+    // Best Buddy Pricing — opt-in + buddy name(s); fee drops to the buddy
+    // rate while the offer window is open.
+    buddyOptIn: false,
+    buddyNames: '',
     // Payment
     paymentUid: '',
     idType: '', idNumber: '',
@@ -68,7 +72,10 @@ export default function RegistrationPage() {
   // Registration fee: self (15000 standard) + each additional family member (2500).
   // Family = extra adults + all children (both buckets).
   const familyCount = Math.max(0, (form.adults - 1) + form.childrenUnder10 + form.children10Plus);
-  const registrationFee = EVENT_CONFIG.registrationFee + familyCount * EVENT_CONFIG.familyMemberFee;
+  const buddyActive = buddyOfferActive();
+  const buddyChosen = buddyActive && form.buddyOptIn;
+  const selfFee = buddyChosen ? EVENT_CONFIG.buddyFee : EVENT_CONFIG.registrationFee;
+  const registrationFee = selfFee + familyCount * EVENT_CONFIG.familyMemberFee;
 
   const handleSubmit = async () => {
     // Only email + password are required — every other field is optional per
@@ -97,6 +104,8 @@ export default function RegistrationPage() {
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(form.name || form.email)}`,
         familyMembers: familyCount,
         registrationFee: givebackOnly ? 0 : registrationFee,
+        buddyOptIn: !givebackOnly && buddyChosen,
+        buddyNames: !givebackOnly && buddyChosen ? form.buddyNames.trim() : '',
         paymentStatus: givebackOnly ? null : (form.paymentUid ? 'pending-verification' : 'unpaid'),
         policyVersion: POLICY_VERSION,
         policyAcceptedAt: new Date().toISOString(),
@@ -305,10 +314,56 @@ export default function RegistrationPage() {
                 <span className="text-2xl font-bold text-gold-700 dark:text-gold-400">₹{registrationFee.toLocaleString('en-IN')}</span>
               </div>
               <p className="text-xs text-ink-muted dark:text-slate-500 mt-1">
-                ₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')} self + ₹{EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')} × {familyCount} family member{familyCount === 1 ? '' : 's'}
+                ₹{selfFee.toLocaleString('en-IN')} self{buddyChosen ? ' (Best Buddy price 👯)' : ''} + ₹{EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')} × {familyCount} family member{familyCount === 1 ? '' : 's'}
               </p>
               <p className="text-xs text-ink-muted dark:text-slate-500 mt-1">Accommodation &amp; Giving Back are billed separately.</p>
             </div>
+
+            {buddyActive && (
+              <div className="rounded-xl border-2 border-gold-500/50 bg-[#fbf7ea] p-4">
+                <p className="text-xs uppercase tracking-wider text-gold-700 font-semibold mb-1">👯 Best Buddy Pricing — until {EVENT_CONFIG.buddyDeadlineLabel}</p>
+                <p className="text-xs text-ink-soft mb-3">
+                  Register together with one or more batchmates who haven't paid yet, and
+                  <b> each of you pays ₹{EVENT_CONFIG.buddyFee.toLocaleString('en-IN')}</b> instead of
+                  ₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')}. Everyone in the group must
+                  register and initiate payment by the deadline.
+                </p>
+                <label className="flex items-start gap-2.5 cursor-pointer text-sm text-ink font-medium">
+                  <input
+                    type="checkbox"
+                    className="mt-0.5 accent-[#b8922a]"
+                    checked={form.buddyOptIn}
+                    onChange={(e) => update('buddyOptIn', e.target.checked)}
+                  />
+                  <span>I'm registering with a buddy — give us the Best Buddy price</span>
+                </label>
+                {form.buddyOptIn && (
+                  <div className="mt-3">
+                    <Input
+                      label="Your buddy's name(s)"
+                      value={form.buddyNames}
+                      onChange={(e) => update('buddyNames', e.target.value)}
+                      placeholder="e.g. Kishore Jagannath, Feby George"
+                      required
+                    />
+                    <p className="text-[11px] text-ink-muted mt-1">
+                      Separate multiple names with commas. Your registration is confirmed once
+                      everyone in your group has paid.
+                    </p>
+                  </div>
+                )}
+                <details className="mt-3 text-xs text-ink-soft">
+                  <summary className="cursor-pointer text-gold-700 font-semibold">Best Buddy — quick FAQ</summary>
+                  <ul className="list-disc pl-5 mt-2 space-y-1.5">
+                    <li><b>Who qualifies?</b> Any 2001 batchmate who hasn't paid yet. Someone already paid at early-bird can't be claimed as a buddy, and one person can't be in two groups.</li>
+                    <li><b>Groups of 3+?</b> Welcome — everyone gets ₹{EVENT_CONFIG.buddyFee.toLocaleString('en-IN')}.</li>
+                    <li><b>Family members?</b> Stay at ₹{EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')} each and don't count as buddies (unless also a CREC 2001 alumnus).</li>
+                    <li><b>When am I confirmed?</b> When everyone in your group has paid. Payment must be initiated by {EVENT_CONFIG.buddyDeadlineLabel} with proof submitted — verification can follow.</li>
+                    <li><b>Already registered, not paid?</b> Opt in from My Payments after signing in.</li>
+                  </ul>
+                </details>
+              </div>
+            )}
 
             <div className="rounded-lg border border-gold-500/30 bg-gold-500/5 p-4 space-y-2 text-sm">
               <p className="text-xs uppercase tracking-wider text-gold-700 dark:text-gold-400 font-semibold">Where to send the payment</p>
@@ -375,6 +430,7 @@ export default function RegistrationPage() {
                 ['Notes', form.notes || '-'],
                 ['ID', form.idType ? `${form.idType} (…${form.idNumber || '----'})` : '-'],
                 ['Payment UID', form.paymentUid || 'To be added later'],
+                ...(buddyChosen ? [['Best Buddy group', form.buddyNames || 'Names to be emailed']] : []),
               ].map(([label, value]) => (
                 <div key={label} className="flex justify-between py-2 border-b border-forest-500/15 dark:border-white/5 gap-4">
                   <span className="text-ink-muted dark:text-slate-400 flex-shrink-0">{label}</span>

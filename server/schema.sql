@@ -283,3 +283,10 @@ ALTER TABLE alumni ADD COLUMN IF NOT EXISTS participation TEXT NOT NULL DEFAULT 
 ALTER TABLE alumni ADD COLUMN IF NOT EXISTS policy_version TEXT;
 ALTER TABLE alumni ADD COLUMN IF NOT EXISTS policy_accepted_at TIMESTAMPTZ;
 ALTER TABLE alumni ADD COLUMN IF NOT EXISTS directory_opt_in BOOLEAN DEFAULT FALSE;
+
+-- ─── Best Buddy Pricing (Oct 2026) ───────────────────────────────────────
+-- Opt-in flag + free-text buddy name(s) captured at registration (or later
+-- from My Payments while unpaid). Verification stays manual: finance checks
+-- the named buddies have paid before flipping both to confirmed.
+ALTER TABLE alumni ADD COLUMN IF NOT EXISTS buddy_opt_in BOOLEAN DEFAULT FALSE;
+ALTER TABLE alumni ADD COLUMN IF NOT EXISTS buddy_names  TEXT;

@@ -9,7 +9,7 @@ import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import SectionHeading from '../../components/shared/SectionHeading';
-import { EVENT_CONFIG } from '../../data/constants';
+import { EVENT_CONFIG, baseFeeFor, buddyOfferActive } from '../../data/constants';
 import { batchBankAccount } from '../../data/donationCampaigns';
 
 // ── copy helper ─────────────────────────────────────────────────────────
@@ -53,6 +53,9 @@ export default function MyPaymentsPage() {
 
   const [uid, setUid] = useState(user?.paymentUid || '');
   const [saving, setSaving] = useState(false);
+  // Best Buddy opt-in (unpaid users only, while the offer is open)
+  const [buddyNames, setBuddyNames] = useState(user?.buddyNames || '');
+  const [buddySaving, setBuddySaving] = useState(false);
 
   // Family total drives the amount owed for registration.
   const familyCount = Math.max(
@@ -68,8 +71,8 @@ export default function MyPaymentsPage() {
   const isPaid = user?.paymentStatus === 'confirmed' || user?.paymentStatus === 'paid';
   const actualPaid = Number(user?.paymentAmount) || Number(user?.registrationFee) || 0;
   const lockedIn = isPaid && actualPaid > 0;
-  const totalDue = lockedIn ? actualPaid : EVENT_CONFIG.registrationFee + familyFee;
-  const selfFee = lockedIn ? Math.max(0, actualPaid - familyFee) : EVENT_CONFIG.registrationFee;
+  const totalDue = lockedIn ? actualPaid : baseFeeFor(user) + familyFee;
+  const selfFee = lockedIn ? Math.max(0, actualPaid - familyFee) : baseFeeFor(user);
 
   // Current registration payment state — derived from the alumnus profile.
   const status = useMemo(() => {
@@ -191,6 +194,73 @@ export default function MyPaymentsPage() {
           </p>
         </GlassCard>
       </div>
+
+      {/* ─── Best Buddy Pricing (unpaid + offer window open) ─────────── */}
+      {!isPaid && user?.participation !== 'giveback-only' && buddyOfferActive() && (
+        <GlassCard className="mb-10 border-gold-500/40 bg-gradient-to-br from-gold-500/[0.06] to-gold-500/[0.02]">
+          <p className="text-xs uppercase tracking-wider text-gold-700 font-semibold mb-1">
+            👯 Best Buddy Pricing — until {EVENT_CONFIG.buddyDeadlineLabel}
+          </p>
+          <p className="text-sm text-ink-soft mb-3">
+            Haven't paid yet? Rope in one or more batchmates who also haven't paid, and{' '}
+            <b>each of you pays ₹{EVENT_CONFIG.buddyFee.toLocaleString('en-IN')}</b> instead of
+            ₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')}. Everyone in the group must
+            register and initiate payment by the deadline; your registration is confirmed once the
+            whole group has paid. Family members stay ₹{EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')} and
+            don't count as buddies.
+          </p>
+          <label className="flex items-start gap-2.5 cursor-pointer text-sm text-ink font-medium">
+            <input
+              type="checkbox"
+              className="mt-0.5 accent-[#b8922a]"
+              checked={Boolean(user?.buddyOptIn)}
+              onChange={async (e) => {
+                const on = e.target.checked;
+                setBuddySaving(true);
+                try {
+                  await updateProfile({ buddyOptIn: on, buddyNames: on ? buddyNames.trim() : '' });
+                  showToast(on ? 'Best Buddy price applied — add your buddy name(s) below' : 'Best Buddy opt-out saved', 'success');
+                } catch (err) {
+                  showToast(err.message || 'Could not save — please try again', 'error');
+                } finally {
+                  setBuddySaving(false);
+                }
+              }}
+              disabled={buddySaving}
+            />
+            <span>I'm in a Best Buddy group — apply the ₹{EVENT_CONFIG.buddyFee.toLocaleString('en-IN')} price</span>
+          </label>
+          {Boolean(user?.buddyOptIn) && (
+            <div className="mt-3 flex flex-wrap items-end gap-3">
+              <div className="flex-1 min-w-[240px]">
+                <Input
+                  label="Your buddy's name(s)"
+                  value={buddyNames}
+                  onChange={(e) => setBuddyNames(e.target.value)}
+                  placeholder="e.g. Kishore Jagannath, Feby George"
+                />
+              </div>
+              <Button
+                size="sm"
+                loading={buddySaving}
+                onClick={async () => {
+                  setBuddySaving(true);
+                  try {
+                    await updateProfile({ buddyNames: buddyNames.trim() });
+                    showToast('Buddy name(s) saved', 'success');
+                  } catch (err) {
+                    showToast(err.message || 'Could not save — please try again', 'error');
+                  } finally {
+                    setBuddySaving(false);
+                  }
+                }}
+              >
+                Save names
+              </Button>
+            </div>
+          )}
+        </GlassCard>
+      )}
 
       {/* ─── Sequential registration checklist ───────────────────────── */}
       <h2 className="text-xl font-heading font-bold text-ink mb-1">

@@ -3,6 +3,14 @@
 // Change here and both surfaces update.
 export const EARLY_BIRD_DEADLINE = new Date('2026-09-30T23:59:59+05:30');
 
+// Best Buddy offer is live until its deadline passes (IST).
+export const buddyOfferActive = () => new Date() <= new Date('2026-10-19T23:59:59+05:30');
+
+// Base self-fee for an alumni profile/entry: Best Buddy opt-in gets the
+// buddy rate while the offer window is open; everyone else pays standard.
+export const baseFeeFor = (a) =>
+  a && a.buddyOptIn && buddyOfferActive() ? 13500 : 15000;
+
 export const EVENT_CONFIG = {
   collegeName: 'Regional Engineering College Calicut',
   collegeShort: 'REC',
@@ -36,6 +44,12 @@ export const EVENT_CONFIG = {
   registrationFee: 15000, // standard rate (early-bird ₹13,500 ended 30 Sept 2026)
   standardFee: 15000,      // rate after 30 Sept — shown struck through next to the early-bird price
   familyMemberFee: 2500,
+  // Best Buddy Pricing — register WITH a buddy (2+ people, all unpaid as of
+  // 30 Sept) and everyone in the group pays the old early-bird rate. All of
+  // them must complete registration AND initiate payment by the deadline.
+  buddyFee: 13500,
+  buddyDeadline: '2026-10-19T23:59:59+05:30',
+  buddyDeadlineLabel: '19 October 2026, 11:59 PM IST',
   registrationDeadline: 'Jun 30th, 2026',
   batchYear: 2001,
   yearsAgo: 25,
@@ -137,7 +151,11 @@ export const FAQ_DATA = [
   { id: 'f-evt-5', question: 'When will the event logo be revealed?', category: 'Event', answer: 'The event identity — the REConverge 2001 logo you see across this site — was designed by Vipin Chandran from the batch. T-shirt and souvenir designs follow the same identity and are being finalised.' },
 
   // === Fees & Payment ===
-  { id: 'f-fee-1', question: 'What does registration cost?', category: 'Fees', answer: 'Registration is ₹15,000 per alumnus (the ₹13,500 early-bird rate ended 30 September 2026) and ₹2,500 per additional family member (partner, child, parent). This excludes accommodation (paid to the hotel) and travel to Calicut.' },
+  { id: 'f-fee-1', question: 'What does registration cost?', category: 'Fees', answer: 'Registration is ₹15,000 per alumnus (the ₹13,500 early-bird rate ended 30 September 2026) and ₹2,500 per additional family member (partner, child, parent). Until 19 October 2026 you can still get ₹13,500 via Best Buddy Pricing — register together with a buddy who has not paid yet (see the Best Buddy FAQs). This excludes accommodation (paid to the hotel) and travel to Calicut.' },
+  { id: 'f-buddy-1', question: 'What is Best Buddy Pricing?', category: 'Fees', answer: 'Bring your buddy, get the old price! Register together with one or more batchmates who have not yet paid, and every person in your group pays ₹13,500 instead of ₹15,000. Everyone in the group must complete registration AND initiate payment by 19 October 2026, 11:59 PM IST. Tick the Best Buddy option during sign-up (or on My Payments if you have already signed up but not paid) and enter your buddy’s name(s).' },
+  { id: 'f-buddy-2', question: 'Who can be my buddy?', category: 'Fees', answer: 'Any Class-of-2001 batchmate who has NOT yet paid. Someone who already paid at the early-bird price cannot be claimed as a buddy, and one person cannot appear in multiple buddy groups. A family member does not qualify as a buddy unless they are also a CREC 2001 alumnus. Groups of three or more are welcome — everyone gets the price.' },
+  { id: 'f-buddy-3', question: 'I already registered but have not paid — can I use the Best Buddy offer?', category: 'Fees', answer: 'Yes. Sign in, open My Payments, tick the Best Buddy option and add your buddy’s name. Your amount due drops to ₹13,500. If you already paid ₹15,000 after 30 September, you can still nominate a buddy — settle the ₹1,500 difference between yourselves, or email crec2001reunion@gmail.com.' },
+  { id: 'f-buddy-4', question: 'When is a Best Buddy registration confirmed? What if my buddy backs out?', category: 'Fees', answer: 'Your registration shows as complete only when everyone in your buddy group has paid. Payment must be initiated by 19 October, 11:59 PM IST with proof submitted — verification can happen afterwards. The family-member rate stays ₹2,500 per person. No cancellations or refunds once you are paid and registered — we need you there!' },
   { id: 'f-fee-2', question: 'How do I pay the registration fee?', category: 'Fees', answer: 'Payment is made via direct bank transfer to the REConverge 2001 batch bank account — the website itself does not collect payments (batch decision, MoM 1 March 2026). Account: CREC Alumni Association 2001 Batch, A/c 45429696620, IFSC SBIN0002207, SBI NIT Calicut Campus (Branch 02207). NEFT / RTGS / IMPS supported; we are working on getting a UPI ID — until then please send payments to the account. Quote your Registration ID (SJ-2026-####) in the remarks if you can — and if you couldn’t, that’s completely fine: just paste the transaction reference as your Payment UID on your profile and the Finance Committee will verify from that and flip the status to "Payment Confirmed".' },
   { id: 'f-fee-3', question: 'What is the Give Back / Project Cornerstone program?', category: 'Fees', answer: 'Project Cornerstone — the batch’s legacy initiative to fund the Alumni Guest House at NITC (₹2 Cr goal, 20 rooms). It is entirely separate from (and in addition to) your registration fee. Sign in and open the Give Back tab in My Portal to share your intent to give — tiers run from the Foundation Circle (₹2,00,000, donor wall) up to the Cornerstone Circle (₹25,00,000, common-area naming), or choose any amount of your own. Intents to give are non-binding and due by 1 December 2026; the fundraising committee follows up by email with payment details.' },
 

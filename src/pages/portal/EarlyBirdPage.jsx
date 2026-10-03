@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { EVENT_CONFIG, EARLY_BIRD_DEADLINE } from '../../data/constants';
+import { EVENT_CONFIG, EARLY_BIRD_DEADLINE, baseFeeFor, buddyOfferActive } from '../../data/constants';
 import { batchBankAccount } from '../../data/donationCampaigns';
 import { pageTransition } from '../../utils/animationVariants';
 import { useAuth } from '../../context/AuthContext';
@@ -83,8 +83,8 @@ export default function EarlyBirdPage() {
   // breakdown lines match the total.
   const actualPaid = Number(user?.paymentAmount) || Number(user?.registrationFee) || 0;
   const lockedIn = alreadyPaid && actualPaid > 0;
-  const totalDue = lockedIn ? actualPaid : EVENT_CONFIG.registrationFee + familyFee;
-  const selfFee = lockedIn ? Math.max(0, actualPaid - familyFee) : EVENT_CONFIG.registrationFee;
+  const totalDue = lockedIn ? actualPaid : baseFeeFor(user) + familyFee;
+  const selfFee = lockedIn ? Math.max(0, actualPaid - familyFee) : baseFeeFor(user);
 
   return (
     <motion.div {...pageTransition} className="max-w-4xl mx-auto">
@@ -92,7 +92,7 @@ export default function EarlyBirdPage() {
         title="Early Bird Registration"
         subtitle={
           over
-            ? 'The early-bird window has closed. Standard registration continues.'
+            ? 'The early-bird window has closed — but Best Buddy Pricing is on until 19 October.'
             : 'Full brochure details, your total due, and the batch bank account — all in one place.'
         }
       />
@@ -149,15 +149,37 @@ export default function EarlyBirdPage() {
           </div>
         </GlassCard>
       ) : (
-        <GlassCard className="mb-8 border-forest-500/15">
-          <p className="text-ink-soft">
-            The early-bird pricing window closed on 30 September. Standard rates apply — see{' '}
-            <Link to="/payments" className="text-gold-700 hover:text-gold-300 underline">
-              My Payments
-            </Link>{' '}
-            for current amount and instructions.
-          </p>
-        </GlassCard>
+        <>
+          {buddyOfferActive() && !alreadyPaid && (
+            <GlassCard className="mb-8 border-gold-500/40 bg-gradient-to-br from-gold-500/[0.06] to-gold-500/[0.02]">
+              <p className="text-[11px] uppercase tracking-[0.3em] text-gold-700 font-semibold mb-2 text-center">
+                👯 Best Buddy Pricing — until {EVENT_CONFIG.buddyDeadlineLabel}
+              </p>
+              <p className="text-center text-3xl md:text-4xl font-heading font-bold text-ink">
+                <span className="text-xl md:text-2xl font-normal text-ink-muted line-through mr-2 align-middle">
+                  ₹{EVENT_CONFIG.registrationFee.toLocaleString('en-IN')}
+                </span>
+                ₹{EVENT_CONFIG.buddyFee.toLocaleString('en-IN')}{' '}
+                <span className="text-lg font-normal text-ink-soft">/ alumnus, with a buddy</span>
+              </p>
+              <p className="text-sm text-ink-soft text-center mt-2 max-w-xl mx-auto">
+                Register together with one or more batchmates who haven't paid yet and everyone gets the
+                old early-bird price. The whole group must register &amp; initiate payment by the deadline;
+                opt in from <Link to="/payments" className="text-gold-700 underline">My Payments</Link>.
+                Family members stay ₹{EVENT_CONFIG.familyMemberFee.toLocaleString('en-IN')} each.
+              </p>
+            </GlassCard>
+          )}
+          <GlassCard className="mb-8 border-forest-500/15">
+            <p className="text-ink-soft">
+              The early-bird pricing window closed on 30 September. Standard rates apply — see{' '}
+              <Link to="/payments" className="text-gold-700 hover:text-gold-300 underline">
+                My Payments
+              </Link>{' '}
+              for current amount and instructions{buddyOfferActive() ? ', or grab the Best Buddy price above' : ''}.
+            </p>
+          </GlassCard>
+        </>
       )}
 
       {/* Your amount */}

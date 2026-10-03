@@ -9,7 +9,7 @@ import Input from '../../components/ui/Input';
 import Badge from '../../components/ui/Badge';
 import SectionHeading from '../../components/shared/SectionHeading';
 import ExportRegistrationsModal from '../../components/admin/ExportRegistrationsModal';
-import { EVENT_CONFIG, BRANCHES } from '../../data/constants';
+import { EVENT_CONFIG, BRANCHES, baseFeeFor } from '../../data/constants';
 import { isDemoUser } from '../../utils/isDemoUser';
 
 // Alumni Registration — finance-gated master list of everyone who completed
@@ -59,7 +59,7 @@ function amountDueFor(a) {
     const actual = Number(a.paymentAmount) || Number(a.registrationFee);
     if (actual > 0) return actual;
   }
-  return EVENT_CONFIG.registrationFee + familyOf(a) * EVENT_CONFIG.familyMemberFee;
+  return baseFeeFor(a) + familyOf(a) * EVENT_CONFIG.familyMemberFee;
 }
 
 // Grid column catalog — every field captured at registration is available in
@@ -96,6 +96,8 @@ const GRID_COLUMNS = [
   { id: 'tshirtSize', label: 'T-shirt', sortKey: 'tshirtSize', on: false, align: 'text-center', cellClass: 'text-center text-ink-soft', val: (a) => String(a.tshirtSize || ''), render: (a) => dash(a.tshirtSize) },
   { id: 'dietaryPref', label: 'Dietary', sortKey: 'dietaryPref', on: false, cellClass: textCell, val: (a) => String(a.dietaryPref || ''), render: (a) => dash(a.dietaryPref) },
   { id: 'specialRequests', label: 'Special Requests', sortKey: 'specialRequests', on: false, cellClass: 'text-xs text-ink-soft max-w-[240px]', val: (a) => String(a.specialRequests || '').toLowerCase(), render: (a) => dash(a.specialRequests) },
+  { id: 'buddy',      label: 'Best Buddy',  sortKey: 'buddy',  on: true,  val: (a) => (a.buddyOptIn ? 1 : 0), render: (a) => (a.buddyOptIn ? '👯 Yes' : '') },
+  { id: 'buddyNames', label: 'Buddy Names', sortKey: 'buddyNames', on: false, val: (a) => a.buddyNames || '', render: (a) => a.buddyNames || '' },
   { id: 'status', label: 'Status',  sortKey: 'status',         on: true,  val: (a) => statusOf(a) || '', render: (a) => {
       const badge = STATUS_BADGE[statusOf(a)] || { label: '—', variant: 'default' };
       return <Badge variant={badge.variant} size="sm">{badge.label}</Badge>;

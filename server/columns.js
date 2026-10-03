@@ -29,6 +29,8 @@ export const tables = {
     policyVersion:     { col: 'policy_version',     type: 'text' },
     policyAcceptedAt:  { col: 'policy_accepted_at', type: 'timestamptz' },
     directoryOptIn:    { col: 'directory_opt_in',   type: 'bool' },
+    buddyOptIn:        { col: 'buddy_opt_in',       type: 'bool' },
+    buddyNames:        { col: 'buddy_names',        type: 'text' },
     travelMode:        { col: 'travel_mode',        type: 'text' },
     arrivalDate:       { col: 'arrival_date',       type: 'text' },
     arrivalTime:       { col: 'arrival_time',       type: 'text' },

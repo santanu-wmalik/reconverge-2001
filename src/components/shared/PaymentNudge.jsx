@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { EVENT_CONFIG } from '../../data/constants';
+import { EVENT_CONFIG, baseFeeFor } from '../../data/constants';
 import { pledgeApi } from '../../services/api';
 
 // Shared payment-completion helpers + the persistent portal banner.
@@ -34,7 +34,7 @@ export function totalDueFor(user) {
       Number(user?.childrenUnder10 || 0) +
       Number(user?.children10Plus || 0)
   );
-  return EVENT_CONFIG.registrationFee + family * EVENT_CONFIG.familyMemberFee;
+  return baseFeeFor(user) + family * EVENT_CONFIG.familyMemberFee;
 }
 
 export const inr = (n) => `₹${Number(n).toLocaleString('en-IN')}`;

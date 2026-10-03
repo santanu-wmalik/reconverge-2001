@@ -10,7 +10,7 @@ import Input from '../../components/ui/Input';
 import Modal from '../../components/ui/Modal';
 import Badge from '../../components/ui/Badge';
 import SectionHeading from '../../components/shared/SectionHeading';
-import { EVENT_CONFIG } from '../../data/constants';
+import { EVENT_CONFIG, baseFeeFor } from '../../data/constants';
 import { isDemoUser } from '../../utils/isDemoUser';
 
 // Payment verification — Finance Committee marks alumni Paid / Rejected
@@ -48,7 +48,32 @@ function amountDueFor(a) {
       Number(a.childrenUnder10 || 0) +
       Number(a.children10Plus || 0)
   );
-  return EVENT_CONFIG.registrationFee + family * EVENT_CONFIG.familyMemberFee;
+  return baseFeeFor(a) + family * EVENT_CONFIG.familyMemberFee;
+}
+
+// ── Best Buddy helpers ───────────────────────────────────────────────────
+// Buddy groups verify together: resolve the free-text buddy name(s) against
+// the registered list so finance can see at a glance whether the whole
+// group has paid before confirming anyone.
+const normName = (n) => String(n || '').toLowerCase().replace(/[^a-z]+/g, ' ').trim();
+const PAID_SET = new Set(['paid', 'confirmed']);
+function buddyGroupFor(target, all) {
+  if (!target?.buddyOptIn) return null;
+  const names = String(target.buddyNames || '')
+    .split(/[,;/&]| and /i)
+    .map((n) => n.trim())
+    .filter(Boolean);
+  return names.map((name) => {
+    const match = all.find((x) => x.id !== target.id && normName(x.name) === normName(name));
+    return {
+      name,
+      match,
+      state: !match ? 'not found'
+        : PAID_SET.has(match.paymentStatus) ? 'paid'
+        : match.paymentUid ? 'uid submitted'
+        : 'not paid',
+    };
+  });
 }
 
 export default function PaymentVerificationPage() {
@@ -239,6 +264,11 @@ export default function PaymentVerificationPage() {
                         <div className="text-ink">{a.name || '—'}</div>
                         <div className="text-xs text-ink-muted">{a.email}</div>
                         {a.branch && <div className="text-[11px] text-ink-muted mt-0.5">{a.branch}</div>}
+                        {a.buddyOptIn && (
+                          <div className="text-[11px] text-gold-700 mt-0.5">
+                            👯 Best Buddy{a.buddyNames ? `: ${a.buddyNames}` : ' (names pending)'}
+                          </div>
+                        )}
                       </td>
                       <td className="py-3 px-4 text-ink-soft font-mono text-xs">
                         {a.registrationId || '—'}
@@ -328,6 +358,39 @@ export default function PaymentVerificationPage() {
                   UID: <span className="font-mono text-ink-soft break-all">{target.paymentUid}</span>
                 </div>
               )}
+              {target.buddyOptIn && (() => {
+                const group = buddyGroupFor(target, registered) || [];
+                const allSettled = group.length > 0 && group.every((g) => g.state === 'paid' || g.state === 'uid submitted');
+                return (
+                  <div className={`mt-2 rounded-lg border p-2.5 ${allSettled ? 'border-emerald-400/40 bg-emerald-500/10' : 'border-amber-400/50 bg-amber-50'}`}>
+                    <div className="text-[11px] uppercase tracking-wider font-semibold text-ink-soft mb-1">
+                      👯 Best Buddy group — verify together
+                    </div>
+                    {group.length === 0 && (
+                      <div className="text-amber-800 text-xs">No buddy names on file — ask the alumnus (or check the committee email) before confirming the ₹13,500 rate.</div>
+                    )}
+                    {group.map((g) => (
+                      <div key={g.name} className="flex items-center justify-between text-xs py-0.5">
+                        <span className="text-ink">{g.name}{g.match ? ` (${g.match.registrationId || g.match.email})` : ''}</span>
+                        <span className={
+                          g.state === 'paid' ? 'text-emerald-700 font-semibold'
+                          : g.state === 'uid submitted' ? 'text-gold-700 font-semibold'
+                          : 'text-amber-800 font-semibold'
+                        }>
+                          {g.state === 'paid' ? '✓ paid' : g.state === 'uid submitted' ? '◷ UID submitted' : g.state === 'not found' ? '⚠ no matching registration' : '✕ not paid'}
+                        </span>
+                      </div>
+                    ))}
+                    {actionKind === 'confirmed' && !allSettled && (
+                      <p className="text-[11px] text-amber-800 mt-1.5">
+                        The buddy rate applies only when the whole group pays by {EVENT_CONFIG.buddyDeadlineLabel}.
+                        You can still confirm this one (corner cases via email), but normally wait until every
+                        buddy has at least submitted a UID.
+                      </p>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
 
             {actionKind === 'reset' ? (
