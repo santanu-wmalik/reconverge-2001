@@ -43,6 +43,10 @@ const needsCaller = (r) =>
   !(r.poc || '').trim() && Boolean((r.phone || r.live?.phone || '').trim())
   && !(commitOf(r) > 0) && !yes(r.intentSubmitted);
 
+// Split a POC cell into individual names — "Asif / Dheeraj" credits both.
+const pocNamesOf = (r) =>
+  String(r.poc || '').split(/[,/&]|\band\b/i).map((s) => s.trim()).filter(Boolean);
+
 const statusOf = (r) =>
   r.status || (yes(r.paid) ? 'Paid' : yes(r.registered) ? 'Registered' : null);
 
@@ -313,6 +317,7 @@ export default function GiveBackTrackingPage() {
   const [pocSel, setPocSel] = useState(() => new Set());
   // Secondary filters — the fields folded under the Name column.
   const [statusSel, setStatusSel] = useState(() => new Set());
+  const [pocCard, setPocCard] = useState(null); // active POC leaderboard card
   const [homeSel, setHomeSel] = useState(() => new Set());
   const [locSel, setLocSel] = useState(() => new Set());
   const [waSel, setWaSel] = useState(() => new Set());
@@ -370,6 +375,7 @@ export default function GiveBackTrackingPage() {
       if (needle && !`${r.fullName} ${r.location || ''} ${r.phone || ''} ${r.poc || ''} ${r.comments || ''}`.toLowerCase().includes(needle)) return false;
       if (branchSel.size && !branchSel.has((r.branch || '').trim())) return false;
       if (pocSel.size && !pocSel.has((r.poc || '').trim())) return false;
+      if (pocCard && !pocNamesOf(r).includes(pocCard)) return false;
       if (views.has('unassigned') && !needsCaller(r)) return false;
       if (views.has('committed') && !(commitOf(r) > 0)) return false;
       if (views.has('called') && !(r.comments || '').trim()) return false;
@@ -382,7 +388,7 @@ export default function GiveBackTrackingPage() {
       if (waSel.size && !waSel.has(r.onWhatsapp === 'Yes' ? 'Yes' : 'No')) return false;
       return true;
     });
-  }, [rows, q, branchSel, pocSel, views, statusSel, homeSel, locSel, waSel]);
+  }, [rows, q, branchSel, pocSel, pocCard, views, statusSel, homeSel, locSel, waSel]);
 
   const sorted = useMemo(() => {
     if (!sort) {
@@ -403,7 +409,7 @@ export default function GiveBackTrackingPage() {
   }, [filtered, sort]);
 
   // Pagination — back to page 1 whenever a filter or sort changes.
-  useEffect(() => { setPage(0); }, [q, branchSel, pocSel, views, statusSel, homeSel, locSel, waSel, pageSize, sort]);
+  useEffect(() => { setPage(0); }, [q, branchSel, pocSel, pocCard, views, statusSel, homeSel, locSel, waSel, pageSize, sort]);
   const pageCount = Math.max(1, Math.ceil(sorted.length / pageSize));
   const safePage = Math.min(page, pageCount - 1);
   const paged = useMemo(
@@ -421,6 +427,22 @@ export default function GiveBackTrackingPage() {
       intents: rows.filter((r) => yes(r.intentSubmitted)).length,
       sent: rows.filter((r) => yes(r.moneySent)).length,
     };
+  }, [rows]);
+
+  // POC leaderboard — shared POCs ("Asif / Dheeraj") credit BOTH in full.
+  const pocBoard = useMemo(() => {
+    const m = new Map();
+    for (const r of rows) {
+      for (const name of pocNamesOf(r)) {
+        if (!m.has(name)) m.set(name, { name, assigned: 0, commits: 0, total: 0 });
+        const e = m.get(name);
+        e.assigned += 1;
+        const c = commitOf(r);
+        if (c > 0) { e.commits += 1; e.total += c; }
+      }
+    }
+    return Array.from(m.values()).sort((a, b) => b.total - a.total || b.commits - a.commits || a.name.localeCompare(b.name));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows]);
 
   const patchRow = (updated) => {
@@ -489,6 +511,41 @@ export default function GiveBackTrackingPage() {
           </GlassCard>
         ))}
       </div>
+
+      {/* POC leaderboard — who brought in what. Shared POCs credit both. */}
+      {pocBoard.length > 0 && (
+        <GlassCard hover={false} className="mb-6">
+          <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
+            <p className="nav-caps text-[10px] text-ink-muted">Caller leaderboard</p>
+            <p className="text-[11px] text-ink-muted">
+              Shared assignments credit every named caller in full. Click a card to filter the grid{pocCard ? ' — click again to clear' : ''}.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3">
+            {pocBoard.map((p, i) => (
+              <button
+                type="button"
+                key={p.name}
+                onClick={() => setPocCard((c) => (c === p.name ? null : p.name))}
+                aria-pressed={pocCard === p.name}
+                className={`text-left rounded-xl px-3.5 py-3 border transition ${
+                  pocCard === p.name
+                    ? 'bg-forest-500/10 border-forest-600/50 ring-1 ring-forest-600/30'
+                    : 'bg-cream-100 border-forest-500/10 hover:border-forest-500/40'
+                }`}
+              >
+                <p className="text-sm font-semibold text-ink truncate">
+                  {i === 0 && p.total > 0 ? '🏆 ' : ''}{p.name}
+                </p>
+                <p className="font-heading text-xl text-forest-700 mt-0.5">{lakhs(p.total)}</p>
+                <p className="text-[11px] text-ink-muted mt-0.5">
+                  {p.commits} commit{p.commits === 1 ? '' : 's'} · {p.assigned} assigned
+                </p>
+              </button>
+            ))}
+          </div>
+        </GlassCard>
+      )}
 
       {/* Filters: search → status multi-select → branch multi-select → POC multi-select */}
       {/* relative z-30: GlassCard's backdrop-blur makes a stacking context,
