@@ -35,7 +35,7 @@ function PermChip({ label, name, row, busy, onToggle }) {
       }
       className={`text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full border transition ${
         on
-          ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-200'
+          ? 'bg-emerald-500/15 border-emerald-600/50 text-emerald-900 font-semibold'
           : 'bg-white border-forest-500/15 text-ink-soft hover:border-forest-500/40 hover:text-ink'
       } ${disabled ? 'opacity-70 cursor-not-allowed' : 'cursor-pointer'}`}
     >
@@ -102,6 +102,37 @@ export default function UsersPage() {
     const admins = real.filter((u) => u.role === 'admin').length;
     const supers = real.filter((u) => u.role === 'super-admin').length;
     return { total, admins, supers, alumni: total - admins - supers };
+  }, [users]);
+
+  // Who holds which permission — super-admins hold all implicitly.
+  const PERM_GROUPS = [
+    ['admin', 'All Admins'], // role-based, not a permission
+    ['finance', 'Finance'],
+    ['marketing', 'Marketing'],
+    ['giveback', 'Give Back'],
+    ['gbtracking', 'GB Tracking'],
+    ['details', 'Details'],
+  ];
+  // Clicking an access-group card sorts holders of that permission to the
+  // top of the user list (click again to clear).
+  const [permSort, setPermSort] = useState(null);
+  const holdsPerm = (u, key) =>
+    key === 'admin'
+      ? u.role === 'admin' || u.role === 'super-admin'
+      : u.role === 'super-admin' || Boolean(u.permissions && u.permissions[key]);
+  const displayUsers = useMemo(() => {
+    if (!permSort) return users;
+    // FILTER to the group's holders (not just sort) — unmistakable feedback.
+    return users.filter((u) => holdsPerm(u, permSort));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [users, permSort]);
+
+  const permGroups = useMemo(() => {
+    return PERM_GROUPS.map(([key, label]) => {
+      const holders = users.filter((u) => holdsPerm(u, key));
+      return { key, label, holders };
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [users]);
 
   const handleImpersonate = async (row) => {
@@ -203,15 +234,58 @@ export default function UsersPage() {
         </GlassCard>
       </div>
 
+      {/* Access groups — who holds which permission */}
+      <GlassCard hover={false} className="mb-8">
+        <p className="text-xs uppercase tracking-wider text-ink-soft mb-1">Access groups</p>
+        <p className="text-xs text-ink-muted mb-4">
+          Everyone holding each permission (super-admins hold all implicitly).
+          Click a card to show only its holders in the list below{permSort ? ' — click again to show everyone' : ''}.
+        </p>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+          {permGroups.map((g) => (
+            <button
+              type="button"
+              key={g.key}
+              onClick={() => setPermSort((p) => (p === g.key ? null : g.key))}
+              aria-pressed={permSort === g.key}
+              className={`text-left align-top flex flex-col justify-start rounded-xl px-4 py-3 transition border ${
+                permSort === g.key
+                  ? 'bg-forest-500/10 border-forest-600/50 ring-1 ring-forest-600/30'
+                  : 'bg-cream-100 border-forest-500/10 hover:border-forest-500/40'
+              }`}
+            >
+              <div className="flex items-baseline justify-between gap-2">
+                <p className="text-[11px] uppercase tracking-wider font-semibold text-forest-700">{g.label}</p>
+                <span className="text-sm font-heading font-bold text-gold-700">{g.holders.length}</span>
+              </div>
+              {g.holders.length === 0 ? (
+                <p className="text-xs text-ink-muted mt-2">No one yet</p>
+              ) : (
+                <ul className="mt-2 space-y-1">
+                  {g.holders.map((u) => (
+                    <li key={u.id} className="text-xs text-ink truncate" title={u.email}>
+                      {u.name || u.email}
+                      {u.role === 'super-admin' && <span className="text-[10px] text-gold-700"> · super</span>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </button>
+          ))}
+        </div>
+      </GlassCard>
+
       {/* List */}
       <GlassCard padding="p-0">
         {loading ? (
           <div className="p-6 text-sm text-ink-soft">Loading users…</div>
         ) : users.length === 0 ? (
           <div className="p-6 text-sm text-ink-soft">No users yet.</div>
+        ) : displayUsers.length === 0 ? (
+          <div className="p-6 text-sm text-ink-soft">No one holds this permission yet.</div>
         ) : (
-          <motion.ul variants={staggerContainer} initial="hidden" animate="visible" className="divide-y divide-white/5">
-            {users.map((u) => {
+          <ul className="divide-y divide-white/5">
+            {displayUsers.map((u) => {
               const alum = alumniByEmail[u.email];
               const cfg = roleConfig[u.role] || roleConfig.alumni;
               const isSuperAdmin = u.role === 'super-admin';
@@ -219,7 +293,7 @@ export default function UsersPage() {
               const disabled = isSuperAdmin || isSelf || busyId === u.id;
               const on = u.role !== 'alumni';
               return (
-                <motion.li key={u.id} variants={staggerItem} className="flex items-center gap-4 px-4 sm:px-6 py-4">
+                <li key={u.id} className="flex items-center gap-4 px-4 sm:px-6 py-4">
                   <Avatar src={alum?.avatar} name={alum?.name || u.email} size="md" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
@@ -286,6 +360,13 @@ export default function UsersPage() {
                             busy={busyId === u.id}
                             onToggle={handlePermToggle}
                           />
+                          <PermChip
+                            label="GB Tracking"
+                            name="gbtracking"
+                            row={u}
+                            busy={busyId === u.id}
+                            onToggle={handlePermToggle}
+                          />
                         </div>
                       )}
                       {/* 'Details' works for ANY role — it unlocks the
@@ -301,10 +382,10 @@ export default function UsersPage() {
                       </div>
                     </div>
                   </div>
-                </motion.li>
+                </li>
               );
             })}
-          </motion.ul>
+          </ul>
         )}
       </GlassCard>
 

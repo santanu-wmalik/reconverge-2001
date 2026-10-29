@@ -11,18 +11,19 @@
 
 import { query } from './db.js';
 import { sessionCan } from './auth.js';
+import { computeGivebackSummary } from './givebackOutreach.js';
 
+// Cornerstone Circle (₹25 L) retired Oct 2026 — existing pledges keep the
+// label, but new submissions can no longer choose it.
 const TIERS = new Set([
-  'Cornerstone Circle', 'Keystone Circle', 'Pillar Circle', 'Foundation Circle', 'Custom',
+  'Keystone Circle', 'Pillar Circle', 'Foundation Circle', 'Custom',
 ]);
 // First-come-first-serve caps on the naming tiers.
 const TIER_CAPS = {
-  'Cornerstone Circle': 2,
   'Keystone Circle': 20,
 };
 
 const TIER_AMOUNTS = {
-  'Cornerstone Circle': 2500000,
   'Keystone Circle': 1000000,
   'Pillar Circle': 500000,
   'Foundation Circle': 200000,
@@ -56,15 +57,23 @@ export function mountPledges(app) {
       if (!session?.alumniId) return res.status(401).json({ error: 'Authentication required' });
       const r = await query('SELECT * FROM pledges WHERE alumni_id = $1', [session.alumniId]);
       // Tier availability so the form can show remaining seats (FCFS).
-      const counts = await query(
-        `SELECT tier, COUNT(*)::int AS n FROM pledges WHERE tier = ANY($1) GROUP BY tier`,
-        [Object.keys(TIER_CAPS)]
-      );
+      // Seats taken come from the GB Tracking master list (committee soft
+      // commits merged with website intents), not just website pledges —
+      // a ₹10 L commitment made over the phone still holds a room.
+      const summary = await computeGivebackSummary();
       const availability = Object.fromEntries(Object.entries(TIER_CAPS).map(([tier, cap]) => {
-        const taken = counts.rows.find((x) => x.tier === tier)?.n || 0;
+        const taken = tier === 'Keystone Circle' ? Math.min(cap, summary.tiers.keystone.count) : 0;
         return [tier, { cap, taken, left: Math.max(0, cap - taken) }];
       }));
-      res.json({ pledge: toJson(r.rows[0]) || null, availability });
+      // How many batchmates sit in each tier band (GB Tracking + website,
+      // deduplicated, by amount) — shown on the form as social proof.
+      const chosen = {
+        'Keystone Circle': summary.tiers.keystone.count,
+        'Pillar Circle': summary.tiers.pillar.count,
+        'Foundation Circle': summary.tiers.foundation.count,
+        'Custom': summary.tiers.supporter.count,
+      };
+      res.json({ pledge: toJson(r.rows[0]) || null, availability, chosen });
     } catch (err) { next(err); }
   });
 
@@ -88,23 +97,27 @@ export function mountPledges(app) {
 
       const b = req.body || {};
       const tier = TIERS.has(b.tier) ? b.tier : null;
-      if (!tier) return res.status(400).json({ error: 'Please choose a pledge tier' });
+      if (!tier) return res.status(400).json({ error: 'Please choose a contribution tier' });
       let amount = TIER_AMOUNTS[tier] ?? null;
       if (tier === 'Custom') {
         amount = Number(b.amount);
         if (!Number.isFinite(amount) || amount <= 0) {
-          return res.status(400).json({ error: 'Please enter a valid pledge amount' });
+          return res.status(400).json({ error: 'Please enter a valid contribution amount' });
         }
       }
       // First-come-first-serve cap on the naming tiers (own existing pledge
       // doesn't count against itself on an update).
       const cap = TIER_CAPS[tier];
       if (cap) {
-        const c = await query(
-          'SELECT COUNT(*)::int AS n FROM pledges WHERE tier = $1 AND alumni_id <> $2',
-          [tier, session.alumniId]
-        );
-        if (c.rows[0].n >= cap) {
+        // Count seats from GB Tracking (soft commits + website intents),
+        // minus the caller's own existing Keystone pledge on an update.
+        const [summary, mine] = await Promise.all([
+          computeGivebackSummary(),
+          query('SELECT tier FROM pledges WHERE alumni_id = $1', [session.alumniId]),
+        ]);
+        const ownHolds = mine.rows[0]?.tier === tier ? 1 : 0;
+        const taken = (tier === 'Keystone Circle' ? summary.tiers.keystone.count : 0) - ownHolds;
+        if (taken >= cap) {
           return res.status(409).json({ error: `${tier} is fully subscribed (first come, first served) — please pick another tier.` });
         }
       }

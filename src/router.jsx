@@ -62,6 +62,7 @@ const GroupsListPage = lazyWithReload(() => import('./pages/groups/GroupsListPag
 const GroupDetailPage = lazyWithReload(() => import('./pages/groups/GroupDetailPage'));
 const TravelPlannerPage = lazyWithReload(() => import('./pages/travel/TravelPlannerPage'));
 const GiveBackPage = lazyWithReload(() => import('./pages/giveback/GiveBackPage'));
+const GiveBackCampaignPage = lazyWithReload(() => import('./pages/giveback/GiveBackCampaignPage'));
 const NostalgiaPage = lazyWithReload(() => import('./pages/nostalgia/NostalgiaPage'));
 const PhotoGalleryPage = lazyWithReload(() => import('./pages/nostalgia/PhotoGalleryPage'));
 const VideoGalleryPage = lazyWithReload(() => import('./pages/nostalgia/VideoGalleryPage'));
@@ -98,6 +99,7 @@ const UsersPage = lazyWithReload(() => import('./pages/admin/UsersPage'));
 const RemindersPage = lazyWithReload(() => import('./pages/admin/RemindersPage'));
 const AlumniRegistrationsPage = lazyWithReload(() => import('./pages/admin/AlumniRegistrationsPage'));
 const AdminPledgesPage = lazyWithReload(() => import('./pages/admin/AdminPledgesPage'));
+const GiveBackTrackingPage = lazyWithReload(() => import('./pages/admin/GiveBackTrackingPage'));
 
 function PageLoader() {
   return (
@@ -129,6 +131,7 @@ export const router = createBrowserRouter([
       { path: 'our-journey', element: <SuspenseWrapper><OurJourneyPage /></SuspenseWrapper> },
       { path: 'rsvp', element: <SuspenseWrapper><RSVPPage /></SuspenseWrapper> },
       { path: 'event', element: <SuspenseWrapper><EventPosterPage /></SuspenseWrapper> },
+      { path: 'project-cornerstone', element: <SuspenseWrapper><GiveBackCampaignPage /></SuspenseWrapper> },
       { path: 'terms', element: <SuspenseWrapper><TermsPage /></SuspenseWrapper> },
       { path: 'privacy-policy', element: <SuspenseWrapper><PrivacyPolicyPage /></SuspenseWrapper> },
     ],
@@ -200,6 +203,12 @@ export const router = createBrowserRouter([
             element: <PermissionRoute permission="giveback" />,
             children: [
               { path: 'admin/pledges', element: <SuspenseWrapper><AdminPledgesPage /></SuspenseWrapper> },
+            ],
+          },
+          {
+            element: <PermissionRoute permission="gbtracking" />,
+            children: [
+              { path: 'admin/giveback-tracking', element: <SuspenseWrapper><GiveBackTrackingPage /></SuspenseWrapper> },
             ],
           },
           {

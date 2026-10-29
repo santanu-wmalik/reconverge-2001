@@ -27,6 +27,7 @@ const PERMISSION_NAV = [
   { label: 'Alumni Registration', path: '/admin/registrations', icon: '🗂️', permission: 'finance'   },
   { label: 'Reminders',           path: '/admin/reminders',     icon: '📣', permission: 'marketing' },
   { label: 'Intents to Give',     path: '/admin/pledges',       icon: '🏛️', permission: 'giveback'  },
+  { label: 'GB Tracking',         path: '/admin/giveback-tracking', icon: '📞', permission: 'gbtracking' },
 ];
 
 // Super-admin-only extras. Rendered only when `isSuperAdmin`.

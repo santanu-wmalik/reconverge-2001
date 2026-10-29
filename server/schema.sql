@@ -290,3 +290,36 @@ ALTER TABLE alumni ADD COLUMN IF NOT EXISTS directory_opt_in BOOLEAN DEFAULT FAL
 -- the named buddies have paid before flipping both to confirmed.
 ALTER TABLE alumni ADD COLUMN IF NOT EXISTS buddy_opt_in BOOLEAN DEFAULT FALSE;
 ALTER TABLE alumni ADD COLUMN IF NOT EXISTS buddy_names  TEXT;
+
+-- ─── Give Back outreach tracker (Oct 2026) ──────────────────────────────
+-- Imported from the fundraising committee's "Giving Back Master List" sheet.
+-- Admin-only (gbtracking permission): who calls whom, soft commits, and
+-- call comments — so the committee can plan future calls.
+CREATE TABLE IF NOT EXISTS giveback_outreach (
+  id               TEXT PRIMARY KEY,
+  full_name        TEXT NOT NULL,
+  branch           TEXT,
+  location         TEXT,
+  home_state       TEXT,
+  on_whatsapp      TEXT,
+  registered       TEXT,
+  paid             TEXT,
+  phone            TEXT,
+  poc              TEXT,
+  commit_lakhs     NUMERIC,
+  company_match    TEXT,
+  intent_submitted TEXT,
+  money_sent       TEXT,
+  comments         TEXT,
+  sort_order       INTEGER,
+  updated_by       TEXT,
+  created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- Explicit profile link for the GB tracker: when two registered alumni share
+-- a name, fuzzy matching refuses to guess — picking from the editor's
+-- dropdown pins the row to one profile by id.
+ALTER TABLE giveback_outreach ADD COLUMN IF NOT EXISTS matched_alumni_id TEXT;
+-- Stored alongside matched_alumni_id as a human-readable audit reference.
+ALTER TABLE giveback_outreach ADD COLUMN IF NOT EXISTS matched_registration_id TEXT;

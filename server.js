@@ -28,6 +28,7 @@ import { mountPaymentVerification } from './server/paymentVerification.js';
 import { mountReminders } from './server/reminders.js';
 import { mountPublic } from './server/public.js';
 import { mountPledges } from './server/pledges.js';
+import { mountGivebackOutreach } from './server/givebackOutreach.js';
 import { seedData } from './server/seed-data.mjs';
 import { tables, coerce } from './server/columns.js';
 
@@ -165,6 +166,7 @@ async function main() {
   mountPublic(app);
   mountPaymentVerification(app);
   mountPledges(app);
+  mountGivebackOutreach(app);
 
   // Fallback error handler — keeps stack traces out of the response while
   // still surfacing them in Render logs.

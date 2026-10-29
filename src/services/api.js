@@ -112,6 +112,16 @@ export const rsvpApi = {
 export const publicApi = {
   rollOfHonour: () => request('/public/roll-of-honour'),
   thenAndNow: () => request('/public/then-and-now'),
+  givebackSummary: () => request('/public/giveback-summary'),
+};
+
+// --- Admin: Give Back outreach tracker (gbtracking permission) ---
+export const gbTrackingApi = {
+  list: () => request('/giveback-outreach'),
+  roster: () => request('/giveback-outreach/roster'),
+  create: (data) => request('/giveback-outreach', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id, data) => request(`/giveback-outreach/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
+  remove: (id) => request(`/giveback-outreach/${id}`, { method: 'DELETE' }),
 };
 
 // --- Admin: reminder / update email blast ---

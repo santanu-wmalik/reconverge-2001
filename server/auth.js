@@ -460,7 +460,7 @@ export function mountAuth(app) {
   // Unknown keys are silently dropped so the JSON blob stays clean. Every live
   // session for that user has its cached `permissions` refreshed in place so
   // the grant takes effect immediately without forcing a re-login.
-  const KNOWN_PERMISSIONS = new Set(['finance', 'marketing', 'giveback', 'details']);
+  const KNOWN_PERMISSIONS = new Set(['finance', 'marketing', 'giveback', 'details', 'gbtracking']);
   app.patch('/api/users/:id/permissions', async (req, res, next) => {
     try {
       const callerToken = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');

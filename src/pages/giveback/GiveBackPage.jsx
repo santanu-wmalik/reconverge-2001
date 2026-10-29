@@ -14,11 +14,10 @@ import Input from '../../components/ui/Input';
 // pledge is saved against the signed-in alumnus (one per person, editable).
 
 const TIERS = [
-  { id: 'Cornerstone Circle', amount: 2500000, desc: 'Common Area Naming (2 available seats), foundation stone laying' },
-  { id: 'Keystone Circle',    amount: 1000000, desc: 'Room Naming rights (20 seats available), stage felicitation' },
-  { id: 'Pillar Circle',      amount: 500000,  desc: 'Donor Wall, stage felicitation' },
-  { id: 'Foundation Circle',  amount: 200000,  desc: 'Donor Wall' },
-  { id: 'Custom',             amount: null,    desc: 'Every gift counts toward the ₹2 Cr goal' },
+  { id: 'Keystone Circle',    amount: 1000000, desc: 'Room Naming rights (20 seats available), stage felicitation, free Reunion Memento shipped to you if you cannot attend' },
+  { id: 'Pillar Circle',      amount: 500000,  desc: 'Donor Wall, stage felicitation, free Reunion Memento shipped to you if you cannot attend' },
+  { id: 'Foundation Circle',  amount: 200000,  desc: 'Donor Wall, free Reunion Memento shipped to you if you cannot attend' },
+  { id: 'Custom',             amount: null,    desc: 'Every gift counts toward the ₹2 Cr goal — ₹1 L+ earns the free Reunion Memento too (shipped if you cannot attend)' },
 ];
 
 const inr = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
@@ -47,6 +46,7 @@ export default function GiveBackPage() {
 
   const [existing, setExisting] = useState(null);
   const [availability, setAvailability] = useState({});
+  const [chosen, setChosen] = useState({});
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -70,8 +70,9 @@ export default function GiveBackPage() {
       branch: shortBranchOf(user?.branch),
     }));
     pledgeApi.mine()
-      .then(({ pledge, availability: avail }) => {
+      .then(({ pledge, availability: avail, chosen: ch }) => {
         if (avail) setAvailability(avail);
+        if (ch) setChosen(ch);
         if (pledge) {
           setExisting(pledge);
           setForm((p) => ({
@@ -219,6 +220,11 @@ export default function GiveBackPage() {
                       {t.id === 'Custom' ? 'Choose my own amount' : t.id}
                     </span>
                     <span className="block text-xs text-ink-muted mt-0.5">{t.desc}</span>
+                    {Number(chosen[t.id]) > 0 && (
+                      <span className="block text-[11px] font-semibold text-forest-700 mt-1">
+                        {chosen[t.id]} batchmate{chosen[t.id] === 1 ? '' : 's'} {t.id === 'Custom' ? 'chose their own amount' : 'chose this'}
+                      </span>
+                    )}
                     {avail && (
                       <span className={`block text-[11px] font-semibold mt-1 ${full ? 'text-red-700' : 'text-gold-700'}`}>
                         {full ? 'Fully subscribed' : `${avail.left} of ${avail.cap} seats left`} · first come, first served
@@ -246,6 +252,17 @@ export default function GiveBackPage() {
               </div>
             )}
           </GlassCard>
+
+          {/* Free Reunion Memento for ₹1 L+ */}
+          <div className="mb-6 flex items-start gap-3.5 bg-gradient-to-r from-gold-500/15 to-gold-400/10 border border-gold-500/40 rounded-2xl px-5 py-4">
+            <span className="text-3xl leading-none mt-0.5">🎁</span>
+            <p className="text-sm text-ink leading-relaxed">
+              <b>Give ₹1,00,000 or more and can't make it to the reunion? A free Reunion
+              Memento ships to your address</b> — anywhere in the world. The memento is shipped
+              only to batchmates who aren't attending in person: the reunion comes to you. Our
+              thank-you for anchoring the campaign.
+            </p>
+          </div>
 
           {/* Extras */}
           <GlassCard hover={false} className="mb-6">

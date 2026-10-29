@@ -29,15 +29,50 @@ function Tile({ to, icon, label }) {
   );
 }
 
-export default function WidgetRail() {
+export default function WidgetRail({ inline = false }) {
   const [open, setOpen] = useState(true);
   const { days, hours, minutes, seconds, isExpired } = useCountdown(EVENT_CONFIG.eventDate);
 
-  return (
-    <div className="fixed bottom-4 inset-x-0 z-40 pointer-events-none">
-      <div className="w-full px-4 sm:px-6 flex justify-end">
-        {/* Strip: full width on mobile, half width right-aligned on md+ */}
-        <div className="pointer-events-auto w-full md:w-1/2 flex flex-nowrap items-stretch justify-end">
+  const countdown = (
+    <div className="basis-[60%] min-w-0 bg-[#111a2b] text-cream-100 px-2 sm:px-3 py-1.5 sm:py-2 shadow-xl border border-white/5 flex flex-col justify-center">
+      <p className="text-[8px] sm:text-[9px] lg:text-[10px] font-semibold uppercase tracking-wide2 text-gold-400/90 text-center mb-0.5 sm:mb-1 whitespace-nowrap">
+        Days until we meet
+      </p>
+      {isExpired ? (
+        <p className="text-center font-heading text-base sm:text-lg text-gold-300 whitespace-nowrap">We're live!</p>
+      ) : (
+        <div className="flex items-end justify-center gap-1 sm:gap-1.5 lg:gap-2">
+          {[
+            { v: days, l: 'Days' },
+            { v: hours, l: 'Hrs' },
+            { v: minutes, l: 'Min' },
+            { v: seconds, l: 'Sec' },
+          ].map((u, i) => (
+            <div key={u.l} className="flex items-end gap-1 sm:gap-1.5 lg:gap-2">
+              <div className="text-center">
+                <p className="font-heading text-2xl sm:text-3xl lg:text-4xl leading-none text-cream-50 tabular-nums">
+                  {String(u.v).padStart(2, '0')}
+                </p>
+                <p className="text-[7px] sm:text-[8px] lg:text-[9px] uppercase tracking-caps text-cream-300/70 mt-0.5 sm:mt-1">{u.l}</p>
+              </div>
+              {i < 3 && <span className="text-gold-500 text-lg sm:text-xl lg:text-2xl leading-none pb-3 sm:pb-4">:</span>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+  const tiles = (
+    <div className="basis-[40%] min-w-0 flex flex-nowrap items-stretch gap-1 sm:gap-1.5">
+      <Tile to="/yearbook"    icon="📖" label="Yearbook" />
+      <Tile to="/our-journey" icon="🛤️" label="Our Journey" />
+    </div>
+  );
+
+  // Shared strip: collapsible content + chevron. Used both by the fixed
+  // bottom-right rail and by the inline (stats band) placement.
+  const strip = (
+        <div className={`pointer-events-auto w-full ${inline ? '' : 'md:w-1/2'} flex flex-nowrap items-stretch justify-end`}>
           {/* Collapsible content — animates its width to 0 (slides into the chevron) */}
           <div
             className="min-w-0 overflow-hidden transition-all duration-300 ease-in-out"
@@ -45,40 +80,8 @@ export default function WidgetRail() {
             aria-hidden={!open}
           >
             <div className="flex flex-nowrap items-stretch gap-1 sm:gap-1.5 h-full pr-1 sm:pr-1.5">
-              {/* Countdown card — 60% */}
-              <div className="basis-[60%] min-w-0 bg-[#111a2b] text-cream-100 px-2 sm:px-3 py-1.5 sm:py-2 shadow-xl border border-white/5 flex flex-col justify-center">
-                <p className="text-[8px] sm:text-[9px] lg:text-[10px] font-semibold uppercase tracking-wide2 text-gold-400/90 text-center mb-0.5 sm:mb-1 whitespace-nowrap">
-                  Days until we meet
-                </p>
-                {isExpired ? (
-                  <p className="text-center font-heading text-base sm:text-lg text-gold-300 whitespace-nowrap">We're live!</p>
-                ) : (
-                  <div className="flex items-end justify-center gap-1 sm:gap-1.5 lg:gap-2">
-                    {[
-                      { v: days, l: 'Days' },
-                      { v: hours, l: 'Hrs' },
-                      { v: minutes, l: 'Min' },
-                      { v: seconds, l: 'Sec' },
-                    ].map((u, i) => (
-                      <div key={u.l} className="flex items-end gap-1 sm:gap-1.5 lg:gap-2">
-                        <div className="text-center">
-                          <p className="font-heading text-2xl sm:text-3xl lg:text-4xl leading-none text-cream-50 tabular-nums">
-                            {String(u.v).padStart(2, '0')}
-                          </p>
-                          <p className="text-[7px] sm:text-[8px] lg:text-[9px] uppercase tracking-caps text-cream-300/70 mt-0.5 sm:mt-1">{u.l}</p>
-                        </div>
-                        {i < 3 && <span className="text-gold-500 text-lg sm:text-xl lg:text-2xl leading-none pb-3 sm:pb-4">:</span>}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Tiles — share the remaining 40% equally */}
-              <div className="basis-[40%] min-w-0 flex flex-nowrap items-stretch gap-1 sm:gap-1.5">
-                <Tile to="/yearbook"    icon="📖" label="Yearbook" />
-                <Tile to="/our-journey" icon="🛤️" label="Our Journey" />
-              </div>
+              {countdown}
+              {tiles}
             </div>
           </div>
 
@@ -106,6 +109,14 @@ export default function WidgetRail() {
             </svg>
           </button>
         </div>
+  );
+
+  if (inline) return strip;
+
+  return (
+    <div className="fixed bottom-4 inset-x-0 z-40 pointer-events-none">
+      <div className="w-full px-4 sm:px-6 flex justify-end">
+        {strip}
       </div>
     </div>
   );

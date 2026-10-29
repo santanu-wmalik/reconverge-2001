@@ -16,6 +16,7 @@
 // staleness is fine for a leaderboard.
 
 import { query } from './db.js';
+import { computeGivebackSummary } from './givebackOutreach.js';
 
 // Keep in sync with src/utils/isDemoUser.js
 const DEMO_EMAILS = new Set(['alumni@email.com', 'admin@email.com', 'superuser@email.com']);
@@ -110,6 +111,20 @@ export function mountPublic(app) {
         byBranch,
         roster,
       });
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  // GET /api/public/giveback-summary — PII-free aggregates for the public
+  // Project Cornerstone campaign page, computed from the GB Tracking master
+  // list (committee soft commits) merged with website intents to give. Only
+  // totals leave the server — see computeGivebackSummary.
+  app.get('/api/public/giveback-summary', async (_req, res, next) => {
+    try {
+      const summary = await computeGivebackSummary();
+      res.set('Cache-Control', 'public, max-age=60');
+      res.json(summary);
     } catch (err) {
       next(err);
     }

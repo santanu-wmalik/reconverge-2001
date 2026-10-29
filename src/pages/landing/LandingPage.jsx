@@ -45,11 +45,11 @@ export default function LandingPage() {
     <div>
       <TownhallPopup />
       <HeroSection />
+      {/* Give Back comes first, ahead of Event Highlights, per the
+          fundraising committee (Oct 2026). */}
+      <GiveBackPreview />
       <SchedulePreview />
       <RollOfHonour />
-      {/* Give Back sits right after the Roll of Honour per the fundraising
-          committee — high on the page without displacing the schedule. */}
-      <GiveBackPreview />
       <ThenAndNow />
       <NostalgiaPreview />
       <TestimonialsSection />
