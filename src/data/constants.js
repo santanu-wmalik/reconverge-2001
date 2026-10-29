@@ -91,9 +91,10 @@ export const FAMILY_OPTIONS = [
 // signing in.
 export const NAV_LINKS = [
   { label: 'Home', path: '/' },
-  { label: 'Event', path: '/event', flash: true }, // 2nd Town Hall poster
+  { label: 'Event', path: '/event' }, // 2nd Town Hall poster
   { label: 'Our Journey', path: '/our-journey' },
-  { label: 'Give Back', path: '/project-cornerstone' },
+  // Give Back is the current "what's new" item — flash highlights it.
+  { label: 'Give Back', path: '/project-cornerstone', flash: true },
   { label: 'Committees', path: '/committees' },
   { label: 'FAQ', path: '/faq' },
 ];
