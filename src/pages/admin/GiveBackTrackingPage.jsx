@@ -425,6 +425,7 @@ export default function GiveBackTrackingPage() {
       committed: committed.length,
       commitTotal: committed.reduce((s, r) => s + commitOf(r), 0),
       intents: rows.filter((r) => yes(r.intentSubmitted)).length,
+      intentTotal: rows.reduce((s, r) => s + (Number(r.intentAmount) > 0 ? Number(r.intentAmount) / 1e5 : 0), 0),
       sent: rows.filter((r) => yes(r.moneySent)).length,
     };
   }, [rows]);
@@ -496,17 +497,18 @@ export default function GiveBackTrackingPage() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-6 gap-3 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-7 gap-3 mb-6">
         {[
-          [stats.total, 'batchmates listed'],
-          [stats.assigned, 'have a caller (POC)'],
+          [stats.total, 'batchmates'],
+          [stats.assigned, 'have a POC'],
           [stats.committed, 'soft commits'],
-          [lakhs(stats.commitTotal), 'committed so far'],
-          [stats.intents, 'intents on website'],
+          [lakhs(stats.commitTotal), 'committed', true],
+          [stats.intents, 'intents on site'],
+          [lakhs(stats.intentTotal), 'intent amount', true],
           [stats.sent, 'sent to NITCAA'],
-        ].map(([v, l]) => (
+        ].map(([v, l, money]) => (
           <GlassCard key={l} hover={false} className="!p-4 text-center">
-            <p className="font-heading text-2xl text-forest-700">{loading ? '—' : v}</p>
+            <p className={`font-heading text-2xl ${money ? 'text-emerald-600' : 'text-forest-700'}`}>{loading ? '—' : v}</p>
             <p className="text-[11px] text-ink-muted mt-0.5">{l}</p>
           </GlassCard>
         ))}
