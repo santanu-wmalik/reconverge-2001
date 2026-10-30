@@ -10,15 +10,18 @@ import { useAuth } from '../../context/AuthContext';
 
 // Base admin nav shared by all admin-portal viewers.
 const BASE_ADMIN_NAV = [
-  { label: 'Dashboard', path: '/admin', icon: '📊' },
-  { label: 'Planning Log', path: '/admin/planning', icon: '📋' },
+  { label: 'Event Dashboard', path: '/admin', icon: '📈' },
   { label: 'Committees', path: '/admin/committees', icon: '👥' },
-  { label: 'Budget', path: '/admin/budget', icon: '💰' },
-  { label: 'Outreach', path: '/admin/outreach', icon: '📡' },
-  { label: 'Event Dashboard', path: '/admin/event-dashboard', icon: '📈' },
-  { label: 'Rooming', path: '/admin/rooming', icon: '🛏️' },
-  { label: 'Meetings', path: '/admin/meetings', icon: '📝' },
 ];
+
+// Hidden for now — pages and routes still exist, tabs just aren't rendered.
+// Restore by moving entries back into BASE_ADMIN_NAV.
+// { label: 'Dashboard (overview)', path: '/admin/overview', icon: '📊' },
+// { label: 'Planning Log', path: '/admin/planning', icon: '📋' },
+// { label: 'Budget', path: '/admin/budget', icon: '💰' },
+// { label: 'Outreach', path: '/admin/outreach', icon: '📡' },
+// { label: 'Rooming', path: '/admin/rooming', icon: '🛏️' },
+// { label: 'Meetings', path: '/admin/meetings', icon: '📝' },
 
 // Permission-gated tabs. Rendered when the signed-in admin holds the named
 // permission (super-admin implicitly holds all).

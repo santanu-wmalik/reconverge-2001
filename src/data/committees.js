@@ -1,6 +1,7 @@
-// Committee data sourced verbatim from the xlsx "Committee Roster" sheet.
-// Committees with no named lead in the sheet are shown as "Lead TBD —
-// volunteer needed". Members lists reflect the sheet's columns exactly.
+// Committee data sourced from the xlsx "Committee Roster" sheet, augmented
+// with facts from the volunteer WhatsApp chat logs (Backup/Volunteer chats*.txt,
+// Jan–Sep 2026). Committees with no named lead are shown as "Lead TBD —
+// volunteer needed".
 
 export const committees = [
   {
@@ -9,8 +10,8 @@ export const committees = [
     shortName: 'OCC',
     emoji: '🎯',
     lead: 'Shyam Nandan',
-    coLead: 'Rajasimha Karanam',
-    members: ['Robin V'],
+    coLead: 'Robin Vetrady',
+    members: [],
     description: 'Master planning, coordination across committees, final decisions.',
   },
   {
@@ -18,8 +19,9 @@ export const committees = [
     name: 'Registration Committee',
     shortName: 'RC',
     emoji: '📋',
-    lead: 'Robin V',
-    members: ['Prith Burman'],
+    lead: 'Robin Vetrady',
+    coLead: 'Rajasimha Karanam',
+    members: [],
     description: 'Alumni list, registration, rooming, travel coordination.',
   },
   {
@@ -27,9 +29,10 @@ export const committees = [
     name: 'Finance Committee',
     shortName: 'FC',
     emoji: '💰',
-    lead: 'Shyam',
-    members: [],
-    description: 'Budget, bank account, payments, audit, financial reporting.',
+    lead: 'Shyam Nandan',
+    coLead: 'Robin Vetrady',
+    members: ['Mahroof (Civil — Calicut, SBI NITC account work)', 'Vinu Joseph (EEE — DGM, SBI)'],
+    description: 'Budget, bank account, payments, audit, financial reporting. Association-of-persons account opened with SBI at the NITC campus branch (Shyam + Mahroof as account holders).',
   },
   {
     id: 'mcc',
@@ -37,27 +40,29 @@ export const committees = [
     shortName: 'MCC',
     emoji: '📢',
     lead: 'Sharmishta',
-    coLead: 'Rajasimha Karanam · Santanu Malik',
-    members: ['Sunder', 'Anuratha'],
-    description: 'Communications, branding, AV content, social media, info packs.',
+    coLead: 'Prithwiraj Barman · Rajasimha Karanam',
+    members: ['Sunder', 'Anuratha', 'Vipin Chandran (logo & t-shirt design)'],
+    description: 'Communications, branding, AV content, social media, info packs. Announcements go out via the WhatsApp Community channel; Sharmishta is also the ICAR/NITC Dean-office liaison for official comms.',
   },
   {
     id: 'afc',
     name: 'Stay & Food Committee',
     shortName: 'AFC',
     emoji: '🏨',
-    lead: 'Lead TBD — volunteer needed',
+    lead: 'Shreeraj',
+    coLead: 'Robin Vetrady',
     members: [],
-    description: 'Hotels, F&B, transport, logistics.',
+    description: 'Hotels, F&B, transport, logistics. Gokulam blocked for Dec 27–28 with group rates and the rooftop reserved for the Dec 28 gala dinner; Taj Calicut ruled out (under renovation). Event management company engaged for on-ground logistics.',
   },
   {
     id: 'ec',
     name: 'Entertainment Committee',
     shortName: 'EC',
     emoji: '🎭',
-    lead: 'Lead TBD — volunteer needed',
+    lead: 'Sharmishta',
+    coLead: 'Jenny',
     members: [],
-    description: 'Program design, artists, event manager, campus coordination.',
+    description: 'Program design, artists, event manager, campus coordination. Venue accessibility (wheelchair-friendly arrangements) flagged as a planning requirement.',
   },
   {
     id: 'sc',
@@ -73,19 +78,19 @@ export const committees = [
     name: 'Giving Back Committee',
     shortName: 'GBC',
     emoji: '🎁',
-    lead: 'Asif ETV',
-    coLead: 'Prith Barman · Dheeraj Buduru',
+    lead: 'Asif ETV · Dheeraj Buduru',
+    coLead: 'Prith Barman · Saurabh',
     members: ['Santanu Malik', 'Anuratha Kalai Chelvain'],
-    description: 'NITC liaison, giving-back project selection and execution. Current focus: Project Cornerstone \u2014 funding the Alumni Guest House at NITC (\u20b92 Cr goal). Share your intent to give from the Give Back tab in My Portal.',
+    description: 'NITC liaison, giving-back project selection and execution. Current focus: Project Cornerstone \u2014 funding the Alumni Guest House at NITC (\u20b92 Cr goal). College mandates all giving back route through NITCAA; international gifts can go via Benevity for tax benefit. Share your intent to give from the Give Back tab in My Portal.',
   },
   {
-    id: 'br',
-    name: 'Branch Representatives',
-    shortName: 'BR',
-    emoji: '🏛️',
-    lead: null,
-    members: [],
-    description: 'Branch-wise outreach, state-wise champions.',
+    id: 'web',
+    name: 'Website & Technology',
+    shortName: 'WEB',
+    emoji: '\ud83d\udcbb',
+    lead: 'Santanu Malik',
+    members: ['Srinath (product owner)', 'Rajasimha Karanam'],
+    description: 'reconverge-2001 website: registration, payments tracking, give-back intents, itineraries, photo gallery, and the admin portal.',
   },
 ];
 
@@ -105,7 +110,7 @@ export const branchRepresentatives = [
 // Leave empty rows so the UI shows open slots rather than fabricated names.
 export const stateChampions = [
   { state: 'Karnataka (Bangalore)', champions: [], status: 'open', note: '' },
-  { state: 'Kerala (in-state)', champions: [], status: 'open', note: 'Needed for campus runs, bank work, NITCAA liaison' },
+  { state: 'Kerala (in-state)', champions: ['Mahroof (Civil — Calicut)'], status: 'active', note: 'Campus runs, bank work (SBI NITC), NITCAA liaison' },
   { state: 'Tamil Nadu (Chennai / Coimbatore)', champions: [], status: 'open', note: '' },
   { state: 'Maharashtra (Mumbai / Pune)', champions: [], status: 'open', note: '' },
   { state: 'Gujarat (Ahmedabad / Vadodara)', champions: [], status: 'open', note: '' },

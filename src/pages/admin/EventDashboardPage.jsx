@@ -2,7 +2,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { pageTransition, staggerContainer, staggerItem } from '../../utils/animationVariants';
 import { formatCurrency, formatNumber, formatPercentage } from '../../utils/formatters';
-import { alumniApi, rsvpApi, orderApi, itineraryApi } from '../../services/api';
+import { Link } from 'react-router-dom';
+import { alumniApi, rsvpApi, orderApi, itineraryApi, publicApi } from '../../services/api';
 import { sponsors } from '../../data/sponsors';
 import { eventSchedule, eventDays } from '../../data/events';
 import { EVENT_CONFIG } from '../../data/constants';
@@ -11,13 +12,14 @@ import Badge from '../../components/ui/Badge';
 import ProgressBar from '../../components/ui/ProgressBar';
 import { isDemoUser } from '../../utils/isDemoUser';
 
-const BATCH_STRENGTH = 350;
+const BATCH_STRENGTH = 358; // per the GB Tracking master list
 const TIER_VALUES = { platinum: 500000, gold: 250000, silver: 100000 };
+const GIVEBACK_GOAL = 20000000; // ₹2 Cr — Project Cornerstone
 
-const giveBackStatusConfig = {
-  active: { variant: 'success', label: 'Active' },
-  planning: { variant: 'gold', label: 'Planning' },
-  discussion: { variant: 'default', label: 'Discussion' },
+const shortINR = (n) => {
+  if (n >= 1e7) return `₹${(n / 1e7).toFixed(2).replace(/\.?0+$/, '')} Cr`;
+  if (n >= 1e5) return `₹${(n / 1e5).toFixed(1).replace(/\.0$/, '')} L`;
+  return `₹${Math.round(n).toLocaleString('en-IN')}`;
 };
 
 export default function EventDashboardPage() {
@@ -25,6 +27,7 @@ export default function EventDashboardPage() {
   const [rsvps, setRsvps] = useState([]);
   const [orders, setOrders] = useState([]);
   const [itineraries, setItineraries] = useState([]);
+  const [giveback, setGiveback] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,11 +36,13 @@ export default function EventDashboardPage() {
       rsvpApi.getAll().catch(() => []),
       orderApi.getAll().catch(() => []),
       itineraryApi.getAll().catch(() => []),
-    ]).then(([alumniData, rsvpData, orderData, itineraryData]) => {
+      publicApi.givebackSummary().catch(() => null),
+    ]).then(([alumniData, rsvpData, orderData, itineraryData, gbData]) => {
       setAlumni(alumniData);
       setRsvps(rsvpData);
       setOrders(orderData);
       setItineraries(itineraryData);
+      setGiveback(gbData);
       setLoading(false);
     });
   }, []);
@@ -177,7 +182,14 @@ export default function EventDashboardPage() {
           { icon: '🛍️', label: 'Merchandise Revenue', value: formatCurrency(orderTotal), sub: `${orderCount} order${orderCount !== 1 ? 's' : ''}` },
           { icon: '🤝', label: 'Sponsorship Raised', value: formatCurrency(sponsorshipTotal), sub: `${sponsors.length} sponsors` },
           { icon: '📅', label: 'Events Scheduled', value: eventSchedule.length, sub: `across ${eventDays.length} days` },
-          { icon: '💛', label: 'Give Back', value: '—', sub: 'Coming soon' },
+          {
+            icon: '💛',
+            label: 'Give Back — Project Cornerstone',
+            value: giveback ? shortINR(giveback.pledged || 0) : '—',
+            sub: giveback
+              ? `${giveback.donors || 0} intents · ${Math.round(((giveback.pledged || 0) / GIVEBACK_GOAL) * 100)}% of ₹2 Cr`
+              : 'of ₹2 Cr goal',
+          },
         ].map((stat) => (
           <motion.div key={stat.label} variants={staggerItem}>
             <GlassCard>
@@ -378,13 +390,55 @@ export default function EventDashboardPage() {
         </GlassCard>
       </div>
 
-      {/* === Give Back === */}
+      {/* === Give Back — Project Cornerstone (live from GB Tracking + website intents) === */}
       <div className="mb-6">
         <h2 className="text-lg font-heading font-bold text-ink mb-4 flex items-center gap-2">
-          <span className="text-gold-700">✦</span> Give Back
+          <span className="text-gold-700">✦</span> Give Back — Project Cornerstone
         </h2>
-        <GlassCard>
-          <p className="text-sm text-ink-soft">We're planning something new for the batch's Give Back initiative — details coming soon…</p>
+        <GlassCard hover={false}>
+          <p className="text-sm text-ink-soft mb-4">
+            Funding the Alumni Guest House at NITC. Contributions route through NITCAA; intents due Dec 1.
+          </p>
+          {giveback ? (
+            <>
+              <div className="flex justify-between text-sm mb-2">
+                <span className="text-ink-soft">Intents to give</span>
+                <span className="text-gold-700 font-semibold">
+                  {shortINR(giveback.pledged || 0)} / ₹2 Cr ({Math.round(((giveback.pledged || 0) / GIVEBACK_GOAL) * 100)}%)
+                </span>
+              </div>
+              <ProgressBar value={giveback.pledged || 0} max={GIVEBACK_GOAL} />
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-5">
+                <div className="text-center p-3 bg-white rounded-xl">
+                  <p className="text-xl font-heading font-bold text-ink">{giveback.donors || 0}</p>
+                  <p className="text-[11px] text-ink-soft mt-1">Intents to give</p>
+                </div>
+                <div className="text-center p-3 bg-white rounded-xl">
+                  <p className="text-xl font-heading font-bold text-gold-700">{giveback.roomsTaken || 0} / 20</p>
+                  <p className="text-[11px] text-ink-soft mt-1">Keystone rooms</p>
+                </div>
+                <div className="text-center p-3 bg-white rounded-xl">
+                  <p className="text-xl font-heading font-bold text-ink">
+                    {(giveback.byBranch || []).filter((b) => b.donors > 0).length}
+                  </p>
+                  <p className="text-[11px] text-ink-soft mt-1">Branches in</p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p className="text-ink-muted text-sm">Live summary unavailable — check the API.</p>
+          )}
+          <div className="flex flex-wrap gap-4 mt-5 pt-4 border-t border-forest-500/15 text-sm">
+            <Link to="/admin/giveback-tracking" className="text-forest-700 font-semibold hover:underline">
+              GB Tracking →
+            </Link>
+            <Link to="/admin/pledges" className="text-forest-700 font-semibold hover:underline">
+              Intents to Give →
+            </Link>
+            <Link to="/project-cornerstone" className="text-forest-700 font-semibold hover:underline">
+              Public campaign page →
+            </Link>
+          </div>
         </GlassCard>
       </div>
     </motion.div>

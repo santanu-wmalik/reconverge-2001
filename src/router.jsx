@@ -184,7 +184,10 @@ export const router = createBrowserRouter([
       {
         element: <AdminLayout />,
         children: [
-          { path: 'admin', element: <SuspenseWrapper><AdminDashboardPage /></SuspenseWrapper> },
+          // Event Dashboard is the admin landing page; the old overview
+          // dashboard stays reachable at /admin/overview (hidden from nav).
+          { path: 'admin', element: <SuspenseWrapper><EventDashboardPage /></SuspenseWrapper> },
+          { path: 'admin/overview', element: <SuspenseWrapper><AdminDashboardPage /></SuspenseWrapper> },
           { path: 'admin/planning', element: <SuspenseWrapper><PlanningLogPage /></SuspenseWrapper> },
           { path: 'admin/committees', element: <SuspenseWrapper><CommitteeManagementPage /></SuspenseWrapper> },
           { path: 'admin/budget', element: <SuspenseWrapper><BudgetPage /></SuspenseWrapper> },
