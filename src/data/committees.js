@@ -60,7 +60,7 @@ export const committees = [
     shortName: 'EC',
     emoji: '🎭',
     lead: 'Sharmishta',
-    coLead: 'Jenny',
+    coLead: 'Jenny · Anuratha',
     members: [],
     description: 'Program design, artists, event manager, campus coordination. Venue accessibility (wheelchair-friendly arrangements) flagged as a planning requirement.',
   },
