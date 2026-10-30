@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 import { alumniApi, rsvpApi, orderApi, itineraryApi, publicApi } from '../../services/api';
 import { sponsors } from '../../data/sponsors';
 import { eventSchedule, eventDays } from '../../data/events';
-import { EVENT_CONFIG } from '../../data/constants';
 import GlassCard from '../../components/ui/GlassCard';
 import Badge from '../../components/ui/Badge';
 import ProgressBar from '../../components/ui/ProgressBar';
@@ -58,6 +57,34 @@ export default function EventDashboardPage() {
   const rsvpCount = realRsvps.length;
   const volunteerCount = realRsvps.filter((r) => r.volunteer).length;
 
+  // RSVPs that have since registered are "converted" (inactive) — only the
+  // remainder is open pipeline. Match by email first, then normalised name.
+  const normName = (s) => String(s || '').toLowerCase().replace(/[^a-z]/g, '');
+  const { pendingRsvps, convertedRsvpCount } = useMemo(() => {
+    const emails = new Set(realAlumni.map((a) => String(a.email || '').toLowerCase()).filter(Boolean));
+    const names = new Set(realAlumni.map((a) => normName(a.name)).filter(Boolean));
+    const pending = realRsvps.filter((r) => {
+      const em = String(r.email || '').toLowerCase();
+      if (em && emails.has(em)) return false;
+      const nm = normName(r.name);
+      if (nm && names.has(nm)) return false;
+      return true;
+    });
+    return { pendingRsvps: pending, convertedRsvpCount: realRsvps.length - pending.length };
+  }, [realAlumni, realRsvps]);
+
+  // Actual registration money — confirmed payments only, straight from the
+  // alumni records (no projections).
+  const paidAlumni = useMemo(
+    () => realAlumni.filter((a) => ['confirmed', 'paid'].includes(String(a.paymentStatus || '').toLowerCase())),
+    [realAlumni]
+  );
+  const collectedRevenue = useMemo(
+    () => paidAlumni.reduce((s, a) => s + (Number(a.paymentAmount) || 0), 0),
+    [paidAlumni]
+  );
+  const unpaidCount = registeredCount - paidAlumni.length;
+
   const orderTotal = orders.reduce((sum, o) => sum + (o.total || 0), 0);
   const orderCount = orders.length;
   const avgOrderValue = orderCount > 0 ? orderTotal / orderCount : 0;
@@ -76,21 +103,12 @@ export default function EventDashboardPage() {
 
   const foodPrefs = useMemo(() => {
     const counts = {};
-    rsvps.forEach((r) => {
+    realRsvps.forEach((r) => {
       const pref = r.foodPreference || 'Unknown';
       counts[pref] = (counts[pref] || 0) + 1;
     });
     return counts;
-  }, [rsvps]);
-
-  const estimatedRevenue = useMemo(() => {
-    const regFee = registeredCount * EVENT_CONFIG.registrationFee;
-    const familyFee = rsvps.reduce((sum, r) => {
-      const fam = parseInt(r.familyJoining) || 0;
-      return sum + fam * EVENT_CONFIG.familyMemberFee;
-    }, 0);
-    return regFee + familyFee;
-  }, [registeredCount, rsvps]);
+  }, [realRsvps]);
 
   // Event popularity from itineraries
   const eventPopularity = useMemo(() => {
@@ -178,7 +196,12 @@ export default function EventDashboardPage() {
       <motion.div variants={staggerContainer} initial="hidden" animate="visible" className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {[
           { icon: '👥', label: 'Registered Alumni', value: registeredCount, sub: `of ${BATCH_STRENGTH} batch` },
-          { icon: '✅', label: 'RSVPs Received', value: rsvpCount, sub: `${volunteerCount} volunteers` },
+          {
+            icon: '✅',
+            label: 'RSVPs Yet to Register',
+            value: pendingRsvps.length,
+            sub: `${convertedRsvpCount} of ${rsvpCount} converted · ${volunteerCount} volunteers`,
+          },
           { icon: '🛍️', label: 'Merchandise Revenue', value: formatCurrency(orderTotal), sub: `${orderCount} order${orderCount !== 1 ? 's' : ''}` },
           { icon: '🤝', label: 'Sponsorship Raised', value: formatCurrency(sponsorshipTotal), sub: `${sponsors.length} sponsors` },
           { icon: '📅', label: 'Events Scheduled', value: eventSchedule.length, sub: `across ${eventDays.length} days` },
@@ -223,16 +246,26 @@ export default function EventDashboardPage() {
             <ProgressBar value={registeredCount} max={BATCH_STRENGTH} />
           </div>
 
-          {/* Estimated revenue */}
+          {/* Actual collections */}
           <div className="flex justify-between items-center py-3 border-t border-forest-500/15">
-            <span className="text-ink-soft text-sm">Estimated Registration Revenue</span>
-            <span className="text-gold-700 font-bold">{formatCurrency(estimatedRevenue)}</span>
+            <span className="text-ink-soft text-sm">Registration Fees Collected</span>
+            <span className="text-gold-700 font-bold">{formatCurrency(collectedRevenue)}</span>
+          </div>
+          <div className="flex justify-between items-center py-3 border-t border-forest-500/15">
+            <span className="text-ink-soft text-sm">Payments Confirmed</span>
+            <span className="text-ink font-semibold">
+              {paidAlumni.length}{unpaidCount > 0 ? ` · ${unpaidCount} pending` : ''}
+            </span>
           </div>
 
-          {/* RSVP stats */}
+          {/* RSVP stats — converted RSVPs are inactive, the rest are pipeline */}
           <div className="flex justify-between items-center py-3 border-t border-forest-500/15">
-            <span className="text-ink-soft text-sm">Total RSVPs</span>
-            <span className="text-ink font-semibold">{rsvpCount}</span>
+            <span className="text-ink-soft text-sm">RSVPs Yet to Register</span>
+            <span className="text-ink font-semibold">{pendingRsvps.length}</span>
+          </div>
+          <div className="flex justify-between items-center py-3 border-t border-forest-500/15">
+            <span className="text-ink-soft text-sm">RSVPs Converted to Registration</span>
+            <span className="text-ink-muted font-semibold">{convertedRsvpCount} of {rsvpCount}</span>
           </div>
           <div className="flex justify-between items-center py-3 border-t border-forest-500/15">
             <span className="text-ink-soft text-sm">Willing Volunteers</span>

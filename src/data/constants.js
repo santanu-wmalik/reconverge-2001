@@ -121,7 +121,7 @@ export const NAV_LINKS_PROTECTED = [
 export const NAV_LINKS_PORTAL = [...NAV_LINKS, ...NAV_LINKS_PROTECTED];
 
 export const STATS = [
-  { label: 'Batch Strength', value: 350, suffix: '+' },
+  { label: 'Batch Strength', value: 358, suffix: '' },
   { label: 'Glorious Years', value: 25, suffix: '' },
   { label: 'Branches', value: 7, suffix: '' },
   { label: 'Days of Reunion', value: 2, suffix: '' },
