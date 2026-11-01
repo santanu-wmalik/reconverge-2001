@@ -212,6 +212,13 @@ export async function computeGivebackSummary() {
     goal: 20000000,
     pledged,
     donors,
+    // Raw website intents (demo users excluded, ANONYMOUS INCLUDED) — an
+    // aggregate only, so anonymity is preserved. The GB Tracking stat cards
+    // use this instead of summing grid rows, which omit anonymous intents.
+    webIntents: {
+      count: pledgePool.length,
+      amount: pledgePool.reduce((s, x) => s + (x.amount > 0 ? x.amount : 0), 0),
+    },
     roomsTaken: Math.min(20, tiers.keystone.count),
     tiers,
     byBranch: Array.from(byBranchMap.values()).filter((b) => b.branch !== 'Other' || b.donors > 0),

@@ -268,7 +268,8 @@ const COLUMNS = [
   ['phone',    'Phone',       'px-2 py-2'],
   ['email',    'Email',       'px-2 py-2'],
   ['poc',      'POC',         'px-2 py-2 w-[42px]'],
-  ['commit',   'Commit (L)',  'px-2 py-2 text-right w-[78px]'],
+  ['intentweb', 'Intent-Web', 'px-2 py-2 text-right w-[70px]'],
+  ['commit',   'Soft-Commit', 'px-2 py-2 text-right w-[78px]'],
   ['note',     'Last note',   'px-2 py-2'],
 ];
 
@@ -287,7 +288,8 @@ const sortVal = (r, key) => {
     case 'phone':      return (r.phone || r.live?.phone || '').toLowerCase();
     case 'email':      return (r.live?.email || '').toLowerCase();
     case 'poc':        return (r.poc || '').trim().toLowerCase();
-    case 'commit':     return commitOf(r);
+    case 'intentweb':  return Number(r.intentAmount) > 0 ? Number(r.intentAmount) / 1e5 : (yes(r.intentSubmitted) ? 0.01 : 0);
+    case 'commit':     return Number(r.commitLakhs) > 0 ? Number(r.commitLakhs) : 0;
     case 'match':      return (r.companyMatch || '').toLowerCase();
     case 'intent':     return yes(r.intentSubmitted) ? 1 : 0;
     case 'sent':       return yes(r.moneySent) ? 1 : 0;
@@ -329,6 +331,7 @@ export default function GiveBackTrackingPage() {
   const [pageSize, setPageSize] = useState(25);
   const [liveModal, setLiveModal] = useState(null); // row whose registration popup is open
   const [roster, setRoster] = useState([]); // registered alumni, for the name combobox
+  const [summary, setSummary] = useState(null); // public summary — intent aggregates incl. anonymous
   // Column sort: { key, dir } — dir 1 asc, -1 desc. null = the default
   // order: website intents first, then biggest soft commit.
   const [sort, setSort] = useState(null);
@@ -340,6 +343,7 @@ export default function GiveBackTrackingPage() {
       .then(setRows)
       .catch((err) => setError(err.message || 'Could not load the tracker'))
       .finally(() => setLoading(false));
+    publicApi.givebackSummary().then(setSummary).catch(() => {});
     gbTrackingApi.roster().then(setRoster).catch(() => {
       // Older API without the roster route — fall back to the public roster
       // (no registration ids there).
@@ -424,11 +428,18 @@ export default function GiveBackTrackingPage() {
       assigned: rows.filter((r) => (r.poc || '').trim()).length,
       committed: committed.length,
       commitTotal: committed.reduce((s, r) => s + commitOf(r), 0),
-      intents: rows.filter((r) => yes(r.intentSubmitted)).length,
-      intentTotal: rows.reduce((s, r) => s + (Number(r.intentAmount) > 0 ? Number(r.intentAmount) / 1e5 : 0), 0),
+      // Prefer the server aggregate — it includes ANONYMOUS intents, which
+      // the grid rows deliberately omit. Grid-derived numbers are the
+      // fallback while the summary loads.
+      intents: summary?.webIntents
+        ? summary.webIntents.count
+        : rows.filter((r) => yes(r.intentSubmitted)).length,
+      intentTotal: summary?.webIntents
+        ? summary.webIntents.amount / 1e5
+        : rows.reduce((s, r) => s + (Number(r.intentAmount) > 0 ? Number(r.intentAmount) / 1e5 : 0), 0),
       sent: rows.filter((r) => yes(r.moneySent)).length,
     };
-  }, [rows]);
+  }, [rows, summary]);
 
   // POC leaderboard — shared POCs ("Asif / Dheeraj") credit BOTH in full.
   const pocBoard = useMemo(() => {
@@ -681,8 +692,11 @@ export default function GiveBackTrackingPage() {
                     <td className="px-2 py-2 text-xs text-ink-muted">
                       {filtered.filter((r) => (r.poc || '').trim()).length} with POC
                     </td>
+                    <td className="px-2 py-2 text-right tabular-nums text-emerald-600">
+                      {lakhs(filtered.reduce((s, r) => s + (Number(r.intentAmount) > 0 ? Number(r.intentAmount) / 1e5 : 0), 0))}
+                    </td>
                     <td className="px-2 py-2 text-right tabular-nums text-forest-700">
-                      {lakhs(filtered.reduce((s, r) => s + commitOf(r), 0))}
+                      {lakhs(filtered.reduce((s, r) => s + (Number(r.commitLakhs) > 0 ? Number(r.commitLakhs) : 0), 0))}
                     </td>
                     <td className="px-2 py-2 text-xs text-ink-muted">
                       {filtered.filter((r) => (r.comments || '').trim()).length} with notes
@@ -859,13 +873,20 @@ function RowPair({ row, open, onToggle, onSaved, onDeleted, onShowLive, roster }
               ? <span className="inline-block text-[11px] font-semibold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full" title="Needs caller — has a phone number, no commitment yet, and no outreach point of contact assigned">NC</span>
               : '—'}
         </td>
+        {/* Intent-Web — the amount from the website intent to give; "ask"
+            flags people who haven't filed one yet. */}
         <td className="px-2 py-2 text-right tabular-nums whitespace-nowrap">
-          {commitOf(row) > 0
-            ? <span className="font-semibold text-forest-700" title={Number(row.commitLakhs) > 0 ? 'Soft commit from outreach' : 'Amount from the website intent to give'}>{lakhs(commitOf(row))}</span>
+          {Number(row.intentAmount) > 0
+            ? <span className="font-semibold text-emerald-600" title="Amount from the website intent to give">{lakhs(Number(row.intentAmount) / 1e5)}</span>
+            : yes(row.intentSubmitted)
+              ? <span className="text-forest-700" title="Intent to give submitted on the website">✓</span>
+              : <span className="inline-block text-[11px] font-semibold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full" title="No intent to give on the website yet — ask them to file one">ask</span>}
+        </td>
+        {/* Soft-Commit — from the imported sheet or entered by the POC after a call */}
+        <td className="px-2 py-2 text-right tabular-nums whitespace-nowrap">
+          {Number(row.commitLakhs) > 0
+            ? <span className="font-semibold text-forest-700" title="Soft commit from outreach (sheet / POC call)">{lakhs(Number(row.commitLakhs))}</span>
             : '—'}
-          {yes(row.intentSubmitted) && (
-            <span className="ml-1 text-forest-700" title="Intent to give submitted on the website">✓</span>
-          )}
         </td>
         <td className="px-2 py-2 max-w-0 w-[32%]">
           <span className="block truncate text-ink-muted" title={row.comments || ''}>{row.comments || '—'}</span>
