@@ -422,15 +422,18 @@ export default function GiveBackTrackingPage() {
   );
 
   const stats = useMemo(() => {
-    // Soft commit, falling back to the website intent amount when the sheet
-    // is blank — the same rule the Soft-Commit column displays, so the card,
-    // the column, and its footer total all agree.
+    // The cards show the SAME numbers as the home and campaign pages: the
+    // server summary (sheet commit, else matched web intent, plus anonymous
+    // and off-tracker intents). The grid-row sum is the fallback while it
+    // loads — it runs slightly lower because anonymous rows are hidden here.
     const committed = rows.filter((r) => commitOf(r) > 0);
     return {
       total: rows.length,
       assigned: rows.filter((r) => (r.poc || '').trim()).length,
-      committed: committed.length,
-      commitTotal: committed.reduce((s, r) => s + commitOf(r), 0),
+      committed: summary?.donors ?? committed.length,
+      commitTotal: summary?.pledged != null
+        ? summary.pledged / 1e5
+        : committed.reduce((s, r) => s + commitOf(r), 0),
       // Prefer the server aggregate — it includes ANONYMOUS intents, which
       // the grid rows deliberately omit. Grid-derived numbers are the
       // fallback while the summary loads.

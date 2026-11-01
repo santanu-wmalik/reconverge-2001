@@ -100,6 +100,7 @@ const RemindersPage = lazyWithReload(() => import('./pages/admin/RemindersPage')
 const AlumniRegistrationsPage = lazyWithReload(() => import('./pages/admin/AlumniRegistrationsPage'));
 const AdminPledgesPage = lazyWithReload(() => import('./pages/admin/AdminPledgesPage'));
 const GiveBackTrackingPage = lazyWithReload(() => import('./pages/admin/GiveBackTrackingPage'));
+const UserActivityPage = lazyWithReload(() => import('./pages/admin/UserActivityPage'));
 
 function PageLoader() {
   return (
@@ -233,6 +234,7 @@ export const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { path: 'admin/users', element: <SuspenseWrapper><UsersPage /></SuspenseWrapper> },
+          { path: 'admin/user-activity', element: <SuspenseWrapper><UserActivityPage /></SuspenseWrapper> },
         ],
       },
     ],

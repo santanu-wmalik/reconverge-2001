@@ -7,6 +7,7 @@ import BackToTop from '../shared/BackToTop';
 import AnnouncementsBanner from '../shared/AnnouncementsBanner';
 import ImpersonationBanner from './ImpersonationBanner';
 import { useAuth } from '../../context/AuthContext';
+import ActivityPing from '../shared/ActivityPing';
 
 // Base admin nav shared by all admin-portal viewers.
 const BASE_ADMIN_NAV = [
@@ -36,6 +37,7 @@ const PERMISSION_NAV = [
 // Super-admin-only extras. Rendered only when `isSuperAdmin`.
 const SUPER_ADMIN_NAV = [
   { label: 'Users', path: '/admin/users', icon: '🔑' },
+  { label: 'User Activity', path: '/admin/user-activity', icon: '📉' },
 ];
 
 // Admin shell — same cream / forest / gold look as the public site, with a
@@ -53,6 +55,7 @@ export default function AdminLayout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-cream-100 text-ink">
+      <ActivityPing />
       <div className="flex flex-col min-h-screen">
         <ImpersonationBanner />
         <Header />

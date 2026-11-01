@@ -9,6 +9,7 @@ import BackToTop from '../shared/BackToTop';
 import AnnouncementsBanner from '../shared/AnnouncementsBanner';
 import { NAV_LINKS_PROTECTED } from '../../data/constants';
 import { useAuth } from '../../context/AuthContext';
+import ActivityPing from '../shared/ActivityPing';
 
 // Authenticated portal shell — same cream / forest / gold look as the public
 // site (no `dark` root class), so signed-in pages match the home page.
@@ -24,6 +25,7 @@ export default function PortalLayout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-cream-100 text-ink">
+      <ActivityPing />
       <div className="flex flex-col min-h-screen">
         <ImpersonationBanner />
         <Header />

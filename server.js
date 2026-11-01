@@ -29,6 +29,7 @@ import { mountReminders } from './server/reminders.js';
 import { mountPublic } from './server/public.js';
 import { mountPledges } from './server/pledges.js';
 import { mountGivebackOutreach } from './server/givebackOutreach.js';
+import { mountActivity, activityMiddleware } from './server/activity.js';
 import { seedData } from './server/seed-data.mjs';
 import { tables, coerce } from './server/columns.js';
 
@@ -112,6 +113,11 @@ async function main() {
 
   // Gate every other /api/* call by token + role.
   app.use(authMiddleware);
+
+  // Record authenticated write actions (fire-and-forget) for the admin
+  // User Activity dashboard; serves /api/admin/user-activity (super-admin).
+  app.use(activityMiddleware);
+  mountActivity(app);
 
   // Mount the per-resource CRUD endpoints. Order doesn't matter; each
   // mount is self-contained.

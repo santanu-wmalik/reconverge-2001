@@ -8,6 +8,7 @@ import crypto from 'crypto';
 import { query } from './db.js';
 import { tables, coerce, rowToJson } from './columns.js';
 import { sendPasswordResetEmail } from './mailer.js';
+import { logActivity } from './activity.js';
 
 const tokens = new Map(); // token → { userId, alumniId, role, email, issuedAt }
 const newToken = () => crypto.randomBytes(24).toString('hex');
@@ -105,6 +106,11 @@ export function mountAuth(app) {
         role: userRow.role || 'alumni',
         permissions: perms,
       };
+      logActivity({
+        userId: userRow.id, email: userRow.email, role: userRow.role || 'alumni', action: 'Signed in',
+        ip: String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress,
+        userAgent: req.headers['user-agent'],
+      });
       res.json({ user, token });
     } catch (err) { next(err); }
   });
@@ -189,6 +195,11 @@ export function mountAuth(app) {
 
       const token = newToken();
       tokens.set(token, { userId, alumniId, role: 'alumni', permissions: {}, email, issuedAt: Date.now() });
+      logActivity({
+        userId, email, role: 'alumni', action: 'Registered account',
+        ip: String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || req.socket?.remoteAddress,
+        userAgent: req.headers['user-agent'],
+      });
       res.status(201).json({
         user: { ...rowToJson('alumni', createdAlumni), role: 'alumni', permissions: {} },
         token,
@@ -204,7 +215,11 @@ export function mountAuth(app) {
   // ── POST /api/auth/logout ──────────────────────────────────────────────
   app.post('/api/auth/logout', (req, res) => {
     const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '');
-    if (token) tokens.delete(token);
+    if (token) {
+      const s = tokens.get(token);
+      if (s) logActivity({ userId: s.userId, email: s.email, role: s.role, action: 'Signed out' });
+      tokens.delete(token);
+    }
     res.json({ ok: true });
   });
 

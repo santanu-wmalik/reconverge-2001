@@ -134,6 +134,21 @@ export const pledgeApi = {
     request('/pledges', { method: 'POST', body: JSON.stringify(data) }),
 };
 
+// --- Admin: user activity dashboard (super-admin) ---
+export const activityApi = {
+  list: ({ from, to, user } = {}) => {
+    const p = new URLSearchParams();
+    if (from) p.set('from', from);
+    if (to) p.set('to', to);
+    if (user) p.set('user', user);
+    const qs = p.toString();
+    return request(`/admin/user-activity${qs ? `?${qs}` : ''}`);
+  },
+  // Fire-and-forget page-view ping; failures are deliberately swallowed.
+  pageView: (path) =>
+    request('/activity/page', { method: 'POST', body: JSON.stringify({ path }) }).catch(() => {}),
+};
+
 export const adminApi = {
   verifierNames: () => request('/admin/verifier-names'),
   sendReminder: (payload) =>

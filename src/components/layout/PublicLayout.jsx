@@ -7,6 +7,7 @@ import AnnouncementsBanner from '../shared/AnnouncementsBanner';
 import ImpersonationBanner from './ImpersonationBanner';
 import WidgetRail from '../shared/WidgetRail';
 import ShareRail from '../shared/ShareRail';
+import ActivityPing from '../shared/ActivityPing';
 
 // Public shell — cream paper theme (rect1an style). The old full-page
 // BackgroundSlideshow + bottom PhotoRoll are gone: the hero carries its own
@@ -20,6 +21,7 @@ export default function PublicLayout() {
   const isLanding = useLocation().pathname === '/';
   return (
     <div className="min-h-screen flex flex-col bg-cream-100 text-ink">
+      <ActivityPing />
       <div className="flex flex-col min-h-screen">
         <ImpersonationBanner />
         <Header />

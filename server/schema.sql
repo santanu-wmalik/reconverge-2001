@@ -323,3 +323,23 @@ CREATE TABLE IF NOT EXISTS giveback_outreach (
 ALTER TABLE giveback_outreach ADD COLUMN IF NOT EXISTS matched_alumni_id TEXT;
 -- Stored alongside matched_alumni_id as a human-readable audit reference.
 ALTER TABLE giveback_outreach ADD COLUMN IF NOT EXISTS matched_registration_id TEXT;
+
+-- ── User activity log (admin "User Activity" dashboard) ───────────────────
+-- Fire-and-forget event log: logins and authenticated write actions.
+CREATE TABLE IF NOT EXISTS activity_log (
+  id         BIGSERIAL PRIMARY KEY,
+  user_id    TEXT,
+  email      TEXT,
+  role       TEXT,
+  action     TEXT NOT NULL,
+  method     TEXT,
+  path       TEXT,
+  detail     TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_activity_log_created ON activity_log (created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_activity_log_email   ON activity_log (email);
+
+-- Activity log v2 — request origin for the Usage Audit dashboard.
+ALTER TABLE activity_log ADD COLUMN IF NOT EXISTS ip TEXT;
+ALTER TABLE activity_log ADD COLUMN IF NOT EXISTS user_agent TEXT;
