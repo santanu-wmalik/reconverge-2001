@@ -880,7 +880,9 @@ function RowPair({ row, open, onToggle, onSaved, onDeleted, onShowLive, roster }
             ? <span className="font-semibold text-emerald-600" title="Amount from the website intent to give">{lakhs(Number(row.intentAmount) / 1e5)}</span>
             : yes(row.intentSubmitted)
               ? <span className="text-forest-700" title="Intent to give submitted on the website">✓</span>
-              : <span className="inline-block text-[11px] font-semibold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full" title="No intent to give on the website yet — ask them to file one">ask</span>}
+              : Number(row.commitLakhs) > 0
+                ? <span className="inline-block text-[11px] font-semibold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full" title="Soft commit made but no intent to give on the website yet — follow up to get one filed">follow-up</span>
+                : '—'}
         </td>
         {/* Soft-Commit — from the imported sheet or entered by the POC after a call */}
         <td className="px-2 py-2 text-right tabular-nums whitespace-nowrap">
