@@ -60,7 +60,6 @@ const STATUS_CHIP = {
 // Co. match and website intent live in the expanded editor only — they are
 // not grid columns.
 const EDIT_FIELDS = [
-  ['poc', 'Outreach point of contact', 'e.g. Dheeraj / Asif'],
   ['commitLakhs', 'Soft commit (₹ Lakhs)', 'e.g. 5'],
   ['companyMatch', 'Company match', 'e.g. Yes — Google'],
   ['intentSubmitted', 'Intent on website', 'Yes / No'],
@@ -212,6 +211,20 @@ function RowEditor({ row, onSaved, onCancel, onDeleted, roster }) {
           onChange={(v, id) => setDraft((p) => ({ ...p, fullName: v, matchedAlumniId: id }))}
           roster={roster}
         />
+        {/* POC — a registered user picked from the dropdown (free text still
+            allowed for shared assignments like "Asif / Dheeraj"). */}
+        <div>
+          <Input
+            label="Outreach point of contact"
+            placeholder="Pick a registered user…"
+            value={draft.poc}
+            onChange={(e) => set('poc', e.target.value)}
+            list="poc-roster-list"
+          />
+          <datalist id="poc-roster-list">
+            {roster.map((r) => <option key={r.id} value={r.name} />)}
+          </datalist>
+        </div>
         {EDIT_FIELDS.map(([k, label, ph]) => (
           <Input key={k} label={label} placeholder={ph} value={draft[k]} onChange={(e) => set(k, e.target.value)} />
         ))}
@@ -326,6 +339,7 @@ export default function GiveBackTrackingPage() {
   const [openId, setOpenId] = useState(null);
   const [adding, setAdding] = useState(false);
   const [showLog, setShowLog] = useState(false); // change-history popup
+  const [boardAll, setBoardAll] = useState(false); // leaderboard: top 10 vs everyone
   const [newName, setNewName] = useState('');
   const [newBranch, setNewBranch] = useState('');
   const [page, setPage] = useState(0);
@@ -333,6 +347,7 @@ export default function GiveBackTrackingPage() {
   const [liveModal, setLiveModal] = useState(null); // row whose registration popup is open
   const [roster, setRoster] = useState([]); // registered alumni, for the name combobox
   const [summary, setSummary] = useState(null); // public summary — intent aggregates incl. anonymous
+  const [logEntries, setLogEntries] = useState([]); // change history — edit counts per caller
   // Column sort: { key, dir } — dir 1 asc, -1 desc. null = the default
   // order: website intents first, then biggest soft commit.
   const [sort, setSort] = useState(null);
@@ -345,6 +360,7 @@ export default function GiveBackTrackingPage() {
       .catch((err) => setError(err.message || 'Could not load the tracker'))
       .finally(() => setLoading(false));
     publicApi.givebackSummary().then(setSummary).catch(() => {});
+    gbTrackingApi.log().then(setLogEntries).catch(() => {});
     gbTrackingApi.roster().then(setRoster).catch(() => {
       // Older API without the roster route — fall back to the public roster
       // (no registration ids there).
@@ -453,16 +469,39 @@ export default function GiveBackTrackingPage() {
     const m = new Map();
     for (const r of rows) {
       for (const name of pocNamesOf(r)) {
-        if (!m.has(name)) m.set(name, { name, assigned: 0, commits: 0, total: 0 });
+        if (!m.has(name)) m.set(name, { name, assigned: 0, commits: 0, total: 0, done: 0 });
         const e = m.get(name);
         e.assigned += 1;
         const c = commitOf(r);
         if (c > 0) { e.commits += 1; e.total += c; }
+        if (yes(r.moneySent)) e.done += 1; // closed — money sent to NITCAA
       }
     }
     return Array.from(m.values()).sort((a, b) => b.total - a.total || b.commits - a.commits || a.name.localeCompare(b.name));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows]);
+
+  // Edits made on this grid, credited to each caller by matching the caller's
+  // (informal) name against the change-log author's registered full name.
+  const changesByCaller = useMemo(() => {
+    const authors = new Map(); // author full name (lower) -> edit count
+    for (const e of logEntries) {
+      const k = String(e.author || '').toLowerCase().trim();
+      if (k) authors.set(k, (authors.get(k) || 0) + 1);
+    }
+    const m = new Map();
+    for (const p of pocBoard) {
+      const toks = p.name.toLowerCase().split(/\s+/).filter(Boolean);
+      if (!toks.length || p.name.toLowerCase() === 'self') { m.set(p.name, null); continue; }
+      let n = 0;
+      for (const [a, c] of authors) {
+        const at = a.split(/\s+/);
+        if (toks.every((t) => at.some((w) => w === t || w.startsWith(t)))) n += c;
+      }
+      m.set(p.name, n);
+    }
+    return m;
+  }, [logEntries, pocBoard]);
 
   const patchRow = (updated) => {
     const before = rows.find((r) => r.id === updated.id);
@@ -543,32 +582,68 @@ export default function GiveBackTrackingPage() {
           <div className="flex flex-wrap items-baseline justify-between gap-2 mb-3">
             <p className="nav-caps text-[10px] text-ink-muted">Caller leaderboard</p>
             <p className="text-[11px] text-ink-muted">
-              Shared assignments credit every named caller in full. Click a card to filter the grid{pocCard ? ' — click again to clear' : ''}.
+              Shared assignments credit every named caller in full. Click a row to filter the grid{pocCard ? ' — click again to clear' : ''}.
             </p>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-3">
-            {pocBoard.map((p, i) => (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-[10px] uppercase tracking-wider text-ink-muted border-b border-forest-500/15">
+                  <th className="px-2 py-2 w-[36px]">#</th>
+                  <th className="px-2 py-2">Caller</th>
+                  <th className="px-2 py-2 text-right">Raised</th>
+                  <th className="px-2 py-2 text-right">Commits</th>
+                  <th className="px-2 py-2 text-right">Done</th>
+                  <th className="px-2 py-2 text-right">Assigned</th>
+                  <th className="px-2 py-2 text-right" title="Edits made on this grid by the caller">Changes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(boardAll ? pocBoard : pocBoard.slice(0, 10)).map((p, i) => {
+                  const winner = i === 0 && p.total > 0;
+                  const edits = changesByCaller.get(p.name);
+                  return (
+                    <tr
+                      key={p.name}
+                      onClick={() => setPocCard((c) => (c === p.name ? null : p.name))}
+                      aria-pressed={pocCard === p.name}
+                      className={`cursor-pointer border-b border-forest-500/10 transition ${
+                        pocCard === p.name
+                          ? 'bg-forest-500/10 ring-1 ring-inset ring-forest-600/30'
+                          : winner
+                            ? 'bg-gold-500/10 hover:bg-gold-500/20'
+                            : 'hover:bg-cream-100'
+                      }`}
+                    >
+                      <td className="px-2 py-2 text-xs text-ink-muted tabular-nums">{winner ? '🏆' : i + 1}</td>
+                      {/* First name only — the full registered name is the tooltip. */}
+                      <td className={`px-2 py-2 truncate max-w-[180px] ${winner ? 'font-bold text-gold-700' : 'font-semibold text-ink'}`} title={p.name}>
+                        {p.name.split(/\s+/)[0]}
+                      </td>
+                      <td className={`px-2 py-2 text-right font-heading tabular-nums ${winner ? 'text-lg text-gold-700' : 'text-forest-700'}`}>{lakhs(p.total)}</td>
+                      <td className="px-2 py-2 text-right tabular-nums">{p.commits || '—'}</td>
+                      <td className="px-2 py-2 text-right tabular-nums">
+                        {p.done > 0 ? <span className="font-semibold text-emerald-700">✓ {p.done}</span> : '—'}
+                      </td>
+                      <td className="px-2 py-2 text-right tabular-nums text-ink-soft">{p.assigned}</td>
+                      <td className="px-2 py-2 text-right tabular-nums text-ink-soft">{edits ? edits : '—'}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          {pocBoard.length > 10 && (
+            <div className="text-center mt-2">
               <button
                 type="button"
-                key={p.name}
-                onClick={() => setPocCard((c) => (c === p.name ? null : p.name))}
-                aria-pressed={pocCard === p.name}
-                className={`text-left rounded-xl px-3.5 py-3 border transition ${
-                  pocCard === p.name
-                    ? 'bg-forest-500/10 border-forest-600/50 ring-1 ring-forest-600/30'
-                    : 'bg-cream-100 border-forest-500/10 hover:border-forest-500/40'
-                }`}
+                onClick={() => setBoardAll((a) => !a)}
+                className="text-xs font-semibold text-forest-700 hover:text-forest-800 underline underline-offset-2"
               >
-                <p className="text-sm font-semibold text-ink truncate">
-                  {i === 0 && p.total > 0 ? '🏆 ' : ''}{p.name}
-                </p>
-                <p className="font-heading text-xl text-forest-700 mt-0.5">{lakhs(p.total)}</p>
-                <p className="text-[11px] text-ink-muted mt-0.5">
-                  {p.commits} commit{p.commits === 1 ? '' : 's'} · {p.assigned} assigned
-                </p>
+                {boardAll ? '▲ Show top 10' : `▼ Show all ${pocBoard.length} callers`}
               </button>
-            ))}
-          </div>
+            </div>
+          )}
         </GlassCard>
       )}
 

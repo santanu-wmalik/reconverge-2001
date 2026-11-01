@@ -40,18 +40,24 @@ const pct = (a, b) => (b ? Math.min(100, (a / b) * 100) : 0);
 
 const TIERS = [
   {
-    id: 'keystone', name: 'Keystone Circle', min: 1000000, seats: 20, color: C.tKey,
-    perks: ['Room naming rights (20 rooms)', 'Stage felicitation', 'Free Reunion Memento — shipped to you if you cannot attend'],
+    id: 'keystone', name: 'Keystone Circle', min: 1000000, seats: 20, color: C.tKey, icon: '🏛️',
+    perks: ['Room naming rights', 'Stage felicitation', 'Free Reunion Memento — shipped to you if you cannot attend'],
   },
   {
-    id: 'pillar', name: 'Pillar Circle', min: 500000, color: C.tPillar,
+    id: 'pillar', name: 'Pillar Circle', min: 500000, color: C.tPillar, icon: '🏆',
     perks: ['Name on the donor wall', 'Stage felicitation', 'Free Reunion Memento — shipped to you if you cannot attend'],
   },
   {
-    id: 'foundation', name: 'Foundation Circle', min: 200000, color: C.tFound,
+    id: 'foundation', name: 'Foundation Circle', min: 200000, color: C.tFound, icon: '🌟',
     perks: ['Name on the donor wall', 'Free Reunion Memento — shipped to you if you cannot attend'],
   },
-  { id: 'supporter', name: 'Any amount', min: 0, color: C.tOther, hidden: true },
+  {
+    // Card only — the aggregate tier table/bar keeps the server's buckets
+    // (keystone / pillar / foundation / supporter), so this is excluded there.
+    id: 'memento', name: 'Supporter Circle', min: 100000, color: '#a0785a', icon: '🎁', cardOnly: true,
+    perks: ['Free Reunion Memento — shipped to you if you cannot attend', 'Every rupee counts toward the ₹2 Cr goal'],
+  },
+  { id: 'supporter', name: 'Any amount', min: 0, color: C.tOther, icon: '🤝', hidden: true },
 ];
 
 const GB_FAQS = FAQ_DATA.filter((f) => f.category === 'Give Back');
@@ -231,7 +237,7 @@ export default function GiveBackCampaignPage() {
                 <h3 className="text-xl font-bold" style={serif}>Where the money comes from</h3>
                 <p className="text-[13px] mb-4" style={{ color: C.muted }}>Share of total intents to give, by tier.</p>
                 <div className="flex h-[34px] rounded-lg overflow-hidden" style={{ background: '#efe9e1' }}>
-                  {TIERS.map((t) => (
+                  {TIERS.filter((t) => !t.cardOnly).map((t) => (
                     <div
                       key={t.id}
                       title={`${t.name}: ${short(tiers[t.id]?.amount || 0)}`}
@@ -250,12 +256,17 @@ export default function GiveBackCampaignPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {TIERS.map((t) => {
+                    {TIERS.filter((t) => !t.cardOnly).map((t) => {
                       const r = tiers[t.id] || { count: 0, amount: 0 };
                       return (
                         <tr key={t.id}>
                           <td className="py-2 px-1 border-b" style={{ borderColor: C.line }}>
-                            <span className="inline-block w-2.5 h-2.5 rounded-full mr-2" style={{ background: t.color }} />
+                            {/* One badge: the tier icon on its bar color. */}
+                            <span
+                              className="inline-flex items-center justify-center w-6 h-6 rounded-full mr-2 text-[12px] align-middle"
+                              style={{ background: t.color }}
+                              aria-hidden="true"
+                            >{t.icon}</span>
                             {t.id === 'supporter' ? 'Any amount (< ₹2 L)' : <>{t.name} <span className="text-xs" style={{ color: C.muted }}>{short(t.min)}+</span></>}
                           </td>
                           <td className="py-2 px-1 border-b text-right tabular-nums" style={{ borderColor: C.line }}>{r.count}</td>
@@ -386,12 +397,14 @@ export default function GiveBackCampaignPage() {
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-7">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-7">
             {TIERS.filter((t) => !t.hidden).map((t) => {
               const left = t.seats ? Math.max(0, t.seats - roomsTaken) : null;
               return (
                 <Card key={t.id} className="flex flex-col" style={{ borderTop: `5px solid ${t.color}` }}>
-                  <p className="text-[12px] font-bold uppercase tracking-[0.12em]" style={{ color: t.color }}>{t.name}</p>
+                  <p className="text-[12px] font-bold uppercase tracking-[0.12em]" style={{ color: t.color }}>
+                    <span className="text-xl mr-1.5 align-middle" aria-hidden="true">{t.icon}</span>{t.name}
+                  </p>
                   <p className="font-bold text-[28px] my-2" style={serif}>{inr(t.min)}</p>
                   <p className="text-xs font-semibold mb-3 min-h-[16px]" style={{ color: C.maroon }}>
                     {t.seats ? (left > 0 ? `${left} of ${t.seats} rooms left · first come, first served` : 'All rooms taken') : ''}
