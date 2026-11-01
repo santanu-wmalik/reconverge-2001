@@ -1052,7 +1052,7 @@ function ChangeLogModal({ onClose }) {
                 {slice.map((e) => (
                   <tr key={e.id} className="border-t border-forest-500/10 align-top">
                     <td className="px-5 py-2 whitespace-nowrap text-xs text-ink-muted tabular-nums">{fmtWhen(e.at)}</td>
-                    <td className="px-2 py-2 text-xs text-ink-soft max-w-[160px] truncate" title={e.author || ''}>{e.author || '—'}</td>
+                    <td className="px-2 py-2 text-xs text-ink-soft max-w-[160px] truncate" title={e.authorEmail || e.author || ''}>{e.author || '—'}</td>
                     <td className="px-2 py-2 font-medium text-ink max-w-[180px] truncate" title={e.fullName || ''}>{e.fullName || '—'}</td>
                     <td className="px-2 py-2">
                       <span className={`inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded-full mr-1.5 ${LOG_ACTION_CHIP[e.action] || 'text-ink-soft bg-cream-200'}`}>

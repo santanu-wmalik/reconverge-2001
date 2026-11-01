@@ -519,15 +519,21 @@ export function mountGivebackOutreach(app) {
   app.get('/api/giveback-outreach/log', async (req, res, next) => {
     try {
       if (!guard(req, res)) return;
+      // Author is stored as the session email; show the registered full name.
       const r = await query(
-        `SELECT id, row_id, full_name, author, action, field, old_value, new_value, created_at
-           FROM giveback_outreach_log ORDER BY created_at DESC, id DESC LIMIT 2000`
+        `SELECT l.id, l.row_id, l.full_name, l.author, a.name AS author_name,
+                l.action, l.field, l.old_value, l.new_value, l.created_at
+           FROM giveback_outreach_log l
+           LEFT JOIN users u ON LOWER(u.email) = LOWER(l.author)
+           LEFT JOIN alumni a ON a.id = u.alumni_id
+          ORDER BY l.created_at DESC, l.id DESC LIMIT 2000`
       );
       res.json(r.rows.map((x) => ({
         id: Number(x.id),
         rowId: x.row_id,
         fullName: x.full_name,
-        author: x.author,
+        author: x.author_name || x.author,
+        authorEmail: x.author,
         action: x.action,
         field: x.field,
         oldValue: x.old_value,
