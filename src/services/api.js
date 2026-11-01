@@ -119,6 +119,7 @@ export const publicApi = {
 export const gbTrackingApi = {
   list: () => request('/giveback-outreach'),
   roster: () => request('/giveback-outreach/roster'),
+  log: () => request('/giveback-outreach/log'),
   create: (data) => request('/giveback-outreach', { method: 'POST', body: JSON.stringify(data) }),
   update: (id, data) => request(`/giveback-outreach/${id}`, { method: 'PATCH', body: JSON.stringify(data) }),
   remove: (id) => request(`/giveback-outreach/${id}`, { method: 'DELETE' }),

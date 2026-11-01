@@ -343,3 +343,19 @@ CREATE INDEX IF NOT EXISTS idx_activity_log_email   ON activity_log (email);
 -- Activity log v2 — request origin for the Usage Audit dashboard.
 ALTER TABLE activity_log ADD COLUMN IF NOT EXISTS ip TEXT;
 ALTER TABLE activity_log ADD COLUMN IF NOT EXISTS user_agent TEXT;
+
+-- GB Tracking change history — one row per changed field on the outreach
+-- grid (plus one for each add/delete). Powers the "Changes" popup on the
+-- Give Back Tracking page. Append-only.
+CREATE TABLE IF NOT EXISTS giveback_outreach_log (
+  id         BIGSERIAL PRIMARY KEY,
+  row_id     TEXT,
+  full_name  TEXT,
+  author     TEXT,
+  action     TEXT NOT NULL,          -- added | updated | deleted
+  field      TEXT,                   -- camelCase API field name (updates only)
+  old_value  TEXT,
+  new_value  TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+CREATE INDEX IF NOT EXISTS idx_gbo_log_created ON giveback_outreach_log (created_at DESC);

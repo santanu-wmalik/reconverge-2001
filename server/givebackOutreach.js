@@ -144,6 +144,36 @@ const FIELDS = {
   matchedAlumniId: 'matched_alumni_id',
 };
 
+// ─── Change history ───────────────────────────────────────────────────────
+// One log row per changed field (plus one per add/delete). Fire-and-forget:
+// a logging failure must never fail the edit itself.
+const logChange = (entries) => {
+  if (!entries.length) return;
+  const vals = [];
+  const tuples = entries.map((e) => {
+    vals.push(e.rowId || null, e.fullName || null, e.author || null, e.action,
+      e.field || null, e.oldValue ?? null, e.newValue ?? null);
+    const n = vals.length;
+    return `($${n - 6}, $${n - 5}, $${n - 4}, $${n - 3}, $${n - 2}, $${n - 1}, $${n})`;
+  });
+  query(
+    `INSERT INTO giveback_outreach_log (row_id, full_name, author, action, field, old_value, new_value)
+     VALUES ${tuples.join(', ')}`,
+    vals
+  ).catch((err) => console.error('gbo log failed:', err.message));
+};
+// Normalise a column value for comparison/storage — numerics via Number so
+// "5" vs 5.00 isn't a phantom change.
+const asLogText = (v) => (v == null ? null : String(v));
+const sameVal = (a, b) => {
+  const as = asLogText(a) ?? '';
+  const bs = asLogText(b) ?? '';
+  if (as === bs) return true;
+  // pg returns NUMERIC as "5.00" while the body sends 5 — not a change.
+  const an = Number(as);
+  return as !== '' && bs !== '' && Number.isFinite(an) && an === Number(bs);
+};
+
 const guard = (req, res) => {
   const session = req.auth;
   if (!session) { res.status(401).json({ error: 'Authentication required' }); return null; }
@@ -407,6 +437,10 @@ export function mountGivebackOutreach(app) {
           t(b.comments, 4000), session.email || null,
         ]
       );
+      logChange([{
+        rowId: r.rows[0].id, fullName: r.rows[0].full_name, author: session.email,
+        action: 'added', newValue: [t(b.branch, 50), t(b.poc, 200)].filter(Boolean).join(' · ') || null,
+      }]);
       res.status(201).json(toJson(r.rows[0]));
     } catch (err) { next(err); }
   });
@@ -416,6 +450,10 @@ export function mountGivebackOutreach(app) {
       const session = guard(req, res);
       if (!session) return;
       const b = req.body || {};
+      const oldQ = await query('SELECT * FROM giveback_outreach WHERE id = $1', [req.params.id]);
+      const old = oldQ.rows[0];
+      if (!old) return res.status(404).json({ error: 'Not found' });
+      const changes = []; // [field, oldValue, newValue]
       const sets = [];
       const vals = [];
       for (const [field, col] of Object.entries(FIELDS)) {
@@ -429,6 +467,7 @@ export function mountGivebackOutreach(app) {
         }
         vals.push(v);
         sets.push(`${col} = $${vals.length}`);
+        if (!sameVal(old[col], v)) changes.push([field, asLogText(old[col]), asLogText(v)]);
       }
       if (!sets.length) return res.status(400).json({ error: 'Nothing to update' });
       // When (un)pinning a profile, keep its registration id (SJ-2026-####)
@@ -452,16 +491,49 @@ export function mountGivebackOutreach(app) {
         vals
       );
       if (!r.rows[0]) return res.status(404).json({ error: 'Not found' });
+      logChange(changes.map(([field, oldValue, newValue]) => ({
+        rowId: old.id, fullName: r.rows[0].full_name, author: session.email,
+        action: 'updated', field, oldValue, newValue,
+      })));
       res.json(toJson(r.rows[0]));
     } catch (err) { next(err); }
   });
 
   app.delete('/api/giveback-outreach/:id', async (req, res, next) => {
     try {
-      if (!guard(req, res)) return;
-      const r = await query('DELETE FROM giveback_outreach WHERE id = $1 RETURNING id', [req.params.id]);
+      const session = guard(req, res);
+      if (!session) return;
+      const r = await query('DELETE FROM giveback_outreach WHERE id = $1 RETURNING id, full_name, poc, commit_lakhs', [req.params.id]);
       if (!r.rows[0]) return res.status(404).json({ error: 'Not found' });
+      const d = r.rows[0];
+      logChange([{
+        rowId: d.id, fullName: d.full_name, author: session.email, action: 'deleted',
+        oldValue: [d.poc && `POC ${d.poc}`, Number(d.commit_lakhs) > 0 && `commit ₹${Number(d.commit_lakhs)}L`].filter(Boolean).join(' · ') || null,
+      }]);
       res.json({ ok: true });
+    } catch (err) { next(err); }
+  });
+
+  // Change history for the "Changes" popup — most recent first. Append-only
+  // log written by the create/update/delete handlers above.
+  app.get('/api/giveback-outreach/log', async (req, res, next) => {
+    try {
+      if (!guard(req, res)) return;
+      const r = await query(
+        `SELECT id, row_id, full_name, author, action, field, old_value, new_value, created_at
+           FROM giveback_outreach_log ORDER BY created_at DESC, id DESC LIMIT 2000`
+      );
+      res.json(r.rows.map((x) => ({
+        id: Number(x.id),
+        rowId: x.row_id,
+        fullName: x.full_name,
+        author: x.author,
+        action: x.action,
+        field: x.field,
+        oldValue: x.old_value,
+        newValue: x.new_value,
+        at: x.created_at,
+      })));
     } catch (err) { next(err); }
   });
 }

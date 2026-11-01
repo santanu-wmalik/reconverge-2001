@@ -325,6 +325,7 @@ export default function GiveBackTrackingPage() {
   const [waSel, setWaSel] = useState(() => new Set());
   const [openId, setOpenId] = useState(null);
   const [adding, setAdding] = useState(false);
+  const [showLog, setShowLog] = useState(false); // change-history popup
   const [newName, setNewName] = useState('');
   const [newBranch, setNewBranch] = useState('');
   const [page, setPage] = useState(0);
@@ -498,9 +499,14 @@ export default function GiveBackTrackingPage() {
             Outreach master list — assign callers, log what each call said, and plan the next one.
           </p>
         </div>
-        <Button size="sm" variant="outline" onClick={() => setAdding((a) => !a)}>
-          {adding ? 'Close' : '+ Add person'}
-        </Button>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={() => setShowLog(true)}>
+            🕘 Changes
+          </Button>
+          <Button size="sm" variant="outline" onClick={() => setAdding((a) => !a)}>
+            {adding ? 'Close' : '+ Add person'}
+          </Button>
+        </div>
       </div>
 
       {adding && (
@@ -722,6 +728,7 @@ export default function GiveBackTrackingPage() {
       {liveModal && (
         <LiveDetailModal row={liveModal} onClose={() => setLiveModal(null)} />
       )}
+      {showLog && <ChangeLogModal onClose={() => setShowLog(false)} />}
     </motion.div>
   );
 }
@@ -910,5 +917,178 @@ function RowPair({ row, open, onToggle, onSaved, onDeleted, onShowLive, roster }
         </tr>
       )}
     </>
+  );
+}
+
+// ─── Change history popup ──────────────────────────────────────────────────
+// Every edit on this grid is logged server-side (one entry per changed
+// field). This modal shows the trail, most recent first, with filters.
+const LOG_FIELD_LABEL = {
+  fullName: 'Name', branch: 'Branch', location: 'Location', homeState: 'Home state',
+  onWhatsapp: 'WhatsApp', registered: 'Registered', paid: 'Paid', phone: 'Phone',
+  poc: 'POC', commitLakhs: 'Soft commit (₹L)', companyMatch: 'Company match',
+  intentSubmitted: 'Intent on site', moneySent: 'Sent to NITCAA', comments: 'Note',
+  matchedAlumniId: 'Pinned profile',
+};
+const LOG_ACTION_CHIP = {
+  added:   'text-forest-800 bg-forest-500/15',
+  updated: 'text-sky-800 bg-sky-100',
+  deleted: 'text-red-800 bg-red-100',
+};
+const fmtWhen = (v) => {
+  const d = new Date(v);
+  return Number.isNaN(d.getTime()) ? '—' : d.toLocaleString('en-IN', {
+    day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true,
+  });
+};
+const logVal = (e, v) =>
+  v == null || v === '' ? '—' : e.field === 'commitLakhs' ? `₹${Number(v)} L` : String(v);
+
+function ChangeLogModal({ onClose }) {
+  const [entries, setEntries] = useState(null); // null = loading
+  const [error, setError] = useState('');
+  const [q, setQ] = useState('');
+  const [author, setAuthor] = useState('');
+  const [field, setField] = useState('');
+  const [action, setAction] = useState('');
+  const [page, setPage] = useState(0);
+  const PAGE = 20;
+
+  useEffect(() => {
+    gbTrackingApi.log().then(setEntries).catch((err) => setError(err.message || 'Could not load changes'));
+  }, []);
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  const authors = useMemo(
+    () => Array.from(new Set((entries || []).map((e) => e.author).filter(Boolean))).sort(),
+    [entries]
+  );
+  const fields = useMemo(
+    () => Array.from(new Set((entries || []).map((e) => e.field).filter(Boolean)))
+      .sort((a, b) => (LOG_FIELD_LABEL[a] || a).localeCompare(LOG_FIELD_LABEL[b] || b)),
+    [entries]
+  );
+
+  const filtered = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    return (entries || []).filter((e) =>
+      (!author || e.author === author)
+      && (!field || e.field === field)
+      && (!action || e.action === action)
+      && (!needle
+        || [e.fullName, e.author, e.oldValue, e.newValue, LOG_FIELD_LABEL[e.field] || e.field]
+          .some((v) => String(v || '').toLowerCase().includes(needle)))
+    );
+  }, [entries, q, author, field, action]);
+  const pages = Math.max(1, Math.ceil(filtered.length / PAGE));
+  const safePage = Math.min(page, pages - 1);
+  const slice = filtered.slice(safePage * PAGE, (safePage + 1) * PAGE);
+
+  return (
+    <div className="fixed inset-0 z-[80] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+      <div className="absolute inset-0 bg-ink/40" onClick={onClose} />
+      <div className="relative bg-white rounded-2xl shadow-2xl border border-forest-500/15 w-full max-w-4xl max-h-[88vh] flex flex-col">
+        <div className="flex items-start justify-between gap-3 px-5 py-4 border-b border-forest-500/10">
+          <div>
+            <p className="font-heading text-xl text-forest-700">Tracking Changes</p>
+            <p className="text-xs text-ink-muted mt-0.5">
+              Every edit to the outreach grid — who changed what, and when. Most recent first.
+            </p>
+          </div>
+          <button onClick={onClose} className="text-ink-muted hover:text-ink text-xl leading-none px-1" aria-label="Close">×</button>
+        </div>
+
+        {/* Filters */}
+        <div className="flex flex-wrap gap-2 px-5 py-3 border-b border-forest-500/10 bg-cream-100/60">
+          <input
+            value={q}
+            onChange={(e) => { setQ(e.target.value); setPage(0); }}
+            placeholder="Search name, author, value…"
+            className="flex-1 min-w-[180px] bg-white border border-forest-500/15 rounded-xl px-3 py-1.5 text-sm"
+          />
+          <select value={author} onChange={(e) => { setAuthor(e.target.value); setPage(0); }} className="bg-white border border-forest-500/15 rounded-xl px-2.5 py-1.5 text-sm">
+            <option value="">All authors</option>
+            {authors.map((a) => <option key={a} value={a}>{a}</option>)}
+          </select>
+          <select value={field} onChange={(e) => { setField(e.target.value); setPage(0); }} className="bg-white border border-forest-500/15 rounded-xl px-2.5 py-1.5 text-sm">
+            <option value="">All fields</option>
+            {fields.map((f) => <option key={f} value={f}>{LOG_FIELD_LABEL[f] || f}</option>)}
+          </select>
+          <select value={action} onChange={(e) => { setAction(e.target.value); setPage(0); }} className="bg-white border border-forest-500/15 rounded-xl px-2.5 py-1.5 text-sm">
+            <option value="">All actions</option>
+            <option value="updated">Updated</option>
+            <option value="added">Added</option>
+            <option value="deleted">Deleted</option>
+          </select>
+        </div>
+
+        {/* Grid */}
+        <div className="flex-1 overflow-y-auto">
+          {error ? (
+            <p className="text-sm text-red-700 px-5 py-6">{error}</p>
+          ) : entries === null ? (
+            <p className="text-sm text-ink-muted px-5 py-6">Loading…</p>
+          ) : filtered.length === 0 ? (
+            <p className="text-sm text-ink-muted px-5 py-6">
+              {entries.length === 0
+                ? 'No changes recorded yet — history starts with the first edit after this feature went live.'
+                : 'Nothing matches these filters.'}
+            </p>
+          ) : (
+            <table className="w-full text-sm">
+              <thead className="sticky top-0 bg-white shadow-[0_1px_0_rgba(63,98,56,0.12)]">
+                <tr className="text-left text-[10px] uppercase tracking-wider text-ink-muted">
+                  <th className="px-5 py-2 whitespace-nowrap">When</th>
+                  <th className="px-2 py-2">Author</th>
+                  <th className="px-2 py-2">Batchmate</th>
+                  <th className="px-2 py-2">Change</th>
+                </tr>
+              </thead>
+              <tbody>
+                {slice.map((e) => (
+                  <tr key={e.id} className="border-t border-forest-500/10 align-top">
+                    <td className="px-5 py-2 whitespace-nowrap text-xs text-ink-muted tabular-nums">{fmtWhen(e.at)}</td>
+                    <td className="px-2 py-2 text-xs text-ink-soft max-w-[160px] truncate" title={e.author || ''}>{e.author || '—'}</td>
+                    <td className="px-2 py-2 font-medium text-ink max-w-[180px] truncate" title={e.fullName || ''}>{e.fullName || '—'}</td>
+                    <td className="px-2 py-2">
+                      <span className={`inline-block text-[10px] font-semibold px-1.5 py-0.5 rounded-full mr-1.5 ${LOG_ACTION_CHIP[e.action] || 'text-ink-soft bg-cream-200'}`}>
+                        {e.action}
+                      </span>
+                      {e.action === 'updated' ? (
+                        <span className="text-xs">
+                          <span className="font-semibold text-forest-700">{LOG_FIELD_LABEL[e.field] || e.field}</span>
+                          {': '}
+                          <span className="text-ink-muted line-through decoration-ink-muted/50">{logVal(e, e.oldValue)}</span>
+                          {' → '}
+                          <span className="text-ink font-medium">{logVal(e, e.newValue)}</span>
+                        </span>
+                      ) : (
+                        <span className="text-xs text-ink-muted">{e.action === 'added' ? (e.newValue || 'new row') : (e.oldValue || 'row removed')}</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+
+        {/* Footer / pagination */}
+        <div className="flex items-center justify-between gap-3 px-5 py-3 border-t border-forest-500/10 text-xs text-ink-muted">
+          <span>{filtered.length} change{filtered.length === 1 ? '' : 's'}</span>
+          {pages > 1 && (
+            <span className="flex items-center gap-2">
+              <button disabled={safePage === 0} onClick={() => setPage(safePage - 1)} className="px-2 py-1 rounded-lg border border-forest-500/15 bg-white disabled:opacity-40">← Prev</button>
+              Page {safePage + 1} of {pages}
+              <button disabled={safePage >= pages - 1} onClick={() => setPage(safePage + 1)} className="px-2 py-1 rounded-lg border border-forest-500/15 bg-white disabled:opacity-40">Next →</button>
+            </span>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
