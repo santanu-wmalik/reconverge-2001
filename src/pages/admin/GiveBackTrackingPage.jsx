@@ -289,7 +289,7 @@ const sortVal = (r, key) => {
     case 'email':      return (r.live?.email || '').toLowerCase();
     case 'poc':        return (r.poc || '').trim().toLowerCase();
     case 'intentweb':  return Number(r.intentAmount) > 0 ? Number(r.intentAmount) / 1e5 : (yes(r.intentSubmitted) ? 0.01 : 0);
-    case 'commit':     return Number(r.commitLakhs) > 0 ? Number(r.commitLakhs) : 0;
+    case 'commit':     return commitOf(r);
     case 'match':      return (r.companyMatch || '').toLowerCase();
     case 'intent':     return yes(r.intentSubmitted) ? 1 : 0;
     case 'sent':       return yes(r.moneySent) ? 1 : 0;
@@ -422,6 +422,9 @@ export default function GiveBackTrackingPage() {
   );
 
   const stats = useMemo(() => {
+    // Soft commit, falling back to the website intent amount when the sheet
+    // is blank — the same rule the Soft-Commit column displays, so the card,
+    // the column, and its footer total all agree.
     const committed = rows.filter((r) => commitOf(r) > 0);
     return {
       total: rows.length,
@@ -513,9 +516,9 @@ export default function GiveBackTrackingPage() {
           [stats.total, 'batchmates'],
           [stats.assigned, 'have a POC'],
           [stats.committed, 'soft commits'],
-          [lakhs(stats.commitTotal), 'committed', true],
-          [stats.intents, 'intents on site'],
-          [lakhs(stats.intentTotal), 'intent amount', true],
+          [lakhs(stats.commitTotal), 'Commit Amount', true],
+          [stats.intents, 'Intent on Site'],
+          [lakhs(stats.intentTotal), 'Intent Amount', true],
           [stats.sent, 'sent to NITCAA'],
         ].map(([v, l, money]) => (
           <GlassCard key={l} hover={false} className="!p-4 text-center">
@@ -696,7 +699,7 @@ export default function GiveBackTrackingPage() {
                       {lakhs(filtered.reduce((s, r) => s + (Number(r.intentAmount) > 0 ? Number(r.intentAmount) / 1e5 : 0), 0))}
                     </td>
                     <td className="px-2 py-2 text-right tabular-nums text-forest-700">
-                      {lakhs(filtered.reduce((s, r) => s + (Number(r.commitLakhs) > 0 ? Number(r.commitLakhs) : 0), 0))}
+                      {lakhs(filtered.reduce((s, r) => s + commitOf(r), 0))}
                     </td>
                     <td className="px-2 py-2 text-xs text-ink-muted">
                       {filtered.filter((r) => (r.comments || '').trim()).length} with notes
@@ -884,10 +887,11 @@ function RowPair({ row, open, onToggle, onSaved, onDeleted, onShowLive, roster }
                 ? <span className="inline-block text-[10px] font-semibold text-amber-800 bg-amber-100 px-1.5 py-0.5 rounded-full" title="Soft commit made but no intent to give on the website yet — follow up to get one filed">follow-up</span>
                 : '—'}
         </td>
-        {/* Soft-Commit — from the imported sheet or entered by the POC after a call */}
+        {/* Soft-Commit — from the sheet / POC call; when blank, the website
+            intent amount stands in so the row still shows its money. */}
         <td className="px-2 py-2 text-right tabular-nums whitespace-nowrap">
-          {Number(row.commitLakhs) > 0
-            ? <span className="font-semibold text-forest-700" title="Soft commit from outreach (sheet / POC call)">{lakhs(Number(row.commitLakhs))}</span>
+          {commitOf(row) > 0
+            ? <span className="font-semibold text-forest-700" title={Number(row.commitLakhs) > 0 ? 'Soft commit from outreach (sheet / POC call)' : 'No soft commit yet — showing the website intent amount'}>{lakhs(commitOf(row))}</span>
             : '—'}
         </td>
         <td className="px-2 py-2 max-w-0 w-[32%]">
